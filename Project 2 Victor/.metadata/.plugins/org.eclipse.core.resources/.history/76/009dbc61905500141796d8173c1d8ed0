@@ -1,0 +1,68 @@
+
+public class TheGrid {
+	//Inputs
+	public double gs_tentative;
+	public int time_interval;
+	public TheCell[][] GRID; 
+	
+	public TheGrid(double gs, int t)
+	{
+		gs_tentative = gs;
+		time_interval = t;
+		
+		GRID = new TheCell[GetGridNumRows()-1][GetGridNumCols()-1];
+	}
+	
+	public void setup(){
+		  int NumCols = GetGridNumCols();
+		  int NumRows = GetGridNumRows();
+		  GRID = new TheCell[NumCols][NumRows];
+		  
+		  // The counter variables i and j are also the column and row numbers
+		  // In this example, they are used as arguments to the constructor for each object in the grid.
+		  for (int i = 0; i < NumCols; i ++ ) {
+		    for (int j = 0; j < NumRows; j ++ ) {
+		      // Initialize each object
+		      GRID[i][j] = new TheCell(i,j);
+		    }
+		  }
+	}
+	
+	public int GetActualGridSpacing()
+	{
+		int[] validGSValues = {1,2,3,4,5,6,9,10,12,15,18,20,30,36,45,60,90};
+		int gs = validGSValues[0];
+		for(int i =0; i < validGSValues.length; i++)
+		{
+			if(gs_tentative<validGSValues[i])
+				gs = validGSValues[i];
+		}
+		return gs;
+	}
+	
+	public double GetEquatorPortionUsedByOneCell()
+	{
+		return GetActualGridSpacing()/360; 
+	}
+	
+	public int GetGridNumCols()
+	{
+		return 360/GetActualGridSpacing();
+	}
+	
+	public int GetGridNumRows()
+	{
+		return 180/GetActualGridSpacing();
+	}
+	
+	public int GetGridNumCells()
+	{
+		return GetGridNumCols() * GetGridNumRows();
+	}
+	
+	public TheCell WestNeighbor(int i, int j)
+	{
+		return GRID[i][((j+1) /GetGridNumCols())];
+	}
+	
+}

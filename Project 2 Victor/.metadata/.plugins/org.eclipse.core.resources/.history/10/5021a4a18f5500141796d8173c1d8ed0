@@ -1,0 +1,12 @@
+
+public class TheCell {
+	private int _x;
+	private int _y;
+	public TheCell(int i, int j){
+		_x = i;
+		_y = j;
+	}
+	
+	public int X() { return _x;}
+	public int Y() { return _y;}
+}

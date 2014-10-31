@@ -1,0 +1,12 @@
+
+public class TheEarth {
+	public final double radius = 6.371 * Math.pow(10, 6);
+	public final double circumference = 2 * Math.PI * radius;
+	public final double surfaceArea = 4 * Math.PI * Math.pow(radius, 2);
+	public final double surfaceAreaFacingSun = 2 * Math.PI * Math.pow(radius, 2);
+	
+	public double GetRotationalAngle(double minutesSinceSimulationStart){
+		return (minutesSinceSimulationStart%1440)*360/1440;
+	}
+}
+
