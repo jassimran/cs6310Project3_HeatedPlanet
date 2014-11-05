@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-settings>  
+  <settings defaultResolver="jcenter" />
+  <resolvers>
+    <ibiblio name="jcenter" m2compatible="true" root="http://jcenter.bintray.com" />
+  </resolvers>
+</ivy-settings>
