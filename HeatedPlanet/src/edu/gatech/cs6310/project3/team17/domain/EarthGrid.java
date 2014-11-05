@@ -30,13 +30,13 @@ import javax.persistence.TemporalType;
  * @author jsoto
  */
 @Entity
-@Table(name = "time_step")
+@Table(name = "earth_grid")
 @NamedQueries({
-    @NamedQuery(name = "TimeStep.findAll", query = "SELECT t FROM TimeStep t"),
-    @NamedQuery(name = "TimeStep.findById", query = "SELECT t FROM TimeStep t WHERE t.id = :id"),
-    @NamedQuery(name = "TimeStep.findByIndex", query = "SELECT t FROM TimeStep t WHERE t.index = :index"),
-    @NamedQuery(name = "TimeStep.findBySimulatedDate", query = "SELECT t FROM TimeStep t WHERE t.simulatedDate = :simulatedDate")})
-public class TimeStep implements Serializable {
+    @NamedQuery(name = "EarthGrid.findAll", query = "SELECT t FROM EarthGrid t"),
+    @NamedQuery(name = "EarthGrid.findById", query = "SELECT t FROM EarthGrid t WHERE t.id = :id"),
+    @NamedQuery(name = "EarthGrid.findByIndex", query = "SELECT t FROM EarthGrid t WHERE t.index = :index"),
+    @NamedQuery(name = "EarthGrid.findBySimulatedDate", query = "SELECT t FROM EarthGrid t WHERE t.simulatedDate = :simulatedDate")})
+public class EarthGrid implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,16 +54,16 @@ public class TimeStep implements Serializable {
     @ManyToOne(optional = false)
     private Simulation simulation;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "grid")
-    private List<Node> nodeList;
+    private List<EarthCell> nodeList;
 
-    public TimeStep() {
+    public EarthGrid() {
     }
 
-    public TimeStep(Integer id) {
+    public EarthGrid(Integer id) {
         this.id = id;
     }
 
-    public TimeStep(Integer id, int index, Date simulatedDate) {
+    public EarthGrid(Integer id, int index, Date simulatedDate) {
         this.id = id;
         this.index = index;
         this.simulatedDate = simulatedDate;
@@ -101,11 +101,11 @@ public class TimeStep implements Serializable {
         this.simulation = simulation;
     }
 
-    public List<Node> getNodeList() {
+    public List<EarthCell> getNodeList() {
         return nodeList;
     }
 
-    public void setNodeList(List<Node> nodeList) {
+    public void setNodeList(List<EarthCell> nodeList) {
         this.nodeList = nodeList;
     }
 
@@ -119,10 +119,10 @@ public class TimeStep implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof TimeStep)) {
+        if (!(object instanceof EarthGrid)) {
             return false;
         }
-        TimeStep other = (TimeStep) object;
+        EarthGrid other = (EarthGrid) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }

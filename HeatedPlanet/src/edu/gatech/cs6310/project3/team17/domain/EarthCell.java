@@ -26,12 +26,12 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "node")
 @NamedQueries({
-    @NamedQuery(name = "Node.findAll", query = "SELECT n FROM Node n"),
-    @NamedQuery(name = "Node.findById", query = "SELECT n FROM Node n WHERE n.id = :id"),
-    @NamedQuery(name = "Node.findByRow", query = "SELECT n FROM Node n WHERE n.row = :row"),
-    @NamedQuery(name = "Node.findByColumn", query = "SELECT n FROM Node n WHERE n.column = :column"),
-    @NamedQuery(name = "Node.findByTemperature", query = "SELECT n FROM Node n WHERE n.temperature = :temperature")})
-public class Node implements Serializable {
+    @NamedQuery(name = "EarthCell.findAll", query = "SELECT n FROM EarthCell n"),
+    @NamedQuery(name = "EarthCell.findById", query = "SELECT n FROM EarthCell n WHERE n.id = :id"),
+    @NamedQuery(name = "EarthCell.findByRow", query = "SELECT n FROM EarthCell n WHERE n.row = :row"),
+    @NamedQuery(name = "EarthCell.findByColumn", query = "SELECT n FROM EarthCell n WHERE n.column = :column"),
+    @NamedQuery(name = "EarthCell.findByTemperature", query = "SELECT n FROM EarthCell n WHERE n.temperature = :temperature")})
+public class EarthCell implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,16 +49,16 @@ public class Node implements Serializable {
     private double temperature;
     @JoinColumn(name = "grid", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    private TimeStep grid;
+    private EarthGrid grid;
 
-    public Node() {
+    public EarthCell() {
     }
 
-    public Node(Integer id) {
+    public EarthCell(Integer id) {
         this.id = id;
     }
 
-    public Node(Integer id, int row, int column, double temperature) {
+    public EarthCell(Integer id, int row, int column, double temperature) {
         this.id = id;
         this.row = row;
         this.column = column;
@@ -97,11 +97,11 @@ public class Node implements Serializable {
         this.temperature = temperature;
     }
 
-    public TimeStep getGrid() {
+    public EarthGrid getGrid() {
         return grid;
     }
 
-    public void setGrid(TimeStep grid) {
+    public void setGrid(EarthGrid grid) {
         this.grid = grid;
     }
 
@@ -115,10 +115,10 @@ public class Node implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Node)) {
+        if (!(object instanceof EarthCell)) {
             return false;
         }
-        Node other = (Node) object;
+        EarthCell other = (EarthCell) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }

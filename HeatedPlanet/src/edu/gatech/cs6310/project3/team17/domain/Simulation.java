@@ -61,7 +61,7 @@ public class Simulation implements Serializable {
     @Column(name = "grid_spacing")
     private int gridSpacing;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "simulation")
-    private List<TimeStep> timeStepList;
+    private List<EarthGrid> timeStepList;
 
     public Simulation() {
     }
@@ -136,11 +136,11 @@ public class Simulation implements Serializable {
         this.gridSpacing = gridSpacing;
     }
 
-    public List<TimeStep> getTimeStepList() {
+    public List<EarthGrid> getTimeStepList() {
         return timeStepList;
     }
 
-    public void setTimeStepList(List<TimeStep> timeStepList) {
+    public void setTimeStepList(List<EarthGrid> timeStepList) {
         this.timeStepList = timeStepList;
     }
 
