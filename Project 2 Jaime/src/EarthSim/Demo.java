@@ -3,11 +3,11 @@ package EarthSim;
 import presentation.Gui;
 
 public class Demo {
-	static boolean simthread = false;
+	static boolean simthread = true;
 	static boolean presthread = false;
 	static boolean simcontrol = false;
 	static boolean prescontrol = false;
-	static int buffer = 0;
+	static int buffer = 10;
 	public static void main(String[] args) {
 		
 			parseArgs(args);
