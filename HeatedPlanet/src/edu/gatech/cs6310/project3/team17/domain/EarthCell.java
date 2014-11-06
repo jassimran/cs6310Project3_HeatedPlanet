@@ -24,7 +24,7 @@ import javax.persistence.Table;
  * @author jsoto
  */
 @Entity
-@Table(name = "node")
+@Table(name = "earth_cell")
 @NamedQueries({
     @NamedQuery(name = "EarthCell.findAll", query = "SELECT n FROM EarthCell n"),
     @NamedQuery(name = "EarthCell.findById", query = "SELECT n FROM EarthCell n WHERE n.id = :id"),
