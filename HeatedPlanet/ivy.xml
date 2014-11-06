@@ -25,5 +25,6 @@
         status="integration"/>
 	<dependencies>
 		<dependency org="org.hibernate" name="hibernate-entitymanager" rev="4.3.7.Final"/>
+		<dependency org="com.h2database" name="h2" rev="1.4.182"/>
 	</dependencies>
 </ivy-module>
