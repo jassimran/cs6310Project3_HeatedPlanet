@@ -25,11 +25,10 @@ public class SimulationTest {
 	}
 
 	@Test
-	public void save() {
+	public void testSave() {
 		// given:
 		Simulation simulation = new Simulation();
 		simulation.setName("Unit Test");
-		simulation.setAxialTilt(1);
 		
 		// when:
 		em.getTransaction().begin();
