@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import domain.Simulation;
 import edu.gatech.cs6310.project3.team17.persistence.EntityManagerFactory;
 
 public class SimulationTest {
