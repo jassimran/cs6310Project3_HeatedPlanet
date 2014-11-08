@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.swing.SwingUtilities;
 
+import domain.Simulation;
 import presentation.earth.TemperatureGrid;
 import simulation.SimulationSettings;
 import buffers.BufferImplementation;
@@ -22,15 +24,19 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 	
 	private long iddleTime = 0;
 	
+	// persistence context
+	EntityManager em;
+	
 	public SimulationControl() {
 		super();
 		
 		listeners = new ArrayList<Listener>();
-		
-		simulationControl = null;
-		presentationControl = null;
 	}
-		
+	
+	protected void setEntityManager(EntityManager em) {
+		this.em = em;
+	}
+
 	/**
 	 * Result of last simulation or null if none has run yet.
 	 */
@@ -47,6 +53,11 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 		iddleTime = 0;
 		
 		// TODO create simulation
+		Simulation simulation = new Simulation();
+		simulation.setName("Simple Simulation");
+		em.getTransaction().begin();
+		em.persist(simulation);
+		em.getTransaction().commit();
 		
 		while(!isTerminateSimulation()) {
 			// get current simulation time

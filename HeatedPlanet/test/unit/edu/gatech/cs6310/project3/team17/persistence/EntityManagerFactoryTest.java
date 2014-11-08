@@ -8,6 +8,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import persistence.EntityManagerFactory;
+
 public class EntityManagerFactoryTest {
 
 	@Before
