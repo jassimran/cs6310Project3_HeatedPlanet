@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package PlanetSim;
+package edu.gatech.cs6310.project3.team17.GUI;
 
 /**
  *
@@ -58,6 +58,7 @@ public class QueryInterfaceUI extends javax.swing.JFrame {
         maxTempRegionCheckbox = new javax.swing.JCheckBox();
         meanTempTimeCheckbox = new javax.swing.JCheckBox();
         tempsTimeRegionCheckbox = new javax.swing.JCheckBox();
+        runQuery = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("QueryInterface");
@@ -148,6 +149,9 @@ public class QueryInterfaceUI extends javax.swing.JFrame {
 
         tempTimeRegionLabel.setText("Temperatures for the requested region over the time period selected");
 
+        runQuery.setText("Run Query");
+        runQuery.setActionCommand("runQuery");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -167,7 +171,8 @@ public class QueryInterfaceUI extends javax.swing.JFrame {
                             .addComponent(maxTempLabel)
                             .addComponent(regionMeanTempLabel)
                             .addComponent(timeMeanTempLabel)
-                            .addComponent(tempTimeRegionLabel))
+                            .addComponent(tempTimeRegionLabel)
+                            .addComponent(runQuery))
                         .addGap(28, 28, 28)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(meanTempRegionCheckbox)
@@ -228,7 +233,7 @@ public class QueryInterfaceUI extends javax.swing.JFrame {
                 .addComponent(QueryInterfaceLabel)
                 .addGap(5, 5, 5)
                 .addComponent(simulationNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 152, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 147, Short.MAX_VALUE)
                 .addComponent(longitudeToField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -254,7 +259,9 @@ public class QueryInterfaceUI extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(tempsTimeRegionCheckbox)
                     .addComponent(tempTimeRegionLabel))
-                .addGap(31, 31, 31))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(runQuery)
+                .addContainerGap())
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(44, 44, 44)
@@ -381,6 +388,7 @@ public class QueryInterfaceUI extends javax.swing.JFrame {
     private javax.swing.JTextField orbitalEccentricityField;
     private javax.swing.JLabel orbitalEccentricityLabel;
     private javax.swing.JLabel regionMeanTempLabel;
+    private javax.swing.JButton runQuery;
     private javax.swing.JTextField simulationEndField;
     private javax.swing.JTextField simulationNameField;
     private javax.swing.JLabel simulationNameLabel;
