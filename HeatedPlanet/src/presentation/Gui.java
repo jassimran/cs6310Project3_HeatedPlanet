@@ -410,8 +410,8 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 			stopButton.setEnabled(false);
 			//enable the run button
 			runButton.setEnabled(true);
-			//TODO::STOP SIMULATION HERE
-			if(control.isSimulationRunning()) {
+			// terminate simulation
+			if(!control.isTerminateSimulation()) {
 				control.stopSimulation();
 			}	
 			//reset the EarthPanel

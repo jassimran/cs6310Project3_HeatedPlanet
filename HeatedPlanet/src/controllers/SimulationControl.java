@@ -41,9 +41,10 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 	 */
 	public void executeSimulation() {
 		
-		if(counter == 0) {
-			simulationStart = (new Date()).getTime();
-		}
+		// simulation metrics
+		counter = 0;
+		simulationStart = (new Date()).getTime();
+		iddleTime = 0;
 		
 		while(!isTerminateSimulation()) {
 			// get current simulation time
@@ -52,7 +53,7 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 				simulationTime = AbstractControl.simulationTime;
 			}
 			
-			if(preventStarvation()) { // prevents simulation to starve
+			if(preventStarvation()) { // prevents simulation to starve when running in common thread
 				break;
 			}
 			
@@ -62,30 +63,27 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 			// execute simulation step
 			temperatureGrid = simulationEngine.executeSimulationStep(temperatureGrid, simulationTime, timeStep);
 			
-			if(waiting()) { // wait if simulation paused, or buffer is full
-				long iddleStart = (new Date()).getTime();
-				awaitNotification();
-				long iddleStop = (new Date()).getTime();
-				iddleTime += iddleStop - iddleStart;
-			}
+			// increment simulation counter counter
+			counter++;
 			
 			// update simulation time
 			synchronized (abstractLock) {
 				AbstractControl.simulationTime += simulationSettings.getSimulationTimeStep();
 			}
+			
+			if(waiting()) { // wait if simulation paused, or buffer is full
+				long iddleStart = (new Date()).getTime();
+				awaitNotification();
+				long iddleStop = (new Date()).getTime();
+				iddleTime += iddleStop - iddleStart;
+				// prevent buffer overflow
+				if(isTerminateSimulation()) {
+					break;
+				}
+			}
 						
 			// put results in buffer
 			buffer.put(temperatureGrid);
-			
-			// TODO increment counter
-			counter++;
-			
-			// TODO print system info
-			if(counter==24) {
-				System.out.println("Used memory in bytes (s): " + (double) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024));
-				System.out.println("Time in millis (s): " + (((new Date()).getTime()) - simulationStart));
-				System.out.println("Idle in millis (s): " + iddleTime);
-			}
 			
 			// notify listeners
 			notifyListeners();
@@ -101,6 +99,12 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 				break;
 			}
 		}
+		
+		// print simulation metrics
+		System.out.println("Total number of simulations (s): " + counter);
+		System.out.println("Used memory in bytes (s): " + (double) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024));
+		System.out.println("Time in millis (s): " + (((new Date()).getTime()) - simulationStart));
+		System.out.println("Idle in millis (s): " + iddleTime);
 	}	
 	
 	/**

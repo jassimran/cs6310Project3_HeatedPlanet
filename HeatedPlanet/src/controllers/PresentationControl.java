@@ -16,12 +16,6 @@ public class PresentationControl extends AbstractControl implements Listener, Ru
 
 	private List<Listener> listeners;
 	
-	private int counter = 0;
-	
-	private long simulationStart;
-	
-	private long iddleTime = 0;
-	
 	private long lastRenderization; // time stamp of the last renderization (in milliseconds)
 	private int lastSimulationTimeRendered; // simulation time of the last simulation rendered
 	
@@ -33,14 +27,10 @@ public class PresentationControl extends AbstractControl implements Listener, Ru
 	}
 	
 	protected void renderSimulation() {
-		
-		if(counter == 0) {
-			simulationStart = (new Date()).getTime();
-		}
-		
+				
 		while(!isTerminateSimulation()) {
 			
-			if(preventStarvation() && !buffer.isFull()) { // prevents simulation to starve
+			if(preventStarvation() && !buffer.isFull()) { // prevents simulation to starve if running in same thread
 				break;
 			}
 			
@@ -53,10 +43,7 @@ public class PresentationControl extends AbstractControl implements Listener, Ru
 					});
 					break;
 				}
-				long iddleStart = (new Date()).getTime();
 				awaitNotification();
-				long iddleStop = (new Date()).getTime();
-				iddleTime += iddleStop - iddleStart;
 			}
 			
 			// get results from buffer
@@ -78,17 +65,7 @@ public class PresentationControl extends AbstractControl implements Listener, Ru
 			
 			// render simulation step
 			presentationEngine.renderSimulationStep(temperatureGrid);
-			
-			// TODO increment counter
-			counter++;
-			
-			// TODO print system info
-			if(counter==24) {
-				System.out.println("Used memory in bytes (p): " + (double) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024));
-				System.out.println("Time in millis (p): " + (((new Date()).getTime()) - simulationStart));
-				System.out.println("Idle in millis (p): " + iddleTime);
-			}
-			
+						
 			// update time stamp
 			lastRenderization = now();
 			lastSimulationTimeRendered = temperatureGrid.getSimulationTime();

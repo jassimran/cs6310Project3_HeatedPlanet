@@ -74,7 +74,7 @@ public abstract class AbstractControl {
 	/**
 	 * @return true if simulation should be terminated
 	 */
-	protected boolean isTerminateSimulation() {
+	public boolean isTerminateSimulation() {
 		boolean terminate = false;
 		
 		synchronized (abstractLock) {
