@@ -21,6 +21,8 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 	private int index;	
 	private long simulationStart;
 	private long iddleTime;
+	private int geoAccuracy;
+	private int counter = 0;
 	
 	// persistence service
 	private PersistenceService persistenceService;
@@ -71,11 +73,16 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 			// increment simulation counter
 			index++;
 			
-			//geographic accuracy
+			//geographic accuracy						
+			geoAccuracy = simulationSettings.getGeoAccuracy();
 			
-			// persist simulation
-			persistenceService.persistSimulation(simulation, temperatureGrid, index);
+			counter++;
 			
+			if(counter % (100/geoAccuracy) == 0){
+				
+				// persist simulation
+				persistenceService.persistSimulation(simulation, temperatureGrid, index);
+			}
 			// update simulation time
 			synchronized (abstractLock) {
 				AbstractControl.simulationTime += simulationSettings.getSimulationTimeStep();
