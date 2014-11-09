@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.swing.SwingUtilities;
 
-import domain.Simulation;
 import presentation.earth.TemperatureGrid;
+import services.PersistenceService;
 import simulation.SimulationSettings;
 import buffers.BufferImplementation;
+import domain.Simulation;
 import events.EventType;
 import events.Listener;
 
@@ -18,23 +18,21 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 	
 	private List<Listener> listeners;
 	
-	private int counter = 0;
+	private int index;
 	
 	private long simulationStart;
 	
-	private long iddleTime = 0;
+	private long iddleTime;
 	
-	// persistence context
-	EntityManager em;
-	
+	// persistence service
+	private PersistenceService persistenceService;
+		
 	public SimulationControl() {
 		super();
 		
 		listeners = new ArrayList<Listener>();
-	}
-	
-	protected void setEntityManager(EntityManager em) {
-		this.em = em;
+		
+		persistenceService = PersistenceService.getInstance();
 	}
 
 	/**
@@ -48,16 +46,13 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 	public void executeSimulation() {
 		
 		// simulation metrics
-		counter = 0;
+		index = 0;
 		simulationStart = (new Date()).getTime();
 		iddleTime = 0;
 		
 		// TODO create simulation
 		Simulation simulation = new Simulation();
 		simulation.setName("Simple Simulation");
-		em.getTransaction().begin();
-		em.persist(simulation);
-		em.getTransaction().commit();
 		
 		while(!isTerminateSimulation()) {
 			// get current simulation time
@@ -76,8 +71,11 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 			// execute simulation step
 			temperatureGrid = simulationEngine.executeSimulationStep(temperatureGrid, simulationTime, timeStep);
 			
-			// increment simulation counter counter
-			counter++;
+			// increment simulation counter
+			index++;
+			
+			// persist simulation
+			persistenceService.persistSimulation(simulation, temperatureGrid, index);
 			
 			// update simulation time
 			synchronized (abstractLock) {
@@ -114,7 +112,7 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 		}
 		
 		// print simulation metrics
-		System.out.println("Total number of simulations (s): " + counter);
+		System.out.println("Total number of simulations (s): " + index);
 		System.out.println("Used memory in bytes (s): " + (double) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024));
 		System.out.println("Time in millis (s): " + (((new Date()).getTime()) - simulationStart));
 		System.out.println("Idle in millis (s): " + iddleTime);

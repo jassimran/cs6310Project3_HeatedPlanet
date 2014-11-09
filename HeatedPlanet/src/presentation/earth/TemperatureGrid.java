@@ -21,6 +21,16 @@ public interface TemperatureGrid {
   public float getCellHeight(int x, int y);
   
   /**
+   * Gets the total number of rows in the grid.
+   */
+  public int getRows();
+  
+  /**
+   * Gets the total number of columns in the grid.
+   */
+  public int getCols();
+  
+  /**
    * The time of the simulation represented by grid (in minutes).
    */
   public int getSimulationTime();

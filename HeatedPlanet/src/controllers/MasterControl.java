@@ -3,20 +3,16 @@ package controllers;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.swing.SwingUtilities;
 
-import persistence.EntityManagerFactory;
-import buffers.BufferImplementation;
 import simulation.SimulationSettings;
-import events.*;
+import buffers.BufferImplementation;
+import events.EventType;
+import events.Listener;
 
 public class MasterControl extends AbstractControl implements Listener {
 	
 	private List<Listener> listeners;
-	
-	// persistence context for controls
-	EntityManager simulationEntityManager;
 	
 	public MasterControl() {
 		super();
@@ -67,13 +63,9 @@ public class MasterControl extends AbstractControl implements Listener {
 		
 		// create buffer
 		setBuffer(new BufferImplementation(settings.getBufferSize()));
-		
-		// create persistence context
-		simulationEntityManager = EntityManagerFactory.createEntityManager();
-		
+				
 		// create simulation control
 		simulationControl = new SimulationControl();
-		simulationControl.setEntityManager(simulationEntityManager);
 		simulationControl.addListener(this);
 		
 		// create presentation control
@@ -132,9 +124,6 @@ public class MasterControl extends AbstractControl implements Listener {
 		synchronized (presentationThread) {
 			presentationThread.notify();
 		}
-		
-		// close persistence context
-		simulationEntityManager.close();
 	}
 
 	/**
