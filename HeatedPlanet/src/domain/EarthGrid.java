@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package edu.gatech.cs6310.project3.team17.domain;
+package domain;
 
 import java.io.Serializable;
 import java.util.Date;

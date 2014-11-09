@@ -1,5 +1,9 @@
 package EarthSim;
 
+import java.sql.SQLException;
+
+import org.h2.tools.Server;
+
 import presentation.Gui;
 
 public class Demo {
@@ -11,6 +15,15 @@ public class Demo {
 	public static void main(String[] args) {
 		
 			parseArgs(args);
+			
+			// TODO start H2 web server
+			try {
+				Server server = Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092").start();
+				Server webServer = Server.createWebServer("-web","-webAllowOthers", "-webPort", "8082").start();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 			if (prescontrol && simcontrol){
 				System.out.println("Invalid command line arguments!");
@@ -18,6 +31,7 @@ public class Demo {
 			}
 			else{
 				Gui.getInstance(simthread, presthread, simcontrol, prescontrol, buffer );
+				// TODO register UI listener to close H2 web servers
 			}
 			
 	}

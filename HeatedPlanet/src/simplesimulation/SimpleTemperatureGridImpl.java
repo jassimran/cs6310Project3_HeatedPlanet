@@ -26,7 +26,6 @@ public class SimpleTemperatureGridImpl implements TemperatureGrid {
 		
 		for(int y=0; y<rows; y++) {
 			for(int x=0; x<cols; x++) {
-				// TODO implement
 				SimpleCell simpleCell = new SimpleCell();
 				simpleCell.t = 288.0;
 				grid[y][x] = simpleCell;
@@ -76,6 +75,16 @@ public class SimpleTemperatureGridImpl implements TemperatureGrid {
 	@Override
 	public int getSimulationTime() {
 		return simulationTime;
+	}
+
+	@Override
+	public int getRows() {
+		return earthPanel.getNumCellsY();
+	}
+
+	@Override
+	public int getCols() {
+		return earthPanel.getNumCellsX();
 	}
 
 }

@@ -1,4 +1,4 @@
-package edu.gatech.cs6310.project3.team17.persistence;
+package persistence;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;

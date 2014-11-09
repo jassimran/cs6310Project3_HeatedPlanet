@@ -5,9 +5,10 @@ import java.util.List;
 
 import javax.swing.SwingUtilities;
 
-import buffers.BufferImplementation;
 import simulation.SimulationSettings;
-import events.*;
+import buffers.BufferImplementation;
+import events.EventType;
+import events.Listener;
 
 public class MasterControl extends AbstractControl implements Listener {
 	
@@ -62,7 +63,7 @@ public class MasterControl extends AbstractControl implements Listener {
 		
 		// create buffer
 		setBuffer(new BufferImplementation(settings.getBufferSize()));
-		
+				
 		// create simulation control
 		simulationControl = new SimulationControl();
 		simulationControl.addListener(this);
