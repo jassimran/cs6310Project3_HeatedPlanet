@@ -63,6 +63,10 @@ public class Simulation implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "simulation")
     private List<EarthGrid> timeStepList;
 
+    @Basic(optional = true)
+    @Column(name = "geographic_accuracy")
+    private Integer geoAccuracy;
+    
     public Simulation() {
     }
 
@@ -70,7 +74,7 @@ public class Simulation implements Serializable {
         this.id = id;
     }
 
-    public Simulation(Integer id, String name, int axialTilt, int orbitalEccentricity, int timeStep, int length, int gridSpacing) {
+    public Simulation(Integer id, String name, int axialTilt, int orbitalEccentricity, int timeStep, int length, int gridSpacing, int geoAccuracy) {
         this.id = id;
         this.name = name;
         this.axialTilt = axialTilt;
@@ -78,9 +82,11 @@ public class Simulation implements Serializable {
         this.timeStep = timeStep;
         this.length = length;
         this.gridSpacing = gridSpacing;
+        this.geoAccuracy = geoAccuracy;
     }
 
-    public Integer getId() {
+    
+	public Integer getId() {
         return id;
     }
 
@@ -143,6 +149,14 @@ public class Simulation implements Serializable {
     public void setTimeStepList(List<EarthGrid> timeStepList) {
         this.timeStepList = timeStepList;
     }
+    
+    public Integer getGeoAccuracy() {
+		return geoAccuracy;
+	}
+
+	public void setGeoAccuracy(Integer geoAccuracy) {
+		this.geoAccuracy = geoAccuracy;
+	}
 
     @Override
     public int hashCode() {

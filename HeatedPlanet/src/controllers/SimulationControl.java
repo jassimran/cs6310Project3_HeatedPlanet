@@ -18,10 +18,8 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 	
 	private List<Listener> listeners;
 	
-	private int index;
-	
+	private int index;	
 	private long simulationStart;
-	
 	private long iddleTime;
 	
 	// persistence service
@@ -30,8 +28,7 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 	public SimulationControl() {
 		super();
 		
-		listeners = new ArrayList<Listener>();
-		
+		listeners = new ArrayList<Listener>();		
 		persistenceService = PersistenceService.getInstance();
 	}
 
@@ -73,6 +70,8 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 			
 			// increment simulation counter
 			index++;
+			
+			//geographic accuracy
 			
 			// persist simulation
 			persistenceService.persistSimulation(simulation, temperatureGrid, index);
