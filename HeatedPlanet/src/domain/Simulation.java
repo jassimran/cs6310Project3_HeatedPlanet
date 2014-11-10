@@ -47,7 +47,7 @@ public class Simulation implements Serializable {
     private String name;
     @Basic(optional = false)
     @Column(name = "axial_tilt")
-    private int axialTilt;
+    private double axialTilt;
     @Basic(optional = false)
     @Column(name = "orbital_eccentricity")
     private double orbitalEccentricity;
@@ -77,7 +77,7 @@ public class Simulation implements Serializable {
         this.id = id;
     }
 
-    public Simulation(Integer id, String name, int axialTilt, int orbitalEccentricity, int timeStep, int length, int gridSpacing, int geoAccuracy, int precision) {
+    public Simulation(Integer id, String name, double axialTilt, int orbitalEccentricity, int timeStep, int length, int gridSpacing, int geoAccuracy, int precision) {
         this.id = id;
         this.name = name;
         this.axialTilt = axialTilt;
@@ -106,11 +106,11 @@ public class Simulation implements Serializable {
         this.name = name;
     }
 
-    public int getAxialTilt() {
+    public double getAxialTilt() {
         return axialTilt;
     }
 
-    public void setAxialTilt(int axialTilt) {
+    public void setAxialTilt(double axialTilt) {
         this.axialTilt = axialTilt;
     }
 

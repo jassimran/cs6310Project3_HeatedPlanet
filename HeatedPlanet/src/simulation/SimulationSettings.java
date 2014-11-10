@@ -135,11 +135,11 @@ public class SimulationSettings {
 	public synchronized void setPrecision(int precision) {
 		this.precision = precision;
 	}
-	public double getTilt() {
+	public double getAxialTilt() {
 		return tilt;
 	}
-	public void setTilt(double tilt) {
-		this.tilt = tilt;
+	public void setAxialTilt(double axialTilt) {
+		this.tilt = axialTilt;
 	}
 	public synchronized int getGeoAccuracy() {
 		return geoAccuracy;

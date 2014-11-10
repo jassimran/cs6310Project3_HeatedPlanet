@@ -53,6 +53,7 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 		Simulation simulation = new Simulation();
 		simulation.setName(simulationSettings.getName());
 		simulation.setOrbitalEccentricity(simulationSettings.getEccentricity());
+		simulation.setAxialTilt(simulationSettings.getAxialTilt());
 		
 		while(!isTerminateSimulation()) {
 			// get current simulation time
