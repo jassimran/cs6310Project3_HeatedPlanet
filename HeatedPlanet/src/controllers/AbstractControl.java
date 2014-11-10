@@ -1,5 +1,10 @@
 package controllers;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import presentation.PresentationEngine;
 import simulation.SimulationEngine;
 import simulation.SimulationSettings;
@@ -69,6 +74,31 @@ public abstract class AbstractControl {
 
 	public static void setBuffer(Buffer buffer) {
 		AbstractControl.buffer = buffer;
+	}
+	
+	/**
+	 * @return true if the requested length of the simulation has elapsed.
+	 */
+	public static boolean simulationLengthElapsed() {
+		//The start of the simulation is Jan 4
+		String startTime = "12:00 AM, Jan 4, 2000";
+		DateFormat dateFormat = new SimpleDateFormat("hh:mm a, MMM dd, yyyy");
+		
+		java.util.Calendar cal = dateFormat.getCalendar();
+
+		try {
+			cal.setTime(dateFormat.parse(startTime));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		cal.add(java.util.Calendar.MINUTE, (int) getSimulationTime());
+		
+		int monthsElapsed = ((cal.get(Calendar.YEAR)-2000)*12) + cal.get(Calendar.MONTH);
+		
+		if(simulationSettings.getSimulationLength() >= monthsElapsed)
+			return false;
+		return true;
 	}
 	
 	/**

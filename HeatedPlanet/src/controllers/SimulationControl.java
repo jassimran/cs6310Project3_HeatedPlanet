@@ -82,6 +82,8 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 			// update simulation time
 			synchronized (abstractLock) {
 				AbstractControl.simulationTime += simulationSettings.getSimulationTimeStep();
+				if(AbstractControl.simulationLengthElapsed())
+					setTerminateSimulation(true);
 			}
 			
 			if(waiting()) { // wait if simulation paused, or buffer is full

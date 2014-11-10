@@ -65,6 +65,11 @@ public class SimulationSettings {
 	 */
 	private double eccentricity;
 	
+	/**
+	 * Indicates the length of the simulation in months.
+	 */
+	private int simulationLength;
+	
 	public int numCellsX;
 	public int numCellsY;
 
@@ -144,7 +149,12 @@ public class SimulationSettings {
 	public synchronized void setEccentricity(double eccentricity) {
 		this.eccentricity = eccentricity;
 	}
-	
+	public int getSimulationLength() {
+		return simulationLength;
+	}
+	public void setSimulationLength(int simulationLength) {
+		this.simulationLength = simulationLength;
+	}
 	public String getName() {
 		return name;
 	}
