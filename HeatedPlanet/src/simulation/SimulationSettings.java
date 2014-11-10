@@ -46,6 +46,11 @@ public class SimulationSettings {
 	private boolean rOption;
 	
 	/**
+	 * Indicates the precision of the temperature that will be persisted.
+	 */
+	private int precision;
+
+	/**
 	 * Indicates the Geographical Precision
 	 */
 	private int geoAccuracy;
@@ -112,6 +117,13 @@ public class SimulationSettings {
 	}
 	public synchronized void setROption(boolean rOption) {
 		this.rOption = rOption;
+	}
+
+	public synchronized int getPrecision() {
+		return precision;
+	}
+	public synchronized void setPrecision(int precision) {
+		this.precision = precision;
 	}
 	
 	public synchronized int getGeoAccuracy() {

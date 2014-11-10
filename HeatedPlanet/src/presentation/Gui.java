@@ -455,6 +455,10 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 		simulationSettings.setSimulationTimeStep(stepEdit.getValue());
 		simulationSettings.SetGridSpacing(gridEdit.getValue());
 		
+		// set temperature precision
+		//TODO: get value from the gui controls
+		simulationSettings.setPrecision(10);
+		
 		// create simulation engines
 		SimulationEngine simulationEngine = new SimpleSimulationEngineImpl(EarthPanel);
 		PresentationEngine presentationEngine = new SimplePresentationEngineImpl(EarthPanel);
