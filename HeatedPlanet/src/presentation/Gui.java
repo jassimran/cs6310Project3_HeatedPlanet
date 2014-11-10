@@ -37,11 +37,12 @@ import controllers.AbstractControl;
 import controllers.MasterControl;
 import controllers.PresentationControl;
 import controllers.SimulationControl;
+import edu.gatech.cs6310.project3.team17.GUI.QueryInterfaceUI;
 
 public class Gui extends JFrame implements ActionListener, ChangeListener {
 
 	static final int WIDTH = 800;
-	static final int HEIGHT = 220;
+	static final int HEIGHT = 320;
 
 	static final String ACTION_RUN = "Run";
 	static final String ACTION_PAUSE = "Pause";
@@ -69,6 +70,8 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 	private JSlider stepSlider = null;
 
 	private EventTextField displayEdit = null;
+	private EventTextField simLengthEdit = null;
+	private EventTextField axisTiltEdit = null;
 	private JSlider displaySlider = null;
 
 	private JRadioButton concurrency_Sim = null;
@@ -77,6 +80,19 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 	private JRadioButton initiative_R = null;
 	private JRadioButton initiative_T = null;
 	private JRadioButton initiative_Neither = null;
+	
+	private JLabel simNameLabel = null;
+	private JTextField simName = null;
+	private JSlider simLengthSlider = null;
+	private JLabel simLengthLabel = null;
+	
+	
+    
+    private JLabel eccentricityLabel =null;
+    private JTextField eccentricity = null;
+    
+    private JSlider axisTiltSlider = null;
+    private JLabel axisTiltLabel = null;
 
 	JSpinner spinner = new JSpinner();
 	
@@ -180,7 +196,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 
 	private JPanel createPanel() {
 		JPanel panel = new JPanel();
-		panel.setPreferredSize(new Dimension(800, 220));
+		panel.setPreferredSize(new Dimension(800, 320));
 		panel.setLayout(new BorderLayout());
 
 		int WIDTH_LABELS = WIDTH * 4 / 7 * 1
@@ -220,10 +236,19 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 		gridSlider.setPaintTicks(true);
 		gridSlider.setPaintTrack(true);
 		gridSlider.addChangeListener(gridEdit);
+		
+		
+        
+        
+       
 		optionLabels.add(tmpLabel);
+		
 		optionEdits.add(gridSlider);
 		optionEdits.add(gridEdit);
 		optionEdits.add(lblDegrees);
+		
+		
+		
 
 		tmpLabel = new JLabel("Sim Time Step:");
 		lblMins = new JLabel("minutes");
@@ -314,9 +339,31 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 		optionEdits.add(initiative_T);
 		optionEdits.add(initiative_R);
 		optionEdits.add(initiative_Neither);
+		
+		
+		simNameLabel = new JLabel();
+		simNameLabel.setPreferredSize(new Dimension(WIDTH_LABELS,
+				LABEL_HEIGHT));
+		simNameLabel.setText("Save simulation as:");
+		simName = new JTextField(15);
+		simLengthSlider = new JSlider(JSlider.HORIZONTAL, 1, 1220, 100);
+        simLengthLabel = new JLabel();
+        simLengthLabel.setPreferredSize(new Dimension(WIDTH_LABELS,
+				LABEL_HEIGHT));
+        simLengthLabel.setText("Simulation Length:");
+        simLengthSlider.setMajorTickSpacing(200);
+        simLengthSlider.setMaximum(1220);
+        simLengthSlider.setMinimum(1);
+        simLengthSlider.setMinorTickSpacing(100);
+        simLengthSlider.setPaintLabels(true);
+        simLengthSlider.setPaintTicks(true);
+        simLengthEdit = new EventTextField(EDIT_BOX_WIDTH, 1); 
+		simLengthEdit.setEditable(false);
 
-		configOpts.add(optionLabels, BorderLayout.WEST);
-		configOpts.add(optionEdits, BorderLayout.EAST);
+		simLengthSlider.addChangeListener(simLengthEdit);
+
+		
+
 		
 		JLabel label_1 = new JLabel("         ");
 		optionEdits.add(label_1);
@@ -335,6 +382,26 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 		
 		spinner.setModel(new SpinnerNumberModel(1, 1, 100, 1));
 		optionEdits.add(spinner);
+		
+		
+		
+		optionLabels.add(simLengthLabel);
+		
+		optionEdits.add(new JLabel("      "));
+		optionEdits.add(new JLabel("      "));
+		optionEdits.add(new JLabel("      "));
+		optionEdits.add(new JLabel("      "));
+		optionEdits.add(new JLabel("      "));
+		optionEdits.add(new JLabel("      "));
+		optionEdits.add(new JLabel("      "));
+		optionEdits.add(simLengthSlider);
+		optionEdits.add(simLengthEdit);
+		optionEdits.add(new JLabel("      "));
+		optionLabels.add(simNameLabel);
+		optionEdits.add(simName);
+		configOpts.add(optionLabels, BorderLayout.WEST);
+		configOpts.add(optionEdits, BorderLayout.EAST);
+		
 		panel.add(configOpts, BorderLayout.WEST);
 
 		JPanel runAndTimePanel = new JPanel(new BorderLayout());
@@ -357,7 +424,9 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 		stopButton.setEnabled(false);
 		runOpts.add(stopButton);
 
+		runOpts.setPreferredSize(new Dimension(100, 120));
 		runAndTimePanel.add(runOpts, BorderLayout.CENTER);
+		
 
 		JPanel simTimePanel = new JPanel();
 		simTimePanel.setBorder(BorderFactory
@@ -366,8 +435,63 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 		simTime.setFont(new Font("Arial Black", Font.BOLD, 12));
 		simTimePanel.add(simTime);
 		runAndTimePanel.add(simTimePanel, BorderLayout.SOUTH);
+		
+		JPanel PFPanel = new JPanel(new BorderLayout());
+		PFPanel.setPreferredSize(new Dimension(300, 120));
+		Border PFBorder = BorderFactory.createTitledBorder("Physical factors ");
+		JPanel option2Labels = new JPanel(new FlowLayout(FlowLayout.LEFT)); 
+		JPanel option2Edits = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		option2Labels.setPreferredSize(new Dimension(
+				WIDTH_LABELS, HEIGHT));
+		option2Edits.setPreferredSize(new Dimension(WIDTH_EDITS,
+				HEIGHT));
+	    
+	    eccentricityLabel =new JLabel();
+	    eccentricityLabel.setPreferredSize(new Dimension(WIDTH_LABELS,
+				LABEL_HEIGHT));
+	    eccentricityLabel.setText("Orbital eccentricity:");
+	    eccentricity = new JTextField(5);
+	    
+	    option2Labels.add(eccentricityLabel);
+	    option2Edits.add(eccentricity);
+	    
+	        
+	   
+        axisTiltLabel = new JLabel();
+        axisTiltLabel.setPreferredSize(new Dimension(WIDTH_LABELS,
+				LABEL_HEIGHT));
+        axisTiltLabel.setText("Axial Tilt:");
+        axisTiltSlider = new JSlider(JSlider.HORIZONTAL, -180, 180, 30);
+        
+        axisTiltSlider.setMajorTickSpacing(60);
+        axisTiltSlider.setMaximum(180);
+        axisTiltSlider.setMinimum(-180);
+        axisTiltSlider.setMinorTickSpacing(30);
+        //axisTiltSlider.setPaintLabels(true);
+        axisTiltSlider.setPaintTicks(true);
 
+        axisTiltEdit = new EventTextField(EDIT_BOX_WIDTH, 1); 
+        axisTiltEdit.setEditable(false);
+
+        axisTiltSlider.addChangeListener(axisTiltEdit);
+
+        option2Labels.add(axisTiltLabel);
+        
+        option2Edits.add(new JLabel("            "));
+        option2Edits.add(new JLabel("            "));
+        option2Edits.add(axisTiltSlider);
+        option2Edits.add(axisTiltEdit);
+        
+        PFPanel.add(option2Labels,BorderLayout.WEST);
+		PFPanel.add(option2Edits, BorderLayout.EAST);
+		
+		PFPanel.setBorder(PFBorder);
+		
+		
+		
+		runAndTimePanel.add(PFPanel, BorderLayout.NORTH );
 		panel.add(runAndTimePanel, BorderLayout.CENTER);
+		
 
 		return panel;
 	}
@@ -456,10 +580,10 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 		simulationSettings.setPrecision(10);
 		
 		//TODO: get value from GUI 
-		simulationSettings.setEccentricity(0.023);
+		simulationSettings.setEccentricity(Double.parseDouble(eccentricity.getText()));
 		
 		// TODO set simulation name
-		simulationSettings.setName("Unique Simulation Name");
+		simulationSettings.setName(simName.getText());
 		
 		// create simulation engines
 		SimulationEngine simulationEngine = new SimpleSimulationEngineImpl(EarthPanel);
@@ -530,6 +654,9 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 		} catch (Exception e2) {
 		}			
 	}
+	
+
+
 
 }
 /*Event Text Field class
