@@ -16,8 +16,10 @@ public class Demo {
 		
 			parseArgs(args);
 			
-			// TODO start H2 web server
+
+			// TODO remove before deliverable
 			try {
+				// start H2 web server
 				Server server = Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092").start();
 				Server webServer = Server.createWebServer("-web","-webAllowOthers", "-webPort", "8082").start();
 			} catch (SQLException e) {

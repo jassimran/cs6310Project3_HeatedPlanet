@@ -49,9 +49,9 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 		simulationStart = (new Date()).getTime();
 		iddleTime = 0;
 		
-		// TODO create simulation
+		// create simulation
 		Simulation simulation = new Simulation();
-		simulation.setName("Simple Simulation");
+		simulation.setName(simulationSettings.getName());
 		
 		while(!isTerminateSimulation()) {
 			// get current simulation time

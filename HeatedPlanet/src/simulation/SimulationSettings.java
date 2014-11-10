@@ -46,6 +46,11 @@ public class SimulationSettings {
 	private boolean rOption;
 	
 	/**
+	 * Unique text string denoting the simulation.
+	 */
+	private String name;
+	
+	/**
 	 * Indicates the precision of the temperature that will be persisted.
 	 */
 	private int precision;
@@ -138,5 +143,12 @@ public class SimulationSettings {
 	}
 	public synchronized void setEccentricity(double eccentricity) {
 		this.eccentricity = eccentricity;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 }
