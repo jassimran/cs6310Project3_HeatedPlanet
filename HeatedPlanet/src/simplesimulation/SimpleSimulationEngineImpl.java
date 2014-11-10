@@ -3,6 +3,7 @@ package simplesimulation;
 import presentation.earth.EarthPanel;
 import presentation.earth.TemperatureGrid;
 import simulation.SimulationEngine;
+import simulation.SimulationSettings;
 
 public class SimpleSimulationEngineImpl implements SimulationEngine {
 
@@ -59,7 +60,7 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 	}
 	
 	@Override
-	public synchronized TemperatureGrid executeSimulationStep(TemperatureGrid inputGrid, int simulationTime, int timeStep) {
+	public synchronized TemperatureGrid executeSimulationStep(SimulationSettings settings, int simulationTime, TemperatureGrid inputGrid) {
 		if(inputGrid==null) {
 			SimpleTemperatureGridImpl simpleTemperatureGridImpl = new SimpleTemperatureGridImpl(earthPanel);
 			simpleTemperatureGridImpl.initGrid();
@@ -87,7 +88,7 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 
 				
 		// calcualte delta time
-		int deltaTime = timeStep * 60; // s
+		int deltaTime = settings.getSimulationTimeStep() * 60; // s
 		
 		// simulation constants
 		double e = 2700; // kg/m3
@@ -116,7 +117,9 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 				
 				// set temperature
 				SimpleCell simpleCell = new SimpleCell();
-				simpleCell.t = inputGrid.getTemperature(x, y) + deltaT;
+				
+				double originalTemp = inputGrid.getTemperature(x, y) + deltaT;
+				simpleCell.t = round(originalTemp, settings.getPrecision());
 				temperatureGrid.setTemperature(x, y, simpleCell);
 			}
 		}
@@ -126,5 +129,14 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 		
 		return temperatureGrid;
 	}
-	
+
+	/**
+	 * Rounds a double to the specified number of digits of precision.
+	 * @param originalTemp
+	 * @param precision
+	 * @return The rounded value.
+	 */
+	protected double round(double originalTemp, int precision) {
+		return new Double(String.format("%." + precision +"f", originalTemp));
+	}	
 }

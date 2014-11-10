@@ -65,11 +65,8 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 				break;
 			}
 			
-			// get simulation time step
-			int timeStep = simulationSettings.getSimulationTimeStep();
-			
 			// execute simulation step
-			temperatureGrid = simulationEngine.executeSimulationStep(temperatureGrid, simulationTime, timeStep);
+			temperatureGrid = simulationEngine.executeSimulationStep(simulationSettings, simulationTime, temperatureGrid);
 			
 			// increment simulation counter
 			index++;
