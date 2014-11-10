@@ -52,6 +52,7 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 		// create simulation
 		Simulation simulation = new Simulation();
 		simulation.setName(simulationSettings.getName());
+		simulation.setOrbitalEccentricity(simulationSettings.getEccentricity());
 		
 		while(!isTerminateSimulation()) {
 			// get current simulation time
@@ -72,9 +73,7 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 			
 			//geographic accuracy						
 			geoAccuracy = simulationSettings.getGeoAccuracy();
-			
 			counter++;
-			
 			if(counter % (100/geoAccuracy) == 0){
 				
 				// persist simulation

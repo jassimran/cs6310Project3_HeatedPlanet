@@ -455,6 +455,9 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 		//TODO: get value from the gui controls
 		simulationSettings.setPrecision(10);
 		
+		//TODO: get value from GUI 
+		simulationSettings.setEccentricity(0.023);
+		
 		// TODO set simulation name
 		simulationSettings.setName("Unique Simulation Name");
 		

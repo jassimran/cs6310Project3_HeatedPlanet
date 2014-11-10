@@ -50,7 +50,7 @@ public class Simulation implements Serializable {
     private int axialTilt;
     @Basic(optional = false)
     @Column(name = "orbital_eccentricity")
-    private int orbitalEccentricity;
+    private double orbitalEccentricity;
     @Basic(optional = false)
     @Column(name = "time_step")
     private int timeStep;
@@ -114,11 +114,11 @@ public class Simulation implements Serializable {
         this.axialTilt = axialTilt;
     }
 
-    public int getOrbitalEccentricity() {
+    public double getOrbitalEccentricity() {
         return orbitalEccentricity;
     }
 
-    public void setOrbitalEccentricity(int orbitalEccentricity) {
+    public void setOrbitalEccentricity(double orbitalEccentricity) {
         this.orbitalEccentricity = orbitalEccentricity;
     }
 
