@@ -455,6 +455,9 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 		//TODO: get value from the gui controls
 		simulationSettings.setPrecision(10);
 		
+		//TODO: get value from GUI control
+		simulationSettings.setTilt(23.44);
+		
 		//TODO: get value from GUI 
 		simulationSettings.setEccentricity(0.023);
 		
