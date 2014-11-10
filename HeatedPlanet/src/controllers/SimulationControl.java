@@ -49,9 +49,10 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 		simulationStart = (new Date()).getTime();
 		iddleTime = 0;
 		
-		// TODO create simulation
+		// create simulation
 		Simulation simulation = new Simulation();
-		simulation.setName("Simple Simulation");
+		simulation.setName(simulationSettings.getName());
+		simulation.setOrbitalEccentricity(simulationSettings.getEccentricity());
 		
 		while(!isTerminateSimulation()) {
 			// get current simulation time
@@ -64,20 +65,15 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 				break;
 			}
 			
-			// get simulation time step
-			int timeStep = simulationSettings.getSimulationTimeStep();
-			
 			// execute simulation step
-			temperatureGrid = simulationEngine.executeSimulationStep(temperatureGrid, simulationTime, timeStep);
+			temperatureGrid = simulationEngine.executeSimulationStep(simulationSettings, simulationTime, temperatureGrid);
 			
 			// increment simulation counter
 			index++;
 			
 			//geographic accuracy						
 			geoAccuracy = simulationSettings.getGeoAccuracy();
-			
 			counter++;
-			
 			if(counter % (100/geoAccuracy) == 0){
 				
 				// persist simulation

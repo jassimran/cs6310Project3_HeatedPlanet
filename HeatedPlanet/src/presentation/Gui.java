@@ -390,16 +390,14 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 			pauseButton.setEnabled(true);
 			//disable the restart button
 			stopButton.setEnabled(false);
-
-			//TODO::RUN SIMULATION HERE
+			// run simulation
 			runSimulation();
 		} else if (command.equals(ACTION_PAUSE)) {
 			//enable the restart button
 			stopButton.setEnabled(true);
 			// change pause button legend
 			pauseButton.setText((control.isSimulationRunning())? ACTION_RESUME : ACTION_PAUSE);
-
-			//TODO::PAUSE SIMULATION HERE
+			// pause simulation
 			pauseSimulation();
 		} else if (command.equals(ACTION_STOP)) {
 			//enable all controls
@@ -411,9 +409,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 			//enable the run button
 			runButton.setEnabled(true);
 			// terminate simulation
-			if(!control.isTerminateSimulation()) {
-				control.stopSimulation();
-			}	
+			stopSimulation();
 			//reset the EarthPanel
 			EarthPanel.reset();
 			try {
@@ -455,6 +451,16 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 		simulationSettings.setSimulationTimeStep(stepEdit.getValue());
 		simulationSettings.SetGridSpacing(gridEdit.getValue());
 		
+		// set temperature precision
+		//TODO: get value from the gui controls
+		simulationSettings.setPrecision(10);
+		
+		//TODO: get value from GUI 
+		simulationSettings.setEccentricity(0.023);
+		
+		// TODO set simulation name
+		simulationSettings.setName("Unique Simulation Name");
+		
 		// create simulation engines
 		SimulationEngine simulationEngine = new SimpleSimulationEngineImpl(EarthPanel);
 		PresentationEngine presentationEngine = new SimplePresentationEngineImpl(EarthPanel);
@@ -494,7 +500,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 	 * Stops a running simulation.
 	 */
 	private void stopSimulation() {
-		if(control.isSimulationRunning()) {
+		if(!control.isTerminateSimulation()) {
 			control.stopSimulation();
 		}
 	}

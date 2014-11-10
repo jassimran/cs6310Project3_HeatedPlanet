@@ -46,6 +46,16 @@ public class SimulationSettings {
 	private boolean rOption;
 	
 	/**
+	 * Unique text string denoting the simulation.
+	 */
+	private String name;
+	
+	/**
+	 * Indicates the precision of the temperature that will be persisted.
+	 */
+	private int precision;
+
+	/**
 	 * Indicates the Geographical Precision
 	 */
 	private int geoAccuracy;
@@ -113,6 +123,13 @@ public class SimulationSettings {
 	public synchronized void setROption(boolean rOption) {
 		this.rOption = rOption;
 	}
+
+	public synchronized int getPrecision() {
+		return precision;
+	}
+	public synchronized void setPrecision(int precision) {
+		this.precision = precision;
+	}
 	
 	public synchronized int getGeoAccuracy() {
 		return geoAccuracy;
@@ -126,5 +143,12 @@ public class SimulationSettings {
 	}
 	public synchronized void setEccentricity(double eccentricity) {
 		this.eccentricity = eccentricity;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 }
