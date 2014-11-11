@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.SwingUtilities;
 
 import presentation.earth.TemperatureGrid;
+import services.AccuracyService;
 import services.PersistenceService;
 import simulation.SimulationSettings;
 import buffers.BufferImplementation;
@@ -21,16 +22,18 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 	private int index;	
 	private long simulationStart;
 	private long iddleTime;
-	private int geoAccuracy;
 	
-	// persistence service
+	// used services
 	private PersistenceService persistenceService;
+	private AccuracyService accuracyService;
 		
 	public SimulationControl() {
 		super();
 		
-		listeners = new ArrayList<Listener>();		
+		listeners = new ArrayList<Listener>();
+		
 		persistenceService = PersistenceService.getInstance();
+		accuracyService = AccuracyService.getInstance();
 	}
 
 	/**
@@ -56,6 +59,12 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 		simulation.setTemporalAccuracy(simulationSettings.getTemporalAccuracy());
 		simulation.setGeoAccuracy(simulationSettings.getGeoAccuracy());
 		
+		// calculate accuracy gap
+		int totalGrids = 100; // TODO get number of grids based on simulation length
+		int gapSize = accuracyService.calculateGapSize(totalGrids, simulation.getTemporalAccuracy());
+		
+		int gapControl = gapSize; // use to place gaps between samples to persist
+		
 		while(!isTerminateSimulation()) {
 			// get current simulation time
 			int simulationTime;
@@ -73,10 +82,10 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 			// increment simulation counter
 			index++;
 			
-			// temporal accuracy						
-			if(true){ // TODO: Replace true with the logic to implement temporal accuracy
-				// persist simulation
+			// persist simulation based on temporal accuracy
+			if((++gapControl) == (gapSize+1)) {
 				persistenceService.persistSimulation(simulation, temperatureGrid, index);
+				gapControl = 0;					
 			}
 			
 			// update simulation time
