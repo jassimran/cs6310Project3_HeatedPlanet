@@ -19,21 +19,27 @@ import domain.Simulation;
 public class PersistenceService {
 	
 	// singleton instance
-	private static PersistenceService persistenceService;
+	private static PersistenceService serviceInstance;
 	
 	// persistence context
 	private EntityManager em;
+	
+	// used services
+	private AccuracyService accuracyService;
 	
 	private PersistenceService() {
 		// TODO Auto-generated constructor stub
 	}
 	
 	public static synchronized PersistenceService getInstance() {
-		if(persistenceService == null) {
-			persistenceService = new PersistenceService();
-			persistenceService.em = EntityManagerFactory.createEntityManager();
+		if(serviceInstance == null) {
+			serviceInstance = new PersistenceService();
+			// get persistence context
+			serviceInstance.em = EntityManagerFactory.createEntityManager();
+			// get used services
+			serviceInstance.accuracyService = AccuracyService.getInstance();
 		}
-		return persistenceService;
+		return serviceInstance;
 	}
 	
 	/**
@@ -63,6 +69,12 @@ public class PersistenceService {
 		earthGrid.setSimulation(simulation);
 		em.persist(earthGrid);
 		
+		// calculate accuracy gap
+		int totalCells = temperatureGrid.getRows() * temperatureGrid.getCols();
+		int gapSize = accuracyService.calculateGapSize(totalCells, simulation.getGeoAccuracy());
+		
+		int gapControl = gapSize; // use to place gaps between samples to persist
+		
 		// create EarthCells
 		for(int y=0; y < temperatureGrid.getRows(); y++) {
 			for(int x=0; x < temperatureGrid.getCols(); x++) {
@@ -71,7 +83,10 @@ public class PersistenceService {
 				earthCell.setColumn(x);
 				earthCell.setTemperature(temperatureGrid.getTemperature(x, y));
 				earthCell.setGrid(earthGrid);
-				em.persist(earthCell);
+				if((++gapControl) == (gapSize+1)) {
+					em.persist(earthCell);
+					gapControl = 0;					
+				}
 			}
 		}
 		

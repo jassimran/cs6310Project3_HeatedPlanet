@@ -47,7 +47,7 @@ public class Simulation implements Serializable {
     private String name;
     @Basic(optional = false)
     @Column(name = "axial_tilt")
-    private int axialTilt;
+    private double axialTilt;
     @Basic(optional = false)
     @Column(name = "orbital_eccentricity")
     private double orbitalEccentricity;
@@ -65,7 +65,9 @@ public class Simulation implements Serializable {
     private int precision;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "simulation")
     private List<EarthGrid> timeStepList;
-
+    @Basic(optional = true)
+    @Column(name = "temporal_accuracy")
+    private Integer temporalAccuracy;
     @Basic(optional = true)
     @Column(name = "geographic_accuracy")
     private Integer geoAccuracy;
@@ -77,7 +79,7 @@ public class Simulation implements Serializable {
         this.id = id;
     }
 
-    public Simulation(Integer id, String name, int axialTilt, int orbitalEccentricity, int timeStep, int length, int gridSpacing, int geoAccuracy, int precision) {
+    public Simulation(Integer id, String name, double axialTilt, int orbitalEccentricity, int timeStep, int length, int gridSpacing, int temporalAccuracy, int geoAccuracy, int precision) {
         this.id = id;
         this.name = name;
         this.axialTilt = axialTilt;
@@ -85,6 +87,7 @@ public class Simulation implements Serializable {
         this.timeStep = timeStep;
         this.length = length;
         this.gridSpacing = gridSpacing;
+        this.temporalAccuracy = temporalAccuracy;
         this.geoAccuracy = geoAccuracy;
         this.precision = precision;
     }
@@ -106,11 +109,11 @@ public class Simulation implements Serializable {
         this.name = name;
     }
 
-    public int getAxialTilt() {
+    public double getAxialTilt() {
         return axialTilt;
     }
 
-    public void setAxialTilt(int axialTilt) {
+    public void setAxialTilt(double axialTilt) {
         this.axialTilt = axialTilt;
     }
 
@@ -154,6 +157,14 @@ public class Simulation implements Serializable {
         this.timeStepList = timeStepList;
     }
     
+    public Integer getTemporalAccuracy() {
+		return temporalAccuracy;
+	}
+
+	public void setTemporalAccuracy(Integer temporalAccuracy) {
+		this.temporalAccuracy = temporalAccuracy;
+	}
+	
     public Integer getGeoAccuracy() {
 		return geoAccuracy;
 	}
