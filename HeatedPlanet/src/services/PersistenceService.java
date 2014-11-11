@@ -63,15 +63,22 @@ public class PersistenceService {
 		earthGrid.setSimulation(simulation);
 		em.persist(earthGrid);
 		
+		int totalCells = temperatureGrid.getRows() * temperatureGrid.getCols();
+		//int nthCellToStore = (int)(totalCells / ((double)100.0 / (double)simulation.getGeoAccuracy()));
+		int nthCellToStore = (int)(((double)simulation.getGeoAccuracy() / (double)100.0) * totalCells);
+		int cellCounter = 0;
+		
 		// create EarthCells
 		for(int y=0; y < temperatureGrid.getRows(); y++) {
 			for(int x=0; x < temperatureGrid.getCols(); x++) {
+				cellCounter++;
 				EarthCell earthCell = new EarthCell();
 				earthCell.setRow(y);
 				earthCell.setColumn(x);
 				earthCell.setTemperature(temperatureGrid.getTemperature(x, y));
 				earthCell.setGrid(earthGrid);
-				em.persist(earthCell);
+				if(cellCounter % nthCellToStore == 0)
+					em.persist(earthCell);
 			}
 		}
 		

@@ -22,7 +22,6 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 	private long simulationStart;
 	private long iddleTime;
 	private int geoAccuracy;
-	private int counter = 0;
 	
 	// persistence service
 	private PersistenceService persistenceService;
@@ -54,6 +53,8 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 		simulation.setName(simulationSettings.getName());
 		simulation.setOrbitalEccentricity(simulationSettings.getEccentricity());
 		simulation.setAxialTilt(simulationSettings.getAxialTilt());
+		simulation.setTemporalAccuracy(simulationSettings.getTemporalAccuracy());
+		simulation.setGeoAccuracy(simulationSettings.getGeoAccuracy());
 		
 		while(!isTerminateSimulation()) {
 			// get current simulation time
@@ -72,14 +73,12 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 			// increment simulation counter
 			index++;
 			
-			//geographic accuracy						
-			geoAccuracy = simulationSettings.getGeoAccuracy();
-			counter++;
-			if(counter % (100/geoAccuracy) == 0){
-				
+			// temporal accuracy						
+			if(true){ // TODO: Replace true with the logic to implement temporal accuracy
 				// persist simulation
 				persistenceService.persistSimulation(simulation, temperatureGrid, index);
 			}
+			
 			// update simulation time
 			synchronized (abstractLock) {
 				AbstractControl.simulationTime += simulationSettings.getSimulationTimeStep();
