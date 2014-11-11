@@ -444,6 +444,9 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 		simulationSettings.setBufferSize((Integer) spinner.getValue());
 		
 		//TODO: fetch value from interface
+		simulationSettings.setTemporalAccuracy(25);
+		
+		//TODO: fetch value from interface
 		simulationSettings.setGeoAccuracy(25);
 		
 		// set presentation display rate

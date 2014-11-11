@@ -61,6 +61,11 @@ public class SimulationSettings {
 	private double tilt;
 
 	/**
+	 * Indicates the Temporal Accuracy
+	 */
+	private int temporalAccuracy;
+	
+	/**
 	 * Indicates the Geographical Precision
 	 */
 	private int geoAccuracy;
@@ -140,6 +145,12 @@ public class SimulationSettings {
 	}
 	public void setAxialTilt(double axialTilt) {
 		this.tilt = axialTilt;
+	}
+	public int getTemporalAccuracy() {
+		return temporalAccuracy;
+	}
+	public void setTemporalAccuracy(int temporalAccuracy) {
+		this.temporalAccuracy = temporalAccuracy;
 	}
 	public synchronized int getGeoAccuracy() {
 		return geoAccuracy;
