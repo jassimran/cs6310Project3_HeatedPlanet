@@ -5,6 +5,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import com.sun.org.apache.bcel.internal.generic.NEW;
+
 import presentation.PresentationEngine;
 import simulation.SimulationEngine;
 import simulation.SimulationSettings;
@@ -76,10 +78,36 @@ public abstract class AbstractControl {
 		AbstractControl.buffer = buffer;
 	}
 	
+
+	public static int getSimulationLength() {
+		return simulationSettings.getSimulationLength();
+	}
+
+	private static int totalGridCount = 0;
 	/**
-	 * @return true if the requested length of the simulation has elapsed.
+	 * Calculates the total number of grids that the simulation will generate.
+	 * @param simulationLength The total length of the simulation in months.
+	 * @param simulationTimeStep The time step of the simulation in minutes.
+	 * @return the number of grids that the simulation will produce in total.
 	 */
-	public static boolean simulationLengthElapsed() {
+	public static int getTotalGridCount(int simulationLength, int simulationTimeStep) {
+		if(totalGridCount == 0 ) {
+			int totalMinutesElapsed = simulationTimeStep;
+			while(!simulationLengthElapsed(simulationLength, totalMinutesElapsed)){
+				totalGridCount ++;
+				totalMinutesElapsed += simulationTimeStep;
+			}
+		}
+		return totalGridCount;
+	}
+	
+
+	/**
+	 * Determines whether the simulation will have elapsed based on the provided number of minutes that have elapsed.
+	 * @param simulationMinutesElapsed is the number of minutes that have elapsed in the simulation.
+	 * @return true if the simulation should end.
+	 */
+	public static boolean simulationLengthElapsed(int simulationLength, int simulationMinutesElapsed) {
 		//The start of the simulation is Jan 4
 		String startTime = "12:00 AM, Jan 4, 2000";
 		DateFormat dateFormat = new SimpleDateFormat("hh:mm a, MMM dd, yyyy");
@@ -92,13 +120,20 @@ public abstract class AbstractControl {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		cal.add(java.util.Calendar.MINUTE, (int) getSimulationTime());
+		cal.add(java.util.Calendar.MINUTE, simulationMinutesElapsed);
 		
 		int monthsElapsed = ((cal.get(Calendar.YEAR)-2000)*12) + cal.get(Calendar.MONTH);
 		
-		if(simulationSettings.getSimulationLength() >= monthsElapsed)
+		if(simulationLength >= monthsElapsed)
 			return false;
 		return true;
+	}
+
+	/**
+	 * @return true if the requested length of the simulation has elapsed
+	 */
+	public static boolean simulationLengthElapsed() {
+		return simulationLengthElapsed(simulationSettings.getSimulationLength(), simulationTime);
 	}
 	
 	/**

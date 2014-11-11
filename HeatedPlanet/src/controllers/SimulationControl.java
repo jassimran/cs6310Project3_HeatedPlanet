@@ -60,7 +60,11 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 		simulation.setGeoAccuracy(simulationSettings.getGeoAccuracy());
 		
 		// calculate accuracy gap
-		int totalGrids = 100; // TODO get number of grids based on simulation length
+		int totalGrids;
+		synchronized (abstractLock) {
+			// TODO: Jaime: Is it OK to cast to int here?   
+			totalGrids= AbstractControl.getTotalGridCount(AbstractControl.getSimulationLength(), (int)AbstractControl.getSimulationTime());
+		}
 		int gapSize = accuracyService.calculateGapSize(totalGrids, simulation.getTemporalAccuracy());
 		
 		int gapControl = gapSize; // use to place gaps between samples to persist

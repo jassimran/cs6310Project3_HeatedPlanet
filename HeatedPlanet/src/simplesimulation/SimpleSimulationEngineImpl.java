@@ -87,7 +87,7 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 		daylightRightLimit = (int) (columnUnderTheSun + (5 * gcptz));
 
 				
-		// calcualte delta time
+		// calculate delta time
 		int deltaTime = settings.getSimulationTimeStep() * 60; // s
 		
 		// simulation constants
