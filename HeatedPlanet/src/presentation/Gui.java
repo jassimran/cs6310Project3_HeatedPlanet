@@ -33,12 +33,15 @@ import simplesimulation.SimplePresentationEngineImpl;
 import simplesimulation.SimpleSimulationEngineImpl;
 import simulation.SimulationEngine;
 import simulation.SimulationSettings;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import controllers.AbstractControl;
 import controllers.MasterControl;
 import controllers.PresentationControl;
 import controllers.SimulationControl;
+import events.EventType;
+import events.Listener;
 
-public class Gui extends JFrame implements ActionListener, ChangeListener {
+public class Gui extends JFrame implements ActionListener, ChangeListener, Listener {
 
 	static final int WIDTH = 800;
 	static final int HEIGHT = 220;
@@ -535,6 +538,23 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 					.getTime()));
 		} catch (Exception e2) {
 		}			
+	}
+
+	@Override
+	public void notify(EventType e) {
+		if(e == EventType.SimulationFinishedEvent) {
+			// TODO handle simulation finished event
+		}
+	}
+
+	@Override
+	public void addListener(Listener l) {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public void removeListener(Listener l) {
+		throw new NotImplementedException();
 	}
 
 }

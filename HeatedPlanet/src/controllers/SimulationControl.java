@@ -122,6 +122,11 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 			}
 		}
 		
+		// notify listers that the simulation has finished
+		for(Listener l : listeners) {
+			l.notify(EventType.SimulationFinishedEvent);
+		}
+		
 		// print simulation metrics
 		System.out.println("Total number of simulations (s): " + index);
 		System.out.println("Used memory in bytes (s): " + (double) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024));

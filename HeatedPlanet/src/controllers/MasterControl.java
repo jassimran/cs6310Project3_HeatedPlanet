@@ -52,6 +52,12 @@ public class MasterControl extends AbstractControl implements Listener {
 			});
 		}
 	}
+	
+	public void handleSimulationFinishedEvent() {
+		for(Listener l : listeners) {
+			l.notify(EventType.SimulationFinishedEvent);
+		}
+	}
 
 	/**
 	 * Starts the simulation.
@@ -185,6 +191,12 @@ public class MasterControl extends AbstractControl implements Listener {
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					handlePresentationEvent();
+				}
+			});
+		} else if (e == EventType.SimulationFinishedEvent) {
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					handleSimulationFinishedEvent();
 				}
 			});
 		}
