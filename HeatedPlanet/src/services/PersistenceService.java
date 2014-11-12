@@ -2,8 +2,18 @@ package services;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
+import javax.lang.model.type.TypeVisitor;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.Metamodel;
 
 import persistence.EntityManagerFactory;
 import presentation.earth.TemperatureGrid;
@@ -92,6 +102,54 @@ public class PersistenceService {
 		
 		// commit transaction
 		em.getTransaction().commit();
+	}
+
+	public List<Simulation> searchSimulations(String simulationName) {
+		em.getTransaction().begin();
+		
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Simulation> q = cb.createQuery(Simulation.class);
+		Root<Simulation> s = q.from(Simulation.class);
+		ParameterExpression<String> nameParameter = cb.parameter(String.class);
+		q.select(s).where(cb.equal(s.get("name"), nameParameter));
+		
+		TypedQuery<Simulation> typedQuery = em.createQuery(q);
+		typedQuery.setParameter(nameParameter, simulationName);
+		
+		List<Simulation> results = typedQuery.getResultList();
+		
+		em.getTransaction().commit();
+		
+		return results;
+	}
+	
+	
+	public List<Simulation> searchSimulations(double axialTilt, double orbitalEccentricity){
+		em.getTransaction().begin();
+		
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Simulation> q = cb.createQuery(Simulation.class);
+		Root<Simulation> s = q.from(Simulation.class);
+		
+		TypedQuery<Simulation> typedQuery = em.createQuery(q);
+		
+		// add select
+		q = q.select(s);
+		
+		// add where clauses
+		ParameterExpression<Double> tiltParameter = cb.parameter(Double.class);
+		typedQuery.setParameter(tiltParameter, axialTilt);
+		q = q.where(cb.equal(s.get("axial_tilt"), tiltParameter));
+		
+		ParameterExpression<Double> eccentricityParameter = cb.parameter(Double.class);
+		typedQuery.setParameter(eccentricityParameter, orbitalEccentricity);
+		q = q.where(cb.equal(s.get("orbital_eccentricity"), eccentricityParameter));
+		
+		List<Simulation> results = typedQuery.getResultList();
+		
+		em.getTransaction().commit();
+		
+		return results;
 	}
 
 }
