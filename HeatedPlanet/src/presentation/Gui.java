@@ -29,6 +29,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import presentation.earth.EarthPanel;
+import services.QueryService;
 import simplesimulation.SimplePresentationEngineImpl;
 import simplesimulation.SimpleSimulationEngineImpl;
 import simulation.SimulationEngine;
@@ -465,7 +466,12 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 		simulationSettings.setEccentricity(0.023);
 		
 		// TODO set simulation name
-		simulationSettings.setName("Unique Simulation Name");
+		String simulationName = "Unique Simulation Name";
+		if(new QueryService().simulationNameExists(simulationName)){
+			// TODO: display a message to the user if the simulation name exists
+			return;
+		}			
+		simulationSettings.setName(simulationName);
 		
 		// create simulation engines
 		SimulationEngine simulationEngine = new SimpleSimulationEngineImpl(EarthPanel);
