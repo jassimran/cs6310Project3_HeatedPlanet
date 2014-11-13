@@ -470,6 +470,9 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		// TODO set simulation name
 		simulationSettings.setName("Unique Simulation Name");
 		
+		// TODO set simulation length
+		simulationSettings.setSimulationLength(12);
+		
 		// create simulation engines
 		SimulationEngine simulationEngine = new SimpleSimulationEngineImpl(EarthPanel);
 		PresentationEngine presentationEngine = new SimplePresentationEngineImpl(EarthPanel);
@@ -484,7 +487,9 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		} else if (simulationSettings.isTOption()) {
 			control = new SimulationControl();
 		} else {
-			control = new MasterControl();
+			MasterControl masterControl = new MasterControl();
+			masterControl.addListener(this);
+			control = masterControl;
 		}
 		
 		// run simulation
@@ -544,6 +549,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	public void notify(EventType e) {
 		if(e == EventType.SimulationFinishedEvent) {
 			// TODO handle simulation finished event
+			System.out.println("Notify: SimulationFinishedEvent");
 		}
 	}
 

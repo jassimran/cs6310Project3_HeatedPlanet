@@ -44,6 +44,13 @@ public abstract class AbstractControl {
 	// control simulation state
 	private static boolean simulationRunning;
 	private static boolean terminateSimulation;
+	
+	// number of simulation steps to complete
+	protected static int simulationLength;
+	
+	// control simulation progress
+	protected static int simulationIndex;
+	protected static int presentationIndex;
 
 	protected AbstractControl() {
 		simulationRunning = false;
@@ -84,6 +91,36 @@ public abstract class AbstractControl {
 		}
 		
 		return terminate;
+	}
+	
+	/**
+	 * @return true if the number of produced simulation steps is equal to the simulation length
+	 */
+	public boolean isSimulationFinished() {
+		boolean finished = false;
+		
+		synchronized (abstractLock) {
+			if(simulationIndex == simulationLength) {
+				finished = true;
+			}
+		}
+		
+		return finished;		
+	}
+	
+	/**
+	 * @return true if the number of rendered simulation steps is equal to the simulation length
+	 */
+	public boolean isPresentationFinished() {
+		boolean finished = false;
+		
+		synchronized (abstractLock) {
+			if(presentationIndex == simulationLength) {
+				finished = true;
+			}
+		}
+		
+		return finished;		
 	}
 	
 	/**

@@ -54,6 +54,16 @@ public class MasterControl extends AbstractControl implements Listener {
 	}
 	
 	public void handleSimulationFinishedEvent() {
+		boolean notifyListeners;
+		synchronized (abstractLock) {
+			notifyListeners = (simulationIndex == simulationLength) 
+					&& (presentationIndex == simulationLength);
+		}
+		
+		if(!notifyListeners) {
+			return;
+		}
+		
 		for(Listener l : listeners) {
 			l.notify(EventType.SimulationFinishedEvent);
 		}
@@ -77,6 +87,11 @@ public class MasterControl extends AbstractControl implements Listener {
 		// create presentation control
 		presentationControl = new PresentationControl();
 		presentationControl.addListener(this);
+		
+		// TODO calculate simulation length
+		synchronized (abstractLock) {
+			simulationLength = 24; // TODO calculate
+		}
 		
 		// set simulation running
 		setSimulationRunning(true);
