@@ -51,6 +51,11 @@ public class SimulationSettings {
 	private String name;
 	
 	/**
+	 * Non-negative integer (Solar) months between 1 and 1200; default 12 (one Solar year).
+	 */
+	private int simulationLength;
+	
+	/**
 	 * Indicates the precision of the temperature that will be persisted.
 	 */
 	private int precision;
@@ -171,5 +176,12 @@ public class SimulationSettings {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public int getSimulationLength() {
+		return simulationLength;
+	}
+	public void setSimulationLength(int simulationLength) {
+		this.simulationLength = simulationLength;
 	}
 }
