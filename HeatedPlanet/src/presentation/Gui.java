@@ -29,7 +29,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import presentation.earth.EarthPanel;
-import services.QueryService;
 import simplesimulation.SimplePresentationEngineImpl;
 import simplesimulation.SimpleSimulationEngineImpl;
 import simulation.SimulationEngine;
@@ -37,6 +36,7 @@ import simulation.SimulationSettings;
 import controllers.AbstractControl;
 import controllers.MasterControl;
 import controllers.PresentationControl;
+import controllers.QueryControl;
 import controllers.SimulationControl;
 
 public class Gui extends JFrame implements ActionListener, ChangeListener {
@@ -467,7 +467,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 		
 		// TODO set simulation name
 		String simulationName = "Unique Simulation Name";
-		if(new QueryService().simulationNameExists(simulationName)){
+		if(new QueryControl().simulationNameExists(simulationName)){
 			// TODO: display a message to the user if the simulation name exists
 			return;
 		}			

@@ -15,6 +15,8 @@ import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
+import org.hibernate.hql.spi.TemporaryTableBulkIdStrategy;
+
 import persistence.EntityManagerFactory;
 import presentation.earth.TemperatureGrid;
 import domain.EarthCell;
@@ -66,36 +68,39 @@ public class PersistenceService {
 			em.persist(simulation);
 		}
 		
-		// get simulated time
-		long simulatedDateInMillis = temperatureGrid.getSimulationTime() * 60 * 1000; 
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(simulatedDateInMillis);
-		Date simulatedDate = calendar.getTime();
-		
-		// create EarthGrid
-		EarthGrid earthGrid = new EarthGrid();
-		earthGrid.setIndex(index);
-		earthGrid.setSimulatedDate(simulatedDate);
-		earthGrid.setSimulation(simulation);
-		em.persist(earthGrid);
-		
-		// calculate accuracy gap
-		int totalCells = temperatureGrid.getRows() * temperatureGrid.getCols();
-		int gapSize = accuracyService.calculateGapSize(totalCells, simulation.getGeoAccuracy());
-		
-		int gapControl = gapSize; // use to place gaps between samples to persist
-		
-		// create EarthCells
-		for(int y=0; y < temperatureGrid.getRows(); y++) {
-			for(int x=0; x < temperatureGrid.getCols(); x++) {
-				EarthCell earthCell = new EarthCell();
-				earthCell.setRow(y);
-				earthCell.setColumn(x);
-				earthCell.setTemperature(temperatureGrid.getTemperature(x, y));
-				earthCell.setGrid(earthGrid);
-				if((++gapControl) == (gapSize+1)) {
-					em.persist(earthCell);
-					gapControl = 0;					
+		if(temperatureGrid != null)
+		{
+			// get simulated time
+			long simulatedDateInMillis = temperatureGrid.getSimulationTime() * 60 * 1000; 
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTimeInMillis(simulatedDateInMillis);
+			Date simulatedDate = calendar.getTime();
+			
+			// create EarthGrid
+			EarthGrid earthGrid = new EarthGrid();
+			earthGrid.setIndex(index);
+			earthGrid.setSimulatedDate(simulatedDate);
+			earthGrid.setSimulation(simulation);
+			em.persist(earthGrid);
+			
+			// calculate accuracy gap
+			int totalCells = temperatureGrid.getRows() * temperatureGrid.getCols();
+			int gapSize = accuracyService.calculateGapSize(totalCells, simulation.getGeoAccuracy());
+			
+			int gapControl = gapSize; // use to place gaps between samples to persist
+			
+			// create EarthCells
+			for(int y=0; y < temperatureGrid.getRows(); y++) {
+				for(int x=0; x < temperatureGrid.getCols(); x++) {
+					EarthCell earthCell = new EarthCell();
+					earthCell.setRow(y);
+					earthCell.setColumn(x);
+					earthCell.setTemperature(temperatureGrid.getTemperature(x, y));
+					earthCell.setGrid(earthGrid);
+					if((++gapControl) == (gapSize+1)) {
+						em.persist(earthCell);
+						gapControl = 0;					
+					}
 				}
 			}
 		}
@@ -123,33 +128,4 @@ public class PersistenceService {
 		return results;
 	}
 	
-	
-	public List<Simulation> searchSimulations(double axialTilt, double orbitalEccentricity){
-		em.getTransaction().begin();
-		
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Simulation> q = cb.createQuery(Simulation.class);
-		Root<Simulation> s = q.from(Simulation.class);
-		
-		TypedQuery<Simulation> typedQuery = em.createQuery(q);
-		
-		// add select
-		q = q.select(s);
-		
-		// add where clauses
-		ParameterExpression<Double> tiltParameter = cb.parameter(Double.class);
-		typedQuery.setParameter(tiltParameter, axialTilt);
-		q = q.where(cb.equal(s.get("axial_tilt"), tiltParameter));
-		
-		ParameterExpression<Double> eccentricityParameter = cb.parameter(Double.class);
-		typedQuery.setParameter(eccentricityParameter, orbitalEccentricity);
-		q = q.where(cb.equal(s.get("orbital_eccentricity"), eccentricityParameter));
-		
-		List<Simulation> results = typedQuery.getResultList();
-		
-		em.getTransaction().commit();
-		
-		return results;
-	}
-
 }
