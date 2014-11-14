@@ -18,6 +18,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
@@ -471,7 +472,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		simulationSettings.setName("Unique Simulation Name");
 		
 		// TODO set simulation length
-		simulationSettings.setSimulationLength(12);
+		simulationSettings.setSimulationLength(1); // default 12
 		
 		// create simulation engines
 		SimulationEngine simulationEngine = new SimpleSimulationEngineImpl(EarthPanel);
@@ -548,8 +549,10 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	@Override
 	public void notify(EventType e) {
 		if(e == EventType.SimulationFinishedEvent) {
-			// TODO handle simulation finished event
-			System.out.println("Notify: SimulationFinishedEvent");
+			// notify user
+			JOptionPane.showMessageDialog(this, "Simulation complete!");
+			
+			// TODO handle GUI post simulation logic (e.g. reset for new simulation)
 		}
 	}
 

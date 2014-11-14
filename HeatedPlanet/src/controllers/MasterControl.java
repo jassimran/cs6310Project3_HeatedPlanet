@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.swing.SwingUtilities;
 
+import services.SimulationService;
 import simulation.SimulationSettings;
 import buffers.BufferImplementation;
 import events.EventType;
@@ -14,6 +15,9 @@ public class MasterControl extends AbstractControl implements Listener {
 	
 	private List<Listener> listeners;
 	
+	// used services
+	private SimulationService simulationService;
+	
 	public MasterControl() {
 		super();
 		
@@ -21,6 +25,8 @@ public class MasterControl extends AbstractControl implements Listener {
 		
 		simulationControl = null;
 		presentationControl = null;
+		
+		simulationService = SimulationService.getInstance();
 	}
 
 	public void handleSimulationEvent() {
@@ -104,9 +110,9 @@ public class MasterControl extends AbstractControl implements Listener {
 		presentationControl = new PresentationControl();
 		presentationControl.addListener(this);
 		
-		// TODO calculate simulation length
+		// calculate simulation length (in terms of simulation steps to produce)
 		synchronized (abstractLock) {
-			simulationLength = 24; // TODO calculate
+			simulationLength = simulationService.calculateSimulaitonLenght(simulationSettings.getSimulationLength(), simulationSettings.getSimulationTimeStep());
 		}
 		
 		// reset simulation progress
