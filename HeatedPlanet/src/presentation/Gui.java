@@ -58,7 +58,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	static final int DEFAULT_GRID_SPACING = 15;
 	static final int DEFAULT_SIM_DELAY = 200;
 
-	static final String START_TIME = "12:00 PM, Dec 31, 1999";
+	static final String START_TIME = "12:00 PM, Jan 4, 2014";
 	static final DateFormat DATE_FORMAT = new SimpleDateFormat(
 			"hh:mm a, MMM dd, yyyy");
 	private static final long serialVersionUID = -15968456987503L;
