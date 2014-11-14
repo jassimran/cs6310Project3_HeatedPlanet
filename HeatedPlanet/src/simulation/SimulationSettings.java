@@ -54,7 +54,17 @@ public class SimulationSettings {
 	 * Indicates the precision of the temperature that will be persisted.
 	 */
 	private int precision;
+	
+	/**
+	 * Indicates the axial tilt, which is the number of degrees between +/-180 in the northern hemisphere at the summer solstice.  
+	 */
+	private double tilt;
 
+	/**
+	 * Indicates the Temporal Accuracy
+	 */
+	private int temporalAccuracy;
+	
 	/**
 	 * Indicates the Geographical Precision
 	 */
@@ -130,7 +140,18 @@ public class SimulationSettings {
 	public synchronized void setPrecision(int precision) {
 		this.precision = precision;
 	}
-	
+	public double getAxialTilt() {
+		return tilt;
+	}
+	public void setAxialTilt(double axialTilt) {
+		this.tilt = axialTilt;
+	}
+	public int getTemporalAccuracy() {
+		return temporalAccuracy;
+	}
+	public void setTemporalAccuracy(int temporalAccuracy) {
+		this.temporalAccuracy = temporalAccuracy;
+	}
 	public synchronized int getGeoAccuracy() {
 		return geoAccuracy;
 	}

@@ -569,6 +569,9 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 		simulationSettings.setBufferSize((Integer) spinner.getValue());
 		
 		//TODO: fetch value from interface
+		simulationSettings.setTemporalAccuracy(25);
+		
+		//TODO: fetch value from interface
 		simulationSettings.setGeoAccuracy(25);
 		
 		// set presentation display rate
@@ -579,6 +582,9 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 		// set temperature precision
 		//TODO: get value from the gui controls
 		simulationSettings.setPrecision(10);
+		
+		//TODO: get value from GUI control
+		simulationSettings.setAxialTilt(23.44);
 		
 		//TODO: get value from GUI 
 		simulationSettings.setEccentricity(Double.parseDouble(eccentricity.getText()));
