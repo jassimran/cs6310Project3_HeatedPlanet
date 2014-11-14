@@ -57,8 +57,14 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 
 	static final int DEFAULT_GRID_SPACING = 15;
 	static final int DEFAULT_SIM_DELAY = 200;
+	static final int DEFAULT_TEMP_ACCURACY = 100;
+	static final int DEFAULT_GEO_ACCURACY = 100;
+	static final int DEFAULT_PRECISION = 7;
+	static final double DEFAULT_ECCENTRICITY = .0167;
+	static final double DEFAULT_AXIAL_TILT = 23.44;
+	static final int DEFAULT_TIME_STEP = 1;
 
-	static final String START_TIME = "12:00 PM, Dec 31, 1999";
+	static final String START_TIME = "11:59 PM, Jan 4, 2014";
 	static final DateFormat DATE_FORMAT = new SimpleDateFormat(
 			"hh:mm a, MMM dd, yyyy");
 	private static final long serialVersionUID = -15968456987503L;
@@ -75,7 +81,8 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 
 	private EventTextField displayEdit = null;
 	private EventTextField simLengthEdit = null;
-	private EventTextField axisTiltEdit = null;
+	private EventTextField tempAccuracyEdit = null;
+	private EventTextField geoAccuracyEdit = null;
 	private JSlider displaySlider = null;
 
 	private JRadioButton concurrency_Sim = null;
@@ -85,19 +92,30 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	private JRadioButton initiative_T = null;
 	private JRadioButton initiative_Neither = null;
 	
-	private JLabel simNameLabel = null;
-	private JTextField simName = null;
 	private JSlider simLengthSlider = null;
 	private JLabel simLengthLabel = null;
-	
-	
+	private JLabel monthsLabel = null;
+
+    private JSlider tempAccuracySlider = null;
+    private JLabel tempAccuracyLabel = null;
     
+    private JSlider geoAccuracySlider = null;
+    private JLabel geoAccuracyLabel = null;
+    
+    private JLabel percentLabel = null;
+    
+    private JLabel simNameLabel = null;
+	private JTextField simName = null;
+	
     private JLabel eccentricityLabel =null;
     private JTextField eccentricity = null;
     
-    private JSlider axisTiltSlider = null;
     private JLabel axisTiltLabel = null;
-
+    private JTextField axisTilt = null;
+    
+    private JLabel precisionLabel =null;
+    private JTextField precision = null;
+    
 	JSpinner spinner = new JSpinner();
 	
 	private long millisToPuse = 0;
@@ -136,6 +154,8 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	private JLabel lblDegrees;
 	private JLabel lblMins;
 	private JLabel lblSecs;
+	private JLabel lblpercent;
+	private JLabel lblmonths;
 
 	//Singleton
 	public static Gui getInstance(boolean simthread, boolean presthread, boolean simcontrol, boolean prescontrol, int buffer) {
@@ -153,7 +173,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 
 	private void createGui() {
 		this.getContentPane().setPreferredSize(
-				new Dimension(800, 620));
+				new Dimension(800, 730));
 
 		//set the time
 		try {
@@ -179,7 +199,6 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		initiative_T.setEnabled(false);
 		initiative_R.setEnabled(false);
 		initiative_Neither.setEnabled(false);
-		
 		
 		spinner.setValue(buffer);
 		spinner.setEnabled(false);
@@ -211,57 +230,42 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		JLabel tmpLabel = null;
 		JLabel tmpUnits = null;
 
-		Border simBorder = BorderFactory
-				.createTitledBorder("Configuration ");
+		Border simBorder = BorderFactory.createTitledBorder("Configuration ");
 		JPanel configOpts = new JPanel(new BorderLayout());
 		JPanel optionLabels = new JPanel(new FlowLayout(FlowLayout.LEFT)); 
 		JPanel optionEdits = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		optionLabels.setPreferredSize(new Dimension(
-				WIDTH_LABELS, HEIGHT));
-		optionEdits.setPreferredSize(new Dimension(WIDTH_EDITS,
-				HEIGHT));
+		optionLabels.setPreferredSize(new Dimension(WIDTH_LABELS, HEIGHT));
+		optionEdits.setPreferredSize(new Dimension(WIDTH_EDITS,HEIGHT));
 		configOpts.setBorder(simBorder);
 		int EDIT_BOX_WIDTH = 4;
 		int LABEL_HEIGHT = 26;
 
+		//Label and Slider for Grid Spacing
 		tmpLabel = new JLabel("Grid Spacing:");
 		lblDegrees = new JLabel("degrees");
-		tmpLabel.setPreferredSize(new Dimension(WIDTH_LABELS,
-				LABEL_HEIGHT));
-		gridEdit = new ControlledEventTextField(EDIT_BOX_WIDTH,
-				DEFAULT_GRID_SPACING);
+		tmpLabel.setPreferredSize(new Dimension(WIDTH_LABELS, LABEL_HEIGHT));
+		gridEdit = new ControlledEventTextField(EDIT_BOX_WIDTH,DEFAULT_GRID_SPACING);
 		gridEdit.setActionCommand(ACTION_GRID_EDIT);
 		gridEdit.setEditable(false);
 		gridEdit.addActionListener(this);
-		gridSlider = new JSlider(JSlider.HORIZONTAL, 1, 180,
-				DEFAULT_GRID_SPACING);
+		gridSlider = new JSlider(JSlider.HORIZONTAL, 1, 180,DEFAULT_GRID_SPACING);
 		gridSlider.setMajorTickSpacing(30);
 		gridSlider.setMinorTickSpacing(15);
 		gridSlider.setPaintTicks(true);
 		gridSlider.setPaintTrack(true);
-		gridSlider.addChangeListener(gridEdit);
-		
-		
-        
-        
-       
+		gridSlider.addChangeListener(gridEdit);  
 		optionLabels.add(tmpLabel);
-		
 		optionEdits.add(gridSlider);
 		optionEdits.add(gridEdit);
 		optionEdits.add(lblDegrees);
-		
-		
-		
 
+		//Label and Slider for Time Step
 		tmpLabel = new JLabel("Sim Time Step:");
 		lblMins = new JLabel("minutes");
-		tmpLabel.setPreferredSize(new Dimension(WIDTH_LABELS,
-				LABEL_HEIGHT));
-		stepEdit = new EventTextField(EDIT_BOX_WIDTH, 10);
-		stepEdit.setText("1");
+		tmpLabel.setPreferredSize(new Dimension(WIDTH_LABELS,LABEL_HEIGHT));
+		stepEdit = new EventTextField(EDIT_BOX_WIDTH, DEFAULT_TIME_STEP);
 		stepEdit.setEditable(false);
-		stepSlider = new JSlider(JSlider.HORIZONTAL, 1, 1440, 10);
+		stepSlider = new JSlider(JSlider.HORIZONTAL, 1, 1440, DEFAULT_TIME_STEP);
 		stepSlider.setMajorTickSpacing(100);
 		stepSlider.setMinorTickSpacing(50);
 		stepSlider.setPaintTicks(true);
@@ -272,10 +276,10 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		optionEdits.add(stepEdit);
 		optionEdits.add(lblMins);
 
+		//Label and Slider for Display rate
 		tmpLabel = new JLabel("Pres Display Rate:");
 		lblSecs = new JLabel("seconds");
-		tmpLabel.setPreferredSize(new Dimension(WIDTH_LABELS,
-				LABEL_HEIGHT));
+		tmpLabel.setPreferredSize(new Dimension(WIDTH_LABELS,LABEL_HEIGHT));
 		displayEdit = new EventTextField(EDIT_BOX_WIDTH, 1); 
 		displayEdit.setEditable(false);
 		displaySlider = new JSlider(JSlider.HORIZONTAL, 1, 60, 1);
@@ -289,25 +293,24 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		optionEdits.add(displayEdit);
 		optionEdits.add(lblSecs);
 
-		tmpLabel = new JLabel("Concurrency:");
-		tmpUnits = new JLabel("         ");
-		tmpLabel.setPreferredSize(new Dimension(WIDTH_LABELS,
-				LABEL_HEIGHT));
+		//Label and Slider for Concurrrenacy
+		//tmpLabel = new JLabel("Concurrency:");
+		//tmpUnits = new JLabel("         ");
+		//tmpLabel.setPreferredSize(new Dimension(WIDTH_LABELS,	LABEL_HEIGHT));
 		concurrency_Sim = new JRadioButton("[-s]");
 		concurrency_Pres = new JRadioButton("[-p]");
 
-		optionLabels.add(tmpLabel);
+		//optionLabels.add(tmpLabel);
 		
-		JLabel label_8 = new JLabel("         ");
-		optionEdits.add(label_8);
-		optionEdits.add(concurrency_Sim);
-		optionEdits.add(concurrency_Pres);
-		optionEdits.add(tmpUnits);
+		//JLabel label_8 = new JLabel("         ");
+		//optionEdits.add(label_8);
+	//	optionEdits.add(concurrency_Sim);
+	//	optionEdits.add(concurrency_Pres);
+	//	optionEdits.add(tmpUnits);
 
-		tmpLabel = new JLabel("Buffer:");
-		tmpUnits = new JLabel("");
-		tmpLabel.setPreferredSize(new Dimension(WIDTH_LABELS,
-				LABEL_HEIGHT));
+		//tmpLabel = new JLabel("Buffer:");
+		//tmpUnits = new JLabel("");
+		//tmpLabel.setPreferredSize(new Dimension(WIDTH_LABELS,	LABEL_HEIGHT));
 		initiative_T = new JRadioButton("[-t]");
 		initiative_R = new JRadioButton("[-r]");
 		initiative_Neither = new JRadioButton("Neither");
@@ -318,92 +321,96 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		group.add(initiative_R);
 		group.add(initiative_Neither);
 		
-		JLabel label = new JLabel("Initiative:");
-		label.setPreferredSize(new Dimension(114, 26));
-		optionLabels.add(label);
-		optionLabels.add(tmpLabel);
+	//	JLabel label = new JLabel("Initiative:");
+	//	label.setPreferredSize(new Dimension(114, 26));
+	//	optionLabels.add(label);
+	//	optionLabels.add(tmpLabel);
 		
-		JLabel label_9 = new JLabel("         ");
-		optionEdits.add(label_9);
+		//optionEdits.add(initiative_T);
+		//optionEdits.add(initiative_R);
+		//optionEdits.add(initiative_Neither);
 		
-		JLabel label_12 = new JLabel("         ");
-		optionEdits.add(label_12);
-		
-		JLabel label_11 = new JLabel("         ");
-		optionEdits.add(label_11);
-		
-		JLabel label_6 = new JLabel("         ");
-		optionEdits.add(label_6);
-		
-		JLabel label_7 = new JLabel("         ");
-		optionEdits.add(label_7);
-		
-		JLabel label_10 = new JLabel("         ");
-		optionEdits.add(label_10);
-		optionEdits.add(initiative_T);
-		optionEdits.add(initiative_R);
-		optionEdits.add(initiative_Neither);
-		
-		
-		simNameLabel = new JLabel();
-		simNameLabel.setPreferredSize(new Dimension(WIDTH_LABELS,
-				LABEL_HEIGHT));
-		simNameLabel.setText("Save simulation as:");
-		simName = new JTextField(25);
+		//Simulation Length Label and Slider
 		simLengthSlider = new JSlider(JSlider.HORIZONTAL, 1, 1200, 100);
         simLengthLabel = new JLabel();
-        simLengthLabel.setPreferredSize(new Dimension(WIDTH_LABELS,
-				LABEL_HEIGHT));
+        simLengthLabel.setPreferredSize(new Dimension(WIDTH_LABELS,	LABEL_HEIGHT));
         simLengthLabel.setText("Simulation Length:");
+        lblmonths = new JLabel("month");
         simLengthSlider.setMajorTickSpacing(200);
-        simLengthSlider.setMaximum(1200);
-        
+        simLengthSlider.setMaximum(1200);        
         simLengthSlider.setMinimum(1);
         simLengthSlider.setMinorTickSpacing(100);
-        simLengthSlider.setPaintLabels(true);
+        //simLengthSlider.setPaintLabels(true);
         simLengthSlider.setPaintTicks(true);
         simLengthEdit = new EventTextField(EDIT_BOX_WIDTH, 12); 
 		simLengthEdit.setEditable(false);
-
 		simLengthSlider.addChangeListener(simLengthEdit);
-
-		
-
-		
-		JLabel label_1 = new JLabel("         ");
-		optionEdits.add(label_1);
-		
-		JLabel label_5 = new JLabel("         ");
-		optionEdits.add(label_5);
-		
-		JLabel label_4 = new JLabel("         ");
-		optionEdits.add(label_4);
-		
-		JLabel label_2 = new JLabel("         ");
-		optionEdits.add(label_2);
-		
-		JLabel label_3 = new JLabel("         ");
-		optionEdits.add(label_3);
-		
-		spinner.setModel(new SpinnerNumberModel(1, 1, 100, 1));
-		optionEdits.add(spinner);
-		
-		
-		
 		optionLabels.add(simLengthLabel);
-		
-		optionEdits.add(new JLabel("      "));
-		optionEdits.add(new JLabel("      "));
-		optionEdits.add(new JLabel("      "));
-		optionEdits.add(new JLabel("      "));
-		optionEdits.add(new JLabel("      "));
-		optionEdits.add(new JLabel("      "));
-		optionEdits.add(new JLabel("      "));
 		optionEdits.add(simLengthSlider);
 		optionEdits.add(simLengthEdit);
-		optionEdits.add(new JLabel("      "));
+		optionEdits.add(lblmonths);
+		
+		lblpercent = new JLabel("percent");
+		    
+		//Added temporal Accuracy Label and Slider
+		tempAccuracyLabel = new JLabel();
+		tempAccuracyLabel.setPreferredSize(new Dimension(WIDTH_LABELS,LABEL_HEIGHT));
+		tempAccuracyLabel.setText("Temp Accuracy:");
+		tempAccuracySlider = new JSlider(JSlider.HORIZONTAL, 1, 100, DEFAULT_TEMP_ACCURACY);
+		tempAccuracySlider.setMajorTickSpacing(10);
+		tempAccuracySlider.setMaximum(100);
+		tempAccuracySlider.setMinimum(1);
+		tempAccuracySlider.setMinorTickSpacing(5);
+	    //axisTiltSlider.setPaintLabels(true);
+		tempAccuracySlider.setPaintTicks(true);
+		tempAccuracySlider.setPaintTrack(true);
+		tempAccuracyEdit = new EventTextField(EDIT_BOX_WIDTH, DEFAULT_TEMP_ACCURACY); 
+		tempAccuracyEdit.setEditable(false);
+		tempAccuracySlider.addChangeListener(tempAccuracyEdit);
+		optionLabels.add(tempAccuracyLabel);
+		optionEdits.add(tempAccuracySlider);
+		optionEdits.add(tempAccuracyEdit);
+		optionEdits.add(lblpercent);
+		    
+		lblpercent = new JLabel("percent");
+		
+		//Added Geographic Accuracy Label and Slider
+		geoAccuracyLabel = new JLabel();
+		geoAccuracyLabel.setPreferredSize(new Dimension(WIDTH_LABELS,LABEL_HEIGHT));
+		geoAccuracyLabel.setText("Geo Accuracy: ");
+		geoAccuracySlider = new JSlider(JSlider.HORIZONTAL, 1, 100, DEFAULT_GEO_ACCURACY);
+		geoAccuracySlider.setMajorTickSpacing(10);
+		geoAccuracySlider.setMaximum(100);
+		geoAccuracySlider.setMinimum(1);
+		geoAccuracySlider.setMinorTickSpacing(5);
+		geoAccuracySlider.setPaintTicks(true);
+		geoAccuracySlider.setPaintTrack(true);
+		geoAccuracyEdit = new EventTextField(EDIT_BOX_WIDTH, DEFAULT_GEO_ACCURACY); 
+		geoAccuracyEdit.setEditable(false);
+		geoAccuracySlider.addChangeListener(geoAccuracyEdit);
+		optionLabels.add(geoAccuracyLabel);
+		optionEdits.add(geoAccuracySlider);
+		optionEdits.add(geoAccuracyEdit);
+		optionEdits.add(lblpercent);
+		    
+
+		//Added precision Label and Text box
+	    precisionLabel = new JLabel();
+	    precisionLabel.setPreferredSize(new Dimension(WIDTH_LABELS,LABEL_HEIGHT));
+	    precisionLabel.setText("Precision: ");
+	    precision = new JTextField(String.valueOf(DEFAULT_PRECISION),8);
+	    optionLabels.add(precisionLabel);
+	    optionEdits.add(precision);	  
+	    
+	    //Added simulation Label and Text box
+		simNameLabel = new JLabel();
+		simNameLabel.setPreferredSize(new Dimension(WIDTH_LABELS,LABEL_HEIGHT));
+		simNameLabel.setText("Save simulation as:");
+		simName = new JTextField(28);	
 		optionLabels.add(simNameLabel);
+		//optionEdits.add(new JLabel(" "));
 		optionEdits.add(simName);
+		
 		configOpts.add(optionLabels, BorderLayout.WEST);
 		configOpts.add(optionEdits, BorderLayout.EAST);
 		
@@ -441,62 +448,64 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		simTimePanel.add(simTime);
 		runAndTimePanel.add(simTimePanel, BorderLayout.SOUTH);
 		
-		JPanel PFPanel = new JPanel(new BorderLayout());
-		PFPanel.setPreferredSize(new Dimension(300, 120));
+		
 		Border PFBorder = BorderFactory.createTitledBorder("Physical factors ");
+		JPanel PFPanel = new JPanel(new BorderLayout());
 		JPanel option2Labels = new JPanel(new FlowLayout(FlowLayout.LEFT)); 
 		JPanel option2Edits = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		option2Labels.setPreferredSize(new Dimension(
-				WIDTH_LABELS, HEIGHT));
-		option2Edits.setPreferredSize(new Dimension(WIDTH_EDITS,
-				HEIGHT));
+		option2Labels.setPreferredSize(new Dimension( WIDTH_LABELS, HEIGHT));
+		option2Edits.setPreferredSize(new Dimension(WIDTH_EDITS,HEIGHT));
+		PFPanel.setPreferredSize(new Dimension(290, 180));	
+		
+		PFPanel.setBorder(simBorder);
 	    
+		//Added eccentricity Label and Text box
 	    eccentricityLabel =new JLabel();
-	    eccentricityLabel.setPreferredSize(new Dimension(WIDTH_LABELS,
-				LABEL_HEIGHT));
+	    eccentricityLabel.setPreferredSize(new Dimension(WIDTH_LABELS,LABEL_HEIGHT));
 	    eccentricityLabel.setText("Orbital eccentricity:");
-	    eccentricity = new JTextField(5);
-	    
+	    eccentricity = new JTextField(String.valueOf(DEFAULT_ECCENTRICITY),6);
 	    option2Labels.add(eccentricityLabel);
-	    option2Edits.add(eccentricity);
 	    
-	        
-	   
+	    option2Edits.add(eccentricity);
+	    lblDegrees = new JLabel("   ");
+	    option2Edits.add(lblDegrees);
+	 
+	    
+	   //Added axial tilt Textbox and Label
         axisTiltLabel = new JLabel();
-        axisTiltLabel.setPreferredSize(new Dimension(WIDTH_LABELS,
-				LABEL_HEIGHT));
+        axisTiltLabel.setPreferredSize(new Dimension(WIDTH_LABELS, LABEL_HEIGHT));
         axisTiltLabel.setText("Axial Tilt:");
-        axisTiltSlider = new JSlider(JSlider.HORIZONTAL, -180, 180, 30);
-        
-        axisTiltSlider.setMajorTickSpacing(60);
-        axisTiltSlider.setMaximum(180);
-        axisTiltSlider.setMinimum(-180);
-        axisTiltSlider.setMinorTickSpacing(30);
+        axisTilt = new JTextField(String.valueOf(DEFAULT_AXIAL_TILT),6);
+      
+	    option2Labels.add(axisTiltLabel);
+	    option2Edits.add(axisTilt);
+	    //lblDegrees = new JLabel("degrees");
+	    //option2Edits.add(lblDegrees);
+        //axisTiltSlider = new JSlider();
+        //axisTiltSlider = new JSlider(JSlider.HORIZONTAL, -180.0, 180.0, DEFAULT_AXIAL_TILT);        
+        //axisTiltSlider.setMajorTickSpacing(60);
+        //axisTiltSlider.setMaximum(180);
+        //axisTiltSlider.setMinimum(-180);
+        //axisTiltSlider.setMinorTickSpacing(30);
         //axisTiltSlider.setPaintLabels(true);
-        axisTiltSlider.setPaintTicks(true);
-
-        axisTiltEdit = new EventTextField(EDIT_BOX_WIDTH, 1); 
-        axisTiltEdit.setEditable(false);
-
-        axisTiltSlider.addChangeListener(axisTiltEdit);
-
-        option2Labels.add(axisTiltLabel);
+        //axisTiltSlider.setPaintTicks(true);
+        //axisTiltSlider.setPaintTrack(true);
+        //axisTiltEdit = new EventTextField(EDIT_BOX_WIDTH, 1); 
+        //axisTiltEdit.setEditable(false);
+        //axisTiltSlider.addChangeListener(axisTiltEdit);
+        //option2Labels.add(axisTiltLabel);
+        //option2Edits.add(axisTiltSlider);
+        //option2Edits.add(axisTiltEdit);
         
-        option2Edits.add(new JLabel("            "));
-        option2Edits.add(new JLabel("            "));
-        option2Edits.add(axisTiltSlider);
-        option2Edits.add(axisTiltEdit);
         
         PFPanel.add(option2Labels,BorderLayout.WEST);
 		PFPanel.add(option2Edits, BorderLayout.EAST);
-		
 		PFPanel.setBorder(PFBorder);
 		
 		
 		
 		runAndTimePanel.add(PFPanel, BorderLayout.NORTH );
 		panel.add(runAndTimePanel, BorderLayout.CENTER);
-		
 
 		return panel;
 	}
@@ -584,14 +593,13 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		simulationSettings.setGridSpacing(gridEdit.getValue());
 		
 		// set temperature precision
-		//TODO: get value from the gui controls
-		simulationSettings.setPrecision(10);		
-		simulationSettings.setAxialTilt(axisTiltEdit.getValue());
+		simulationSettings.setPrecision(Integer.parseInt(precision.getText()));		
+		simulationSettings.setAxialTilt(Double.parseDouble(axisTilt.getText()));
 		simulationSettings.setEccentricity(Double.parseDouble(eccentricity.getText().toString()));
 		simulationSettings.setName(simName.getText());
-		simulationSettings.setSimulationTimeStep(stepEdit.getValue());
-		// TODO set simulation length
 		simulationSettings.setSimulationLength(simLengthEdit.getValue()); // default 12
+		simulationSettings.setTemporalAccuracy(tempAccuracyEdit.getValue());
+		simulationSettings.setGeoAccuracy(geoAccuracyEdit.getValue());
 		
 		// create simulation engines
 		SimulationEngine simulationEngine = new SimpleSimulationEngineImpl(EarthPanel);
