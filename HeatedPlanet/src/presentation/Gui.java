@@ -38,6 +38,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import controllers.AbstractControl;
 import controllers.MasterControl;
 import controllers.PresentationControl;
+import controllers.QueryControl;
 import controllers.SimulationControl;
 import events.EventType;
 import events.Listener;
@@ -593,8 +594,13 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		//TODO: get value from GUI 
 		simulationSettings.setEccentricity(Double.parseDouble(eccentricity.getText()));
 		
-		// TODO set simulation name
-		simulationSettings.setName(simName.getText());
+		String simulationName = simName.getText();
+		simulationSettings.setName(simulationName);
+		
+		if(new QueryControl().simulationNameExists(simulationName)){
+			// TODO: display a message to the user if the simulation name exists
+			return;
+		}			
 		
 		// TODO set simulation length
 		simulationSettings.setSimulationLength(1); // default 12

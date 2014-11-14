@@ -2,8 +2,20 @@ package services;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
+import javax.lang.model.type.TypeVisitor;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.Metamodel;
+
+import org.hibernate.hql.spi.TemporaryTableBulkIdStrategy;
 
 import persistence.EntityManagerFactory;
 import presentation.earth.TemperatureGrid;
@@ -56,36 +68,39 @@ public class PersistenceService {
 			em.persist(simulation);
 		}
 		
-		// get simulated time
-		long simulatedDateInMillis = temperatureGrid.getSimulationTime() * 60 * 1000; 
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(simulatedDateInMillis);
-		Date simulatedDate = calendar.getTime();
-		
-		// create EarthGrid
-		EarthGrid earthGrid = new EarthGrid();
-		earthGrid.setIndex(index);
-		earthGrid.setSimulatedDate(simulatedDate);
-		earthGrid.setSimulation(simulation);
-		em.persist(earthGrid);
-		
-		// calculate accuracy gap
-		int totalCells = temperatureGrid.getRows() * temperatureGrid.getCols();
-		int gapSize = accuracyService.calculateGapSize(totalCells, simulation.getGeoAccuracy());
-		
-		int gapControl = gapSize; // use to place gaps between samples to persist
-		
-		// create EarthCells
-		for(int y=0; y < temperatureGrid.getRows(); y++) {
-			for(int x=0; x < temperatureGrid.getCols(); x++) {
-				EarthCell earthCell = new EarthCell();
-				earthCell.setRow(y);
-				earthCell.setColumn(x);
-				earthCell.setTemperature(temperatureGrid.getTemperature(x, y));
-				earthCell.setGrid(earthGrid);
-				if((++gapControl) == (gapSize+1)) {
-					em.persist(earthCell);
-					gapControl = 0;					
+		if(temperatureGrid != null)
+		{
+			// get simulated time
+			long simulatedDateInMillis = temperatureGrid.getSimulationTime() * 60 * 1000; 
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTimeInMillis(simulatedDateInMillis);
+			Date simulatedDate = calendar.getTime();
+			
+			// create EarthGrid
+			EarthGrid earthGrid = new EarthGrid();
+			earthGrid.setIndex(index);
+			earthGrid.setSimulatedDate(simulatedDate);
+			earthGrid.setSimulation(simulation);
+			em.persist(earthGrid);
+			
+			// calculate accuracy gap
+			int totalCells = temperatureGrid.getRows() * temperatureGrid.getCols();
+			int gapSize = accuracyService.calculateGapSize(totalCells, simulation.getGeoAccuracy());
+			
+			int gapControl = gapSize; // use to place gaps between samples to persist
+			
+			// create EarthCells
+			for(int y=0; y < temperatureGrid.getRows(); y++) {
+				for(int x=0; x < temperatureGrid.getCols(); x++) {
+					EarthCell earthCell = new EarthCell();
+					earthCell.setRow(y);
+					earthCell.setColumn(x);
+					earthCell.setTemperature(temperatureGrid.getTemperature(x, y));
+					earthCell.setGrid(earthGrid);
+					if((++gapControl) == (gapSize+1)) {
+						em.persist(earthCell);
+						gapControl = 0;					
+					}
 				}
 			}
 		}
@@ -94,4 +109,23 @@ public class PersistenceService {
 		em.getTransaction().commit();
 	}
 
+	public List<Simulation> searchSimulations(String simulationName) {
+		em.getTransaction().begin();
+		
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Simulation> q = cb.createQuery(Simulation.class);
+		Root<Simulation> s = q.from(Simulation.class);
+		ParameterExpression<String> nameParameter = cb.parameter(String.class);
+		q.select(s).where(cb.equal(s.get("name"), nameParameter));
+		
+		TypedQuery<Simulation> typedQuery = em.createQuery(q);
+		typedQuery.setParameter(nameParameter, simulationName);
+		
+		List<Simulation> results = typedQuery.getResultList();
+		
+		em.getTransaction().commit();
+		
+		return results;
+	}
+	
 }
