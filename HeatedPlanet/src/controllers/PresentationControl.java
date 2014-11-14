@@ -28,7 +28,7 @@ public class PresentationControl extends AbstractControl implements Listener, Ru
 	
 	protected void renderSimulation() {
 				
-		while(!isTerminateSimulation()) {
+		while(!isTerminateSimulation() && !isPresentationFinished()) {
 			
 			if(preventStarvation() && !buffer.isFull()) { // prevents simulation to starve if running in same thread
 				break;
@@ -69,6 +69,11 @@ public class PresentationControl extends AbstractControl implements Listener, Ru
 			// update time stamp
 			lastRenderization = now();
 			lastSimulationTimeRendered = temperatureGrid.getSimulationTime();
+			
+			// increment presentation index
+			synchronized (abstractLock) {
+				presentationIndex++;
+			}
 			
 			// notify listeners
 			notifyListeners();

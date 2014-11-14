@@ -1,5 +1,5 @@
 package events;
 
 public enum EventType {
-	PresentationEvent, SimulationEvent, StopSimulationEvent, PauseSimulationEvent, ResumeSimulationEvent;
+	PresentationEvent, SimulationEvent, SimulationFinishedEvent, StopSimulationEvent, PauseSimulationEvent, ResumeSimulationEvent;
 }
