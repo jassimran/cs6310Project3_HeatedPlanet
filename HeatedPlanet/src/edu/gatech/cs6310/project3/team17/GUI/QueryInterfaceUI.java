@@ -6,17 +6,71 @@
 
 package edu.gatech.cs6310.project3.team17.GUI;
 
-/**
- *
- * @author Subham
- */
-public class QueryInterfaceUI extends javax.swing.JFrame {
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
-    /**
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JSlider;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.border.Border;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.text.DateFormatter;
+import javax.swing.text.DefaultFormatterFactory;
+
+import services.PersistenceService;
+
+public class QueryInterfaceUI extends javax.swing.JFrame implements ActionListener, ChangeListener {
+
+   
+	
+	
+	static final int WIDTH = 800;
+	static final int HEIGHT = 220;
+
+	static final String ACTION_RUN = "runQuery";
+	
+
+	static final double DEFAULT_AXIAL_TILT = 23.44;
+	static final double DEFAULT_ORBITAL_ECCENTRICITY = .0167;
+	private Date simStart, simEnd;
+	private static final long serialVersionUID = -15968456987503L; 
+	private double tilt;
+	// persistence service
+	private PersistenceService persistenceService;
+	int WIDTH_LABELS = WIDTH * 4 / 7 * 1
+			/ 4;
+	int WIDTH_EDITS = WIDTH * 4 / 7 * 3
+			/ 4;
+	int LABEL_HEIGHT = 26;
+
+
+	
+	 /**
      * Creates new form QueryInterfaceUI
      */
     public QueryInterfaceUI() {
-        initComponents();
+        
+    	persistenceService = PersistenceService.getInstance();
+    	initComponents();
+        
     }
 
     /**
@@ -29,36 +83,43 @@ public class QueryInterfaceUI extends javax.swing.JFrame {
     private void initComponents() {
 
         QueryInterfaceLabel = new javax.swing.JLabel();
+        tableOptionsLabel = new javax.swing.JLabel();
+        runQuery = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
         simulationNameLabel = new javax.swing.JLabel();
-        simulationNameField = new javax.swing.JTextField();
+        simulationNameField = new javax.swing.JTextField(20);
+        axisTiltSlider = new javax.swing.JSlider();
         axisTiltLabel = new javax.swing.JLabel();
         orbitalEccentricityLabel = new javax.swing.JLabel();
-        axisTiltSlider = new javax.swing.JSlider();
         orbitalEccentricityField = new javax.swing.JTextField();
         latitudeLabel = new javax.swing.JLabel();
-        longitudeLabel = new javax.swing.JLabel();
-        simulationPeriodLabel = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
-        simulationStartField = new javax.swing.JTextField();
-        simulationEndField = new javax.swing.JTextField();
         latitudeFromField = new javax.swing.JTextField();
-        latitudeToField = new javax.swing.JTextField();
-        longitudeFromField = new javax.swing.JTextField();
-        longitudeToField = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
+        latitudeToField = new javax.swing.JTextField();
+        longitudeLabel = new javax.swing.JLabel();
+        longitudeFromField = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
-        tableOptionsLabel = new javax.swing.JLabel();
+        longitudeToField = new javax.swing.JTextField();
+        simulationPeriodLabel = new javax.swing.JLabel();
+        
+       
+        simulationStartField = new javax.swing.JFormattedTextField();
+        simulationStartField.setActionCommand(getName());
+        
+        jLabel9 = new javax.swing.JLabel();
+        simulationEndField = new javax.swing.JFormattedTextField();
+        simulationEndField.setActionCommand(getName());
+        jPanel2 = new javax.swing.JPanel();
         minTempLabel = new javax.swing.JLabel();
-        maxTempLabel = new javax.swing.JLabel();
-        regionMeanTempLabel = new javax.swing.JLabel();
-        timeMeanTempLabel = new javax.swing.JLabel();
-        tempTimeRegionLabel = new javax.swing.JLabel();
         minTempCheckbox = new javax.swing.JCheckBox();
+        regionMeanTempLabel = new javax.swing.JLabel();
         meanTempRegionCheckbox = new javax.swing.JCheckBox();
+        maxTempLabel = new javax.swing.JLabel();
         maxTempRegionCheckbox = new javax.swing.JCheckBox();
+        timeMeanTempLabel = new javax.swing.JLabel();
         meanTempTimeCheckbox = new javax.swing.JCheckBox();
+        tempTimeRegionLabel = new javax.swing.JLabel();
         tempsTimeRegionCheckbox = new javax.swing.JCheckBox();
-        runQuery = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("QueryInterface");
@@ -67,19 +128,19 @@ public class QueryInterfaceUI extends javax.swing.JFrame {
         QueryInterfaceLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         QueryInterfaceLabel.setText("Query Interface");
 
+        tableOptionsLabel.setFont(new java.awt.Font("Tahoma", 3, 11)); // NOI18N
+        tableOptionsLabel.setText("Include following data in the result set");
+
+        runQuery.setText("Run Query");
+        runQuery.addActionListener(this);
+		runQuery.setEnabled(true); 
+        runQuery.setActionCommand(ACTION_RUN);
+
         simulationNameLabel.setLabelFor(simulationNameField);
         simulationNameLabel.setText("Name of the simulation");
         simulationNameLabel.setName("simulationNameLabel"); // NOI18N
 
-        simulationNameField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                simulationNameFieldActionPerformed(evt);
-            }
-        });
-
-        axisTiltLabel.setText("Axial tilt");
-
-        orbitalEccentricityLabel.setText("Orbital eccentricity");
+        
 
         axisTiltSlider.setMajorTickSpacing(60);
         axisTiltSlider.setMaximum(180);
@@ -88,143 +149,235 @@ public class QueryInterfaceUI extends javax.swing.JFrame {
         axisTiltSlider.setPaintLabels(true);
         axisTiltSlider.setPaintTicks(true);
 
+        axisTiltLabel.setText("Axial tilt");
+        axisTiltSlider.setPreferredSize(new Dimension(15, 75));
+        
+        orbitalEccentricityLabel.setText("Orbital eccentricity");
+        latitudeLabel.setText("Latitude");
+        jLabel10.setText("to");
+        longitudeLabel.setText("Longitude");
+        jLabel11.setText("to");
+        simulationPeriodLabel.setText("Simulation period");
+        jLabel9.setText("to");
+        simulationStartField.setAction(simulationStartField.getAction());
+        simulationEndField.setAction(simulationEndField.getAction());
+        /*latitudeToField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                latitudeToFieldActionPerformed(evt);
+            }
+        });
+        longitudeFromField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                longitudeFromFieldActionPerformed(evt);
+            }
+        });
+        longitudeToField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                longitudeToFieldActionPerformed(evt);
+            }
+        });
+        simulationNameField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                simulationNameFieldActionPerformed(evt);
+            }
+        });
+
         orbitalEccentricityField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 orbitalEccentricityFieldActionPerformed(evt);
             }
         });
 
-        latitudeLabel.setText("Latitude");
-
-        longitudeLabel.setText("Longitude");
-
-        simulationPeriodLabel.setText("Simulation period");
-
-        jLabel9.setText("to");
-
-        simulationEndField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                simulationEndFieldActionPerformed(evt);
-            }
-        });
-
+        
         latitudeFromField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 latitudeFromFieldActionPerformed(evt);
             }
-        });
+        });*/
 
-        latitudeToField.addActionListener(new java.awt.event.ActionListener() {
+        
+        simulationEndField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                latitudeToFieldActionPerformed(evt);
+                //simulationEndFieldActionPerformed(evt);
+            	String cmd = evt.getActionCommand();
+            	if(cmd.equals(simulationEndField.getAction()))
+            	setSimulationPeriod(simulationStartField.getText(),simulationEndField.getText());
             }
         });
-
-        longitudeFromField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                longitudeFromFieldActionPerformed(evt);
-            }
-        });
-
-        longitudeToField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                longitudeToFieldActionPerformed(evt);
-            }
-        });
-
-        jLabel10.setText("to");
-
-        jLabel11.setText("to");
-
-        tableOptionsLabel.setFont(new java.awt.Font("Tahoma", 3, 11)); // NOI18N
-        tableOptionsLabel.setText("Include following data in the result set");
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(axisTiltLabel)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(simulationNameLabel)
+                        .addGap(49, 49, 49)
+                        .addComponent(simulationNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap(50, Short.MAX_VALUE)
+                        .addComponent(axisTiltSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(simulationPeriodLabel)
+                            .addComponent(orbitalEccentricityLabel)
+                            .addComponent(latitudeLabel)
+                            .addComponent(longitudeLabel))
+                        .addGap(73, 73, 73)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(longitudeFromField, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(orbitalEccentricityField, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(latitudeFromField, javax.swing.GroupLayout.DEFAULT_SIZE, 61, Short.MAX_VALUE)
+                                    .addComponent(simulationStartField))
+                                .addGap(33, 33, 33)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel11)
+                                            .addComponent(jLabel9))
+                                        .addGap(48, 48, 48)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(longitudeToField, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(simulationEndField, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel10)
+                                        .addGap(48, 48, 48)
+                                        .addComponent(latitudeToField, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(simulationNameLabel)
+                    .addComponent(simulationNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(axisTiltSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(axisTiltLabel))
+                .addGap(21, 21, 21)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(orbitalEccentricityLabel)
+                    .addComponent(orbitalEccentricityField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(latitudeLabel)
+                        .addComponent(latitudeFromField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel10)
+                        .addComponent(latitudeToField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(41, 41, 41)
+                        .addComponent(longitudeLabel))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(longitudeFromField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel11)
+                            .addComponent(longitudeToField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(simulationPeriodLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9)
+                    .addComponent(simulationEndField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(simulationStartField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         minTempLabel.setText("Minumum temperature in the region selected");
 
-        maxTempLabel.setText("Maximum temperature in the region selected");
+        regionMeanTempLabel.setText("Mean temperature for the region selected");
 
-        regionMeanTempLabel.setText("Mean temperature for the requested region");
+        maxTempLabel.setText("Maximum temperature in the region selected");
 
         timeMeanTempLabel.setText("Mean temperature for the requested time period");
 
         tempTimeRegionLabel.setText("Temperatures for the requested region over the time period selected");
 
-        runQuery.setText("Run Query");
-        runQuery.setActionCommand("runQuery");
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(minTempLabel)
+                            .addComponent(maxTempLabel)
+                            .addComponent(regionMeanTempLabel)
+                            .addComponent(timeMeanTempLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(minTempCheckbox)
+                            .addComponent(meanTempRegionCheckbox)
+                            .addComponent(maxTempRegionCheckbox)
+                            .addComponent(meanTempTimeCheckbox))
+                        .addGap(48, 48, 48))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(tempTimeRegionLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(tempsTimeRegionCheckbox)
+                        .addContainerGap(48, Short.MAX_VALUE))))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(minTempCheckbox)
+                            .addComponent(minTempLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(maxTempLabel))
+                    .addComponent(meanTempRegionCheckbox))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(regionMeanTempLabel)
+                    .addComponent(maxTempRegionCheckbox))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(timeMeanTempLabel)
+                    .addComponent(meanTempTimeCheckbox))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(tempTimeRegionLabel)
+                    .addComponent(tempsTimeRegionCheckbox))
+                .addContainerGap(24, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(minTempCheckbox)
-                .addGap(162, 162, 162))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
-                        .addComponent(QueryInterfaceLabel))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(80, 80, 80)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(maxTempLabel)
-                            .addComponent(regionMeanTempLabel)
-                            .addComponent(timeMeanTempLabel)
-                            .addComponent(tempTimeRegionLabel)
-                            .addComponent(runQuery))
-                        .addGap(28, 28, 28)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(meanTempRegionCheckbox)
-                            .addComponent(meanTempTimeCheckbox)
-                            .addComponent(maxTempRegionCheckbox)
-                            .addComponent(tempsTimeRegionCheckbox)))
+                        .addComponent(runQuery))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(289, 289, 289)
-                        .addComponent(jLabel9)
-                        .addGap(35, 35, 35)
+                        .addGap(30, 30, 30)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(longitudeToField, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(simulationEndField, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(206, 206, 206)
-                        .addComponent(simulationNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(162, Short.MAX_VALUE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(80, 80, 80)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(tableOptionsLabel)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(latitudeLabel)
-                                .addComponent(longitudeLabel)
-                                .addComponent(simulationPeriodLabel)
-                                .addComponent(simulationNameLabel)
-                                .addComponent(orbitalEccentricityLabel))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(latitudeFromField, javax.swing.GroupLayout.DEFAULT_SIZE, 61, Short.MAX_VALUE)
-                                        .addComponent(longitudeFromField)
-                                        .addComponent(simulationStartField))
-                                    .addGap(35, 35, 35)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(jLabel10)
-                                        .addComponent(jLabel11))
-                                    .addGap(35, 35, 35)
-                                    .addComponent(latitudeToField, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(orbitalEccentricityField, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(minTempLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(axisTiltLabel)
-                                .addGap(65, 65, 65)
-                                .addComponent(axisTiltSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addContainerGap(80, Short.MAX_VALUE)))
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(QueryInterfaceLabel)
+                            .addComponent(tableOptionsLabel)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(20, 20, 20)
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -232,104 +385,20 @@ public class QueryInterfaceUI extends javax.swing.JFrame {
                 .addGap(21, 21, 21)
                 .addComponent(QueryInterfaceLabel)
                 .addGap(5, 5, 5)
-                .addComponent(simulationNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 147, Short.MAX_VALUE)
-                .addComponent(longitudeToField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9)
-                    .addComponent(simulationEndField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(57, 57, 57)
-                .addComponent(minTempCheckbox)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(regionMeanTempLabel)
-                        .addGap(17, 17, 17)
-                        .addComponent(maxTempLabel)
-                        .addGap(18, 18, 18)
-                        .addComponent(timeMeanTempLabel))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(meanTempRegionCheckbox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(maxTempRegionCheckbox)
-                        .addGap(18, 18, 18)
-                        .addComponent(meanTempTimeCheckbox)))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tempsTimeRegionCheckbox)
-                    .addComponent(tempTimeRegionLabel))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(13, 13, 13)
+                .addComponent(tableOptionsLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
                 .addComponent(runQuery)
                 .addContainerGap())
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(44, 44, 44)
-                    .addComponent(simulationNameLabel)
-                    .addGap(24, 24, 24)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(axisTiltSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(orbitalEccentricityLabel)
-                                .addComponent(orbitalEccentricityField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(latitudeFromField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(latitudeToField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(latitudeLabel))))
-                        .addComponent(axisTiltLabel))
-                    .addGap(18, 18, 18)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel11)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(longitudeLabel)
-                                .addComponent(longitudeFromField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(simulationPeriodLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(simulationStartField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGap(18, 18, 18)
-                            .addComponent(tableOptionsLabel)))
-                    .addGap(18, 18, 18)
-                    .addComponent(minTempLabel)
-                    .addContainerGap(184, Short.MAX_VALUE)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void simulationNameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simulationNameFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_simulationNameFieldActionPerformed
-
-    private void orbitalEccentricityFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_orbitalEccentricityFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_orbitalEccentricityFieldActionPerformed
-
-    private void simulationEndFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simulationEndFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_simulationEndFieldActionPerformed
-
-    private void latitudeToFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_latitudeToFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_latitudeToFieldActionPerformed
-
-    private void longitudeFromFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_longitudeFromFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_longitudeFromFieldActionPerformed
-
-    private void longitudeToFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_longitudeToFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_longitudeToFieldActionPerformed
-
-    private void latitudeFromFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_latitudeFromFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_latitudeFromFieldActionPerformed
+                                      
 
     /**
      * @param args the command line arguments
@@ -366,6 +435,95 @@ public class QueryInterfaceUI extends javax.swing.JFrame {
         });
     }
 
+    
+    //set simulation start and end time.
+    
+    public void setSimulationPeriod(String start, String end)
+    {
+    	 SimpleDateFormat dtf 
+         = new SimpleDateFormat("dd/MMM/yyyy HH:mm:ss.SSS");
+    	 try{
+    		 
+    		 System.out.println("Sim start: " + simulationStartField.getText());
+        	 System.out.println("Sim end: "+ simulationEndField.getText());
+    	 simStart = dtf.parse(simulationStartField.getText());
+    	 simEnd = dtf.parse(simulationEndField.getText());
+    	 System.out.println("Sim start: " + simStart);
+    	 System.out.println("Sim end: "+ simEnd);
+    	 }
+    	 catch(Exception e)
+    	 {
+    		 System.out.println("Error parsing date time");
+    	 }
+    }
+    
+    @Override
+	public void actionPerformed(ActionEvent e) {
+		//get the command
+		String command = e.getActionCommand();
+		
+
+		if (command.equals(ACTION_RUN)) {
+			
+			
+			
+			
+			//disable all controls
+			//this.setEnableAllUserOptions(false);
+			//disable the run button
+			//runQuery.setEnabled(false);
+			
+			//call persisitence controller here
+			runQuery();
+		}
+    }
+    
+   
+  //enable/disable all controls
+  	private void setEnableAllUserOptions(boolean bEnable) {
+  	
+  		
+  		
+         runQuery.setEnabled(bEnable);
+         simulationNameField.setEnabled(bEnable);
+         axisTiltSlider.setEnabled(bEnable);
+         orbitalEccentricityField.setEnabled(bEnable);
+         latitudeFromField.setEnabled(bEnable);
+         latitudeToField.setEnabled(bEnable);
+         longitudeFromField.setEnabled(bEnable);
+         longitudeToField.setEnabled(bEnable);
+         simulationStartField.setEnabled(bEnable);
+         simulationEndField.setEnabled(bEnable);
+         minTempCheckbox.setEnabled(bEnable);
+         meanTempRegionCheckbox.setEnabled(bEnable);
+         maxTempRegionCheckbox.setEnabled(bEnable);
+         meanTempTimeCheckbox.setEnabled(bEnable);
+         tempsTimeRegionCheckbox.setEnabled(bEnable);
+
+  	}
+
+    //call persistence controller and execute the query. Create output ui 
+  	//to display results
+    public void runQuery()
+    {
+    	//for now it just prints all the values to console.
+    	
+    	System.out.println("Name: "+ simulationNameField.getText());
+    	System.out.println("Axial tilt: "+ axisTiltSlider.getValue());
+    	System.out.println("ecc: "+ orbitalEccentricityField.getText());
+    	System.out.println("latitude: "+ latitudeFromField.getText() + " to " + latitudeToField.getText());
+    	System.out.println("longitude: "+ longitudeFromField.getText() + " to " + longitudeToField.getText());
+    	System.out.println("simulation: "+ simulationStartField.getText() + " to " + simulationEndField.getText());
+    	System.out.println("Min Temp "+ minTempCheckbox.isSelected());
+    	System.out.println("Max Temp"+ maxTempRegionCheckbox.isSelected());
+    	System.out.println("Regional avg temp "+ meanTempRegionCheckbox.isSelected());
+    	System.out.println("Avg temp for the period "+ meanTempTimeCheckbox.isSelected() );
+    	
+    }
+    
+    public void stateChanged(ChangeEvent e) {
+
+	}
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel QueryInterfaceLabel;
     private javax.swing.JLabel axisTiltLabel;
@@ -373,6 +531,8 @@ public class QueryInterfaceUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JTextField latitudeFromField;
     private javax.swing.JLabel latitudeLabel;
     private javax.swing.JTextField latitudeToField;
@@ -400,3 +560,4 @@ public class QueryInterfaceUI extends javax.swing.JFrame {
     private javax.swing.JLabel timeMeanTempLabel;
     // End of variables declaration//GEN-END:variables
 }
+
