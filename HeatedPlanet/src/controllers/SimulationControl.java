@@ -62,6 +62,7 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 		simulation.setTemporalAccuracy(simulationSettings.getTemporalAccuracy());
 		simulation.setGeoAccuracy(simulationSettings.getGeoAccuracy());
 		simulation.setLength(simulationSettings.getSimulationLength());
+		simulation.setGridSpacing(simulationSettings.getGridSpacing());
 		
 		// get total grids to produce
 		int totalGrids;

@@ -581,23 +581,17 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		// set presentation display rate
 		simulationSettings.setPresentationDisplayRate(displayEdit.getValue() * 1000); // milliseconds
 		simulationSettings.setSimulationTimeStep(stepEdit.getValue());
-		simulationSettings.SetGridSpacing(gridEdit.getValue());
+		simulationSettings.setGridSpacing(gridEdit.getValue());
 		
 		// set temperature precision
 		//TODO: get value from the gui controls
-		simulationSettings.setPrecision(10);
-		
-		//TODO: get value from GUI control
-		simulationSettings.setAxialTilt(23.44);
-		
-		//TODO: get value from GUI 
-		simulationSettings.setEccentricity(Double.parseDouble(eccentricity.getText()));
-		
-		// TODO set simulation name
+		simulationSettings.setPrecision(10);		
+		simulationSettings.setAxialTilt(axisTiltEdit.getValue());
+		simulationSettings.setEccentricity(Double.parseDouble(eccentricity.getText().toString()));
 		simulationSettings.setName(simName.getText());
-		
+		simulationSettings.setSimulationTimeStep(stepEdit.getValue());
 		// TODO set simulation length
-		simulationSettings.setSimulationLength(1); // default 12
+		simulationSettings.setSimulationLength(simLengthEdit.getValue()); // default 12
 		
 		// create simulation engines
 		SimulationEngine simulationEngine = new SimpleSimulationEngineImpl(EarthPanel);
