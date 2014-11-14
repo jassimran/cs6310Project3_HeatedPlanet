@@ -80,11 +80,8 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	private JSlider stepSlider = null;
 
 	private EventTextField displayEdit = null;
-	private EventTextField simLengthEdit = null;
-	private EventTextField tempAccuracyEdit = null;
-	private EventTextField geoAccuracyEdit = null;
 	private JSlider displaySlider = null;
-
+	
 	private JRadioButton concurrency_Sim = null;
 	private JRadioButton concurrency_Pres = null;
 
@@ -94,13 +91,16 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	
 	private JSlider simLengthSlider = null;
 	private JLabel simLengthLabel = null;
+	private EventTextField simLengthEdit = null;
 	private JLabel monthsLabel = null;
 
     private JSlider tempAccuracySlider = null;
     private JLabel tempAccuracyLabel = null;
+	private EventTextField tempAccuracyEdit = null;
     
     private JSlider geoAccuracySlider = null;
     private JLabel geoAccuracyLabel = null;
+    private EventTextField geoAccuracyEdit = null;
     
     private JLabel percentLabel = null;
     
@@ -661,6 +661,17 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		initiative_R.setEnabled(bEnable);
 		initiative_Neither.setEnabled(bEnable);		
 		spinner.setEnabled(bEnable);
+		simLengthEdit.setEnabled(bEnable);
+		tempAccuracyEdit.setEnabled(bEnable);
+		tempAccuracySlider.setEnabled(bEnable);
+		geoAccuracyEdit.setEnabled(bEnable);
+		geoAccuracySlider.setEnabled(bEnable);
+		simLengthEdit.setEnabled(bEnable);
+		simLengthSlider.setEnabled(bEnable);
+		precision.setEnabled(bEnable);
+		simName.setEnabled(bEnable);
+		axisTilt.setEnabled(bEnable); 
+		eccentricity.setEnabled(bEnable);		
 	}
 
 	public void updateClock() {
