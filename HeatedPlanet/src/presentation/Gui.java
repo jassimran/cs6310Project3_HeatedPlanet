@@ -18,6 +18,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
@@ -33,13 +34,16 @@ import simplesimulation.SimplePresentationEngineImpl;
 import simplesimulation.SimpleSimulationEngineImpl;
 import simulation.SimulationEngine;
 import simulation.SimulationSettings;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import controllers.AbstractControl;
 import controllers.MasterControl;
 import controllers.PresentationControl;
 import controllers.SimulationControl;
-import edu.gatech.cs6310.project3.team17.GUI.QueryInterfaceUI;
+import events.EventType;
+import events.Listener;
 
-public class Gui extends JFrame implements ActionListener, ChangeListener {
+
+public class Gui extends JFrame implements ActionListener, ChangeListener, Listener {
 
 	static final int WIDTH = 800;
 	static final int HEIGHT = 320;
@@ -592,6 +596,9 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 		// TODO set simulation name
 		simulationSettings.setName(simName.getText());
 		
+		// TODO set simulation length
+		simulationSettings.setSimulationLength(1); // default 12
+		
 		// create simulation engines
 		SimulationEngine simulationEngine = new SimpleSimulationEngineImpl(EarthPanel);
 		PresentationEngine presentationEngine = new SimplePresentationEngineImpl(EarthPanel);
@@ -606,7 +613,9 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 		} else if (simulationSettings.isTOption()) {
 			control = new SimulationControl();
 		} else {
-			control = new MasterControl();
+			MasterControl masterControl = new MasterControl();
+			masterControl.addListener(this);
+			control = masterControl;
 		}
 		
 		// run simulation
@@ -664,6 +673,26 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 	
 
 
+
+	@Override
+	public void notify(EventType e) {
+		if(e == EventType.SimulationFinishedEvent) {
+			// notify user
+			JOptionPane.showMessageDialog(this, "Simulation complete!");
+			
+			// TODO handle GUI post simulation logic (e.g. reset for new simulation)
+		}
+	}
+
+	@Override
+	public void addListener(Listener l) {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public void removeListener(Listener l) {
+		throw new NotImplementedException();
+	}
 
 }
 /*Event Text Field class

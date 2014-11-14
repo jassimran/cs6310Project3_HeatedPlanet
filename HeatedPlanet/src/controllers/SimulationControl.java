@@ -18,8 +18,7 @@ import events.Listener;
 public class SimulationControl extends AbstractControl implements Listener, Runnable {
 	
 	private List<Listener> listeners;
-	
-	private int index;	
+		
 	private long simulationStart;
 	private long iddleTime;
 	
@@ -46,8 +45,12 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 	 */
 	public void executeSimulation() {
 		
+		// reset simulation progress
+		synchronized (abstractLock) {
+			simulationIndex = 0;
+		}
+		
 		// simulation metrics
-		index = 0;
 		simulationStart = (new Date()).getTime();
 		iddleTime = 0;
 		
@@ -58,14 +61,19 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 		simulation.setAxialTilt(simulationSettings.getAxialTilt());
 		simulation.setTemporalAccuracy(simulationSettings.getTemporalAccuracy());
 		simulation.setGeoAccuracy(simulationSettings.getGeoAccuracy());
+		simulation.setLength(simulationSettings.getSimulationLength());
+		
+		// get total grids to produce
+		int totalGrids;
+		synchronized (abstractLock) {
+			totalGrids = simulationLength;
+		}
 		
 		// calculate accuracy gap
-		int totalGrids = 100; // TODO get number of grids based on simulation length
-		int gapSize = accuracyService.calculateGapSize(totalGrids, simulation.getTemporalAccuracy());
-		
+		int gapSize = accuracyService.calculateGapSize(totalGrids, simulation.getTemporalAccuracy());		
 		int gapControl = gapSize; // use to place gaps between samples to persist
 		
-		while(!isTerminateSimulation()) {
+		while(!isTerminateSimulation() && !isSimulationFinished()) {
 			// get current simulation time
 			int simulationTime;
 			synchronized (abstractLock) {
@@ -79,8 +87,12 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 			// execute simulation step
 			temperatureGrid = simulationEngine.executeSimulationStep(simulationSettings, simulationTime, temperatureGrid);
 			
-			// increment simulation counter
-			index++;
+			// get and increment simulation index
+			int index;
+			synchronized (abstractLock) {
+				simulationIndex++;
+				index = simulationIndex;
+			}
 			
 			// persist simulation based on temporal accuracy
 			if((++gapControl) == (gapSize+1)) {
@@ -120,6 +132,12 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 				}
 				break;
 			}
+		}
+		
+		// get simulation index
+		int index;
+		synchronized (abstractLock) {
+			index = simulationIndex;
 		}
 		
 		// print simulation metrics
