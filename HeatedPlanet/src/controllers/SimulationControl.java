@@ -90,8 +90,8 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 			// get and increment simulation index
 			int index;
 			synchronized (abstractLock) {
-				index = simulationIndex;
 				simulationIndex++;
+				index = simulationIndex;
 			}
 			
 			// persist simulation based on temporal accuracy
