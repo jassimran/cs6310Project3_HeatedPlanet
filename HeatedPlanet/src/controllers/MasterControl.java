@@ -26,7 +26,7 @@ public class MasterControl extends AbstractControl implements Listener {
 	public void handleSimulationEvent() {
 		if(simulationSettings.isPOption()) {
 			synchronized (presentationThread) {
-				presentationThread.notify();				
+				presentationThread.notify();
 			}
 		} else {
 			// handle presentation
@@ -34,11 +34,29 @@ public class MasterControl extends AbstractControl implements Listener {
 				public void run() {
 					presentationControl.renderSimulation();
 				}
-			});			
+			});
 		}
 	}
 
 	public void handlePresentationEvent() {
+		
+		// check if simulation is complete
+		boolean presentationComplete;
+		synchronized (abstractLock) {
+			presentationComplete = presentationIndex == simulationLength;
+		}
+		
+		// handle simulation complete
+		if(presentationComplete) {
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					handleSimulationComplete();
+				}
+			});
+			return; // no more simulation steps to present
+		}
+		
+		
 		if(simulationSettings.isSOption()) {
 			synchronized(simulationThread) {
 				simulationThread.notify();				
@@ -53,17 +71,15 @@ public class MasterControl extends AbstractControl implements Listener {
 		}
 	}
 	
-	public void handleSimulationFinishedEvent() {
-		boolean notifyListeners;
+	public void handleSimulationComplete() {
+		// check preconditions
 		synchronized (abstractLock) {
-			notifyListeners = (simulationIndex == simulationLength) 
-					&& (presentationIndex == simulationLength);
+			if( (simulationIndex != simulationLength) || (presentationIndex != simulationLength)) {
+				throw new RuntimeException("Precondition not met: simulation not complete on handleSimulationComplete");
+			}
 		}
 		
-		if(!notifyListeners) {
-			return;
-		}
-		
+		// notify listeners
 		for(Listener l : listeners) {
 			l.notify(EventType.SimulationFinishedEvent);
 		}
@@ -91,6 +107,12 @@ public class MasterControl extends AbstractControl implements Listener {
 		// TODO calculate simulation length
 		synchronized (abstractLock) {
 			simulationLength = 24; // TODO calculate
+		}
+		
+		// reset simulation progress
+		synchronized (abstractLock) {
+			simulationIndex = 0;
+			presentationIndex = 0;
 		}
 		
 		// set simulation running
@@ -206,12 +228,6 @@ public class MasterControl extends AbstractControl implements Listener {
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					handlePresentationEvent();
-				}
-			});
-		} else if (e == EventType.SimulationFinishedEvent) {
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					handleSimulationFinishedEvent();
 				}
 			});
 		}

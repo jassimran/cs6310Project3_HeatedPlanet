@@ -134,20 +134,6 @@ public class SimulationControl extends AbstractControl implements Listener, Runn
 			}
 		}
 		
-		// determine if simulation stopped due to completion
-		boolean simulationFinish;
-		synchronized (abstractLock) {
-			simulationFinish = (simulationIndex == simulationLength);
-		}
-		
-		// if simulation complete, notify listers
-		if(simulationFinish) {
-			System.out.println("Simulation finished.");
-			for(Listener l : listeners) {
-				l.notify(EventType.SimulationFinishedEvent);
-			}
-		}
-		
 		// get simulation index
 		int index;
 		synchronized (abstractLock) {
