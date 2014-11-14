@@ -352,7 +352,8 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 				LABEL_HEIGHT));
         simLengthLabel.setText("Simulation Length:");
         simLengthSlider.setMajorTickSpacing(200);
-        simLengthSlider.setMaximum(1220);
+        simLengthSlider.setMaximum(1200);
+        
         simLengthSlider.setMinimum(1);
         simLengthSlider.setMinorTickSpacing(100);
         simLengthSlider.setPaintLabels(true);
