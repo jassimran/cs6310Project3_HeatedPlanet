@@ -55,6 +55,12 @@ public class QueryInterfaceUI extends javax.swing.JFrame implements ActionListen
 	private double tilt;
 	// persistence service
 	private PersistenceService persistenceService;
+	int WIDTH_LABELS = WIDTH * 4 / 7 * 1
+			/ 4;
+	int WIDTH_EDITS = WIDTH * 4 / 7 * 3
+			/ 4;
+	int LABEL_HEIGHT = 26;
+
 
 	
 	 /**
@@ -81,7 +87,7 @@ public class QueryInterfaceUI extends javax.swing.JFrame implements ActionListen
         runQuery = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         simulationNameLabel = new javax.swing.JLabel();
-        simulationNameField = new javax.swing.JTextField();
+        simulationNameField = new javax.swing.JTextField(20);
         axisTiltSlider = new javax.swing.JSlider();
         axisTiltLabel = new javax.swing.JLabel();
         orbitalEccentricityLabel = new javax.swing.JLabel();
@@ -144,7 +150,8 @@ public class QueryInterfaceUI extends javax.swing.JFrame implements ActionListen
         axisTiltSlider.setPaintTicks(true);
 
         axisTiltLabel.setText("Axial tilt");
-
+        axisTiltSlider.setPreferredSize(new Dimension(15, 75));
+        
         orbitalEccentricityLabel.setText("Orbital eccentricity");
         latitudeLabel.setText("Latitude");
         jLabel10.setText("to");

@@ -345,8 +345,8 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
 		simNameLabel.setPreferredSize(new Dimension(WIDTH_LABELS,
 				LABEL_HEIGHT));
 		simNameLabel.setText("Save simulation as:");
-		simName = new JTextField(15);
-		simLengthSlider = new JSlider(JSlider.HORIZONTAL, 1, 1220, 100);
+		simName = new JTextField(25);
+		simLengthSlider = new JSlider(JSlider.HORIZONTAL, 1, 1200, 100);
         simLengthLabel = new JLabel();
         simLengthLabel.setPreferredSize(new Dimension(WIDTH_LABELS,
 				LABEL_HEIGHT));
@@ -357,7 +357,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener {
         simLengthSlider.setMinorTickSpacing(100);
         simLengthSlider.setPaintLabels(true);
         simLengthSlider.setPaintTicks(true);
-        simLengthEdit = new EventTextField(EDIT_BOX_WIDTH, 1); 
+        simLengthEdit = new EventTextField(EDIT_BOX_WIDTH, 12); 
 		simLengthEdit.setEditable(false);
 
 		simLengthSlider.addChangeListener(simLengthEdit);
