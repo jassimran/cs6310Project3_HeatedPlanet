@@ -226,9 +226,10 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	        try {
 	        	if (Double.parseDouble(text) >= 0 && Double.parseDouble(text) <= 1)
 	        		return true;
-	        	else
+	        	else {
 	        		JOptionPane.showMessageDialog(null, "Eccentricity must be between 0 and 1");
 	        		return false;
+	        	}
 	        } catch (NumberFormatException e) {
 	        	JOptionPane.showMessageDialog(null, "Eccentricity must be numeric value between 0 and 1");
         		return false;
@@ -243,9 +244,10 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	        try {
 	        	if (Double.parseDouble(text) >= -180 && Double.parseDouble(text) <= 180)
 	        		return true;
-	        	else
+	        	else {
 	        		JOptionPane.showMessageDialog(null, "Tilt must be between -180 and +180");
 	        		return false;
+	        	}
 	        } catch (NumberFormatException e) {
 	        	JOptionPane.showMessageDialog(null, "Tilt should be numeric value between -180 and +180");
         		return false;
@@ -260,16 +262,35 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	        try {
 	        	if (Integer.parseInt(text) >= 0 && Integer.parseInt(text) <= 16)
 	        		return true;
-	        	else
+	        	else {
 	        		JOptionPane.showMessageDialog(null, "Precision must be between 0 and 16");
 	        		return false;
+	        	}
 	        } catch (NumberFormatException e) {
 	        	JOptionPane.showMessageDialog(null, "Precision should be Integer value between 0 and 16");
         		return false;
 	        }
 	    }
 	}
-
+	
+	public class SimulationNameInputVerifier extends InputVerifier{
+		@Override
+	    public boolean verify(JComponent input) {
+	        String text = ((JTextField) input).getText();
+	        try {
+	        	if (text.isEmpty()){
+	        		JOptionPane.showMessageDialog(null, "Please enter Simulation name!");
+	        		return false;
+	        	}
+	        	else
+	        		return true;
+	        		
+	        } catch (NumberFormatException e) {
+	        	JOptionPane.showMessageDialog(null, "Please enter Simulation name");
+        		return false;
+	        }
+	    }
+	}
 	private JPanel createPanel() {
 		JPanel panel = new JPanel();
 		panel.setPreferredSize(new Dimension(800, 320));
@@ -465,6 +486,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		optionLabels.add(simNameLabel);
 		//optionEdits.add(new JLabel(" "));
 		optionEdits.add(simName);
+		simName.setInputVerifier(new SimulationNameInputVerifier());
 		
 		configOpts.add(optionLabels, BorderLayout.WEST);
 		configOpts.add(optionEdits, BorderLayout.EAST);
