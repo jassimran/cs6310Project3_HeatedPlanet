@@ -15,7 +15,9 @@ import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.InputVerifier;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -216,6 +218,57 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 
 		this.pack();
 	}
+	
+	public class EccentricityInputVerifier extends InputVerifier{
+		@Override
+	    public boolean verify(JComponent input) {
+	        String text = ((JTextField) input).getText();
+	        try {
+	        	if (Double.parseDouble(text) >= 0 && Double.parseDouble(text) <= 1)
+	        		return true;
+	        	else
+	        		JOptionPane.showMessageDialog(null, "Eccentricity must be between 0 and 1");
+	        		return false;
+	        } catch (NumberFormatException e) {
+	        	JOptionPane.showMessageDialog(null, "Eccentricity must be numeric value between 0 and 1");
+        		return false;
+	        }
+	    }
+	}
+	
+	public class AxialTiltInputVerifier extends InputVerifier{
+		@Override
+	    public boolean verify(JComponent input) {
+	        String text = ((JTextField) input).getText();
+	        try {
+	        	if (Double.parseDouble(text) >= -180 && Double.parseDouble(text) <= 180)
+	        		return true;
+	        	else
+	        		JOptionPane.showMessageDialog(null, "Tilt must be between -180 and +180");
+	        		return false;
+	        } catch (NumberFormatException e) {
+	        	JOptionPane.showMessageDialog(null, "Tilt should be numeric value between -180 and +180");
+        		return false;
+	        }
+	    }
+	}
+	
+	public class PrecisionInputVerifier extends InputVerifier{
+		@Override
+	    public boolean verify(JComponent input) {
+	        String text = ((JTextField) input).getText();
+	        try {
+	        	if (Integer.parseInt(text) >= 0 && Integer.parseInt(text) <= 16)
+	        		return true;
+	        	else
+	        		JOptionPane.showMessageDialog(null, "Precision must be between 0 and 16");
+	        		return false;
+	        } catch (NumberFormatException e) {
+	        	JOptionPane.showMessageDialog(null, "Precision should be Integer value between 0 and 16");
+        		return false;
+	        }
+	    }
+	}
 
 	private JPanel createPanel() {
 		JPanel panel = new JPanel();
@@ -400,7 +453,9 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	    precisionLabel.setText("Precision: ");
 	    precision = new JTextField(String.valueOf(DEFAULT_PRECISION),8);
 	    optionLabels.add(precisionLabel);
-	    optionEdits.add(precision);	  
+	    optionEdits.add(precision);	 
+	    precision.setInputVerifier(new PrecisionInputVerifier());
+	    
 	    
 	    //Added simulation Label and Text box
 		simNameLabel = new JLabel();
@@ -469,6 +524,8 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	    option2Edits.add(eccentricity);
 	    lblDegrees = new JLabel("   ");
 	    option2Edits.add(lblDegrees);
+	    
+	    eccentricity.setInputVerifier(new EccentricityInputVerifier());
 	 
 	    
 	   //Added axial tilt Textbox and Label
@@ -479,6 +536,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
       
 	    option2Labels.add(axisTiltLabel);
 	    option2Edits.add(axisTilt);
+	    axisTilt.setInputVerifier(new AxialTiltInputVerifier());
 	    //lblDegrees = new JLabel("degrees");
 	    //option2Edits.add(lblDegrees);
         //axisTiltSlider = new JSlider();
@@ -516,6 +574,8 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		
+		
 		//get the command
 		String command = e.getActionCommand();
 
