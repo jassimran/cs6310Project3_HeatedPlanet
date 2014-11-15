@@ -2,6 +2,8 @@ package services;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -70,7 +72,13 @@ public class InterpolationService {
 		return newGrid;
 	}
 	
-	public List<EarthGrid> performTemporalInterpolation(Simulation simulation, List<EarthGrid> list){
+	public List<EarthGrid> performTemporalInterpolation(Simulation simulation){
+		
+		List<EarthGrid> list = simulation.getTimeStepList();
+		
+		Comparator<EarthGrid> comp = new EarthGridComparator();
+		
+		Collections.sort(list, comp);
 		
 		int noOfGrids = simulationService.calculateSimulaitonLenght(simulation.getLength(), simulation.getTimeStep());
 		
@@ -80,16 +88,25 @@ public class InterpolationService {
 				EarthGrid grid1 = list.get(i);
 				EarthGrid grid2 = list.get(i+1);
 				if(grid1.getIndex() < grid2.getIndex()-1){
-					//TODO: Interpolate
-					
-					EarthGrid newGrid = null;
+					EarthGrid newGrid = interpolate(grid1, grid2, simulation.getTimeStep());;
 					newGrids.add(newGrid);	
 				}		
 			}
 			list.addAll(newGrids);
-			//TODO: sort list
+			Collections.sort(list, comp);
+		}
+		return list;
+	}
+	
+	private class EarthGridComparator implements Comparator<EarthGrid>{
+
+		@Override
+		public int compare(EarthGrid grid1, EarthGrid grid2) {
+			Integer index1 = grid1.getIndex();
+			Integer index2 = grid2.getIndex();
+			
+			return index1.compareTo(index2);
 		}
 		
-		return list;
 	}
 }

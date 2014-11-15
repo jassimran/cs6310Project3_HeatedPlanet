@@ -12,6 +12,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import buffers.BufferImplementation;
+import controllers.AbstractControl;
+import controllers.SimulationControl;
+import simulation.SimulationSettings;
 import domain.EarthCell;
 import domain.EarthGrid;
 
@@ -53,7 +57,7 @@ public class InterpolationServiceTest {
 	}
 	
 	@Test
-	public void test() {
+	public void testInterpolate() {
 		// given:
 		List<EarthCell> earthCells = new ArrayList<EarthCell>();
 		earthCells.add(new EarthCell(null, 0, 0, 25.00));
@@ -80,5 +84,35 @@ public class InterpolationServiceTest {
 		assertEquals(addMinutes(getBaseDate(),timeStep), earthGrid.getSimulatedDate());
 		assertEquals(earthCells, earthGrid.getNodeList());
 	}
+	
+	/*@Test
+	public void testPerformTemporalInterpolation() {
+		// given:
+		SimulationSettings settings = mock(SimulationSettings.class);
+		
+		when(settings.getName()).thenReturn("TestSimulation");
+		when(settings.getEccentricity()).thenReturn(0.016);
+		when(settings.getAxialTilt()).thenReturn(23.44);
+		when(settings.getTemporalAccuracy()).thenReturn(50);
+		when(settings.getGeoAccuracy()).thenReturn(100);
+		when(settings.getSimulationLength()).thenReturn(2);
+		
+		
+		// set settings 
+		AbstractControl.setSettings(settings);
+		
+		// create buffer
+		setBuffer(new BufferImplementation(settings.getBufferSize()));
+				
+		// create simulation control
+		simulationControl = new SimulationControl();
+		simulationControl.addListener(this);
+		
+		// when:
+		
+		
+		// then:
+	}
+	*/
 
 }
