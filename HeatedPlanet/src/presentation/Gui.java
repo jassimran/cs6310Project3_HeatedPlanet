@@ -125,10 +125,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	private JLabel simTime = null;
 	private Calendar simTimeCal = DATE_FORMAT.getCalendar();
 
-	private EarthPanel EarthPanel = new EarthPanel(new Dimension(
-			800, 400), new Dimension(
-					800, 400), new Dimension(
-							800, 400));
+	private EarthPanel EarthPanel = new EarthPanel(new Dimension(800, 420), new Dimension(800, 420), new Dimension(800, 420));
 
 	// control
 	AbstractControl control;
@@ -175,7 +172,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 
 	private void createGui() {
 		this.getContentPane().setPreferredSize(
-				new Dimension(800, 730));
+				new Dimension(800, 725));
 
 		//set the time
 		try {
@@ -293,7 +290,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	}
 	private JPanel createPanel() {
 		JPanel panel = new JPanel();
-		panel.setPreferredSize(new Dimension(800, 320));
+		panel.setPreferredSize(new Dimension(800, 300));
 		panel.setLayout(new BorderLayout());
 
 		int WIDTH_LABELS = WIDTH * 4 / 7 * 1
@@ -532,7 +529,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		JPanel option2Edits = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		option2Labels.setPreferredSize(new Dimension( WIDTH_LABELS, HEIGHT));
 		option2Edits.setPreferredSize(new Dimension(WIDTH_EDITS,HEIGHT));
-		PFPanel.setPreferredSize(new Dimension(290, 180));	
+		PFPanel.setPreferredSize(new Dimension(290, 100));	
 		
 		PFPanel.setBorder(simBorder);
 	    
