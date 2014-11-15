@@ -29,7 +29,7 @@ public class QueryControl {
 			return simulations.get(0);
 	}
 
-	public QueryResults computeQueryResults(Simulation selectedSimulation,
+	public QueryResult computeQueryResults(Simulation selectedSimulation,
 			Date startDate, Date endDate, double startLat, double endLat,
 			double startLong, double endLong) {
 		// double minTemp, minTempLat, minTempLong, maxTemp, maxTempLat,
@@ -88,7 +88,7 @@ public class QueryControl {
 			}
 		}
 
-		QueryResults results = new QueryResults();
+		QueryResult results = new QueryResult();
 		results.setGridList(matchingGrids);
 
 		return results;
