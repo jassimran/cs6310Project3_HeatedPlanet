@@ -278,7 +278,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	    public boolean verify(JComponent input) {
 	        String text = ((JTextField) input).getText();
 	        try {
-	        	if (text.isEmpty()){
+	        	if (text.length() <1){
 	        		JOptionPane.showMessageDialog(null, "Please enter Simulation name!");
 	        		return false;
 	        	}
@@ -597,21 +597,35 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
-		
+		    
 		//get the command
 		String command = e.getActionCommand();
 
 		if (command.equals(ACTION_RUN)) {
-			//disable all controls
-			this.setEnableAllUserOptions(false);
-			//disable the run button
-			runButton.setEnabled(false);
-			//enable the stop button
-			pauseButton.setEnabled(true);
-			//disable the restart button
-			stopButton.setEnabled(false);
-			// run simulation
-			runSimulation();
+			
+			//Validation check for Simulation Name
+			try {
+				String text = ((JTextField) simName).getText();
+	        	if (text.length() <1){
+	        		JOptionPane.showMessageDialog(null, "Please enter Simulation name!");
+	        	}
+	        	else{
+	        		//disable all controls
+	    			this.setEnableAllUserOptions(false);
+	    			//disable the run button
+	    			runButton.setEnabled(false);
+	    			//enable the stop button
+	    			pauseButton.setEnabled(true);
+	    			//disable the restart button
+	    			stopButton.setEnabled(false);
+	    			// run simulation
+	    			runSimulation();
+	        	}
+	        		
+	        } catch (NumberFormatException ex) {
+	        	JOptionPane.showMessageDialog(null, "Please enter Simulation name");
+	        }	
+			
 		} else if (command.equals(ACTION_PAUSE)) {
 			//enable the restart button
 			stopButton.setEnabled(true);
@@ -650,6 +664,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	 * Executes a simulation based on the selected settings.
 	 */
 	private void runSimulation() {
+		
 		// create settings object
 		SimulationSettings simulationSettings = new SimulationSettings();
 		//Set simulation Settings according to Gui Selections
