@@ -66,7 +66,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	static final double DEFAULT_AXIAL_TILT = 23.44;
 	static final int DEFAULT_TIME_STEP = 1;
 
-	static final String START_TIME = "11:59 PM, Jan 4, 2014";
+	static final String START_TIME = "12:00 PM, Jan 4, 2014";
 	static final DateFormat DATE_FORMAT = new SimpleDateFormat(
 			"hh:mm a, MMM dd, yyyy");
 	private static final long serialVersionUID = -15968456987503L;
