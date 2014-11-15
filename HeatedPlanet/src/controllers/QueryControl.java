@@ -8,6 +8,7 @@ import presentation.query.QueryCell;
 import presentation.query.QueryGrid;
 import presentation.query.QueryResult;
 import presentation.query.QueryResultImpl;
+import services.InterpolationService;
 import services.PersistenceService;
 import domain.EarthCell;
 import domain.EarthGrid;
@@ -23,10 +24,20 @@ public class QueryControl {
 		interpolationService = InterpolationService.getInstance();
 	}
 
+	/**
+	 * Determines if a simulation name has already been used
+	 * @param simulationName the simualtion name to test
+	 * @return True, if the simualation name is not unique. Otherwise, false.
+	 */
 	public boolean simulationNameExists(String simulationName) {
 		return findSimulationByName(simulationName) != null;
 	}
 
+	/**
+	 * Finds a simulation based on the name provided
+	 * @param simulationName the simulation name to search for
+	 * @return the Simulation that matches based on the name
+	 */
 	public Simulation findSimulationByName(String simulationName) {
 		List<Simulation> simulations = persistenceService
 				.searchSimulations(simulationName);
@@ -36,6 +47,17 @@ public class QueryControl {
 			return simulations.get(0);
 	}
 
+	/**
+	 * Computes the query results for the provided simulation based on the limitations provided
+	 * @param selectedSimulation The Simulation that we are interested in
+	 * @param startDate the start date that the user has requested
+	 * @param endDate the end date that the user has requested
+	 * @param startLat the starting latitude that the user has requested
+	 * @param endLat the ending latitude that the user has requested
+	 * @param startLong the starting longitude that the user has requested
+	 * @param endLong the ending longitude that the user has requested
+	 * @return the query results that need to be displayed to the user
+	 */
 	public QueryResult computeQueryResults(Simulation selectedSimulation,
 			Date startDate, Date endDate, double startLat, double endLat,
 			double startLong, double endLong) {
@@ -57,6 +79,7 @@ public class QueryControl {
 		List<EarthGrid> matchingGrids = filterGrids(selectedSimulation,
 				startDate, endDate, startLat, endLat, startLong, endLong);
 
+		// TODO is this how / where we want to convert to a QueryGrid?
 		List<QueryGrid> queryGrids = convertEarthGridsToQueryGrids(matchingGrids);
 		
 		QueryResultImpl result = new QueryResultImpl();
@@ -64,6 +87,44 @@ public class QueryControl {
 
 		return result;
 
+	}
+
+	protected List<QueryGrid> convertEarthGridsToQueryGrids(
+			List<EarthGrid> matchingGrids) {
+		List<QueryGrid> grids = new ArrayList();
+		
+		for(EarthGrid currentGrid : matchingGrids){
+			grids.add(convertEarthGridToQueryGrid(currentGrid));
+		}
+		
+		return grids;
+	}
+
+	protected QueryGrid convertEarthGridToQueryGrid(EarthGrid currentGrid) {
+		QueryGrid retVal = new QueryGrid();
+		retVal.setSimulatedDate(currentGrid.getSimulatedDate());
+		retVal.setQueryCells(convertEarthCellsToQueryCells(currentGrid.getNodeList()));
+		return null;
+	}
+
+	private List<QueryCell> convertEarthCellsToQueryCells(List<EarthCell> nodeList) {
+		List<QueryCell> queryCells = new ArrayList<QueryCell>();
+		
+		for(EarthCell currentCell : nodeList){
+			queryCells.add(convertEarthCellToQueryCell(currentCell));
+		}
+		
+		return queryCells;
+	}
+
+	private QueryCell convertEarthCellToQueryCell(EarthCell currentCell) {
+		QueryCell queryCell = new QueryCell();
+		
+		queryCell.setTemperature(currentCell.getTemperature());
+		// TODO Is this correct?  Where can we obtain the values
+		//queryCell.setSimulatedDate(currentCell.);
+		
+		return queryCell;
 	}
 
 	private List<EarthGrid> filterGrids(Simulation selectedSimulation,
@@ -100,10 +161,8 @@ public class QueryControl {
 		else {
 			for (EarthCell currentCell : timeStep.getNodeList()) {
 
-				double cellLat = 0; // TODO get the latitude for the
-									// current cell
-				double cellLong = 0; // TODO get the longitude for the
-										// current cell
+				double cellLat = timeStep.getLatitude(currentCell.getRow());
+				double cellLong = timeStep.getLongitude(currentCell.getColumn());
 
 				boolean latMatch = false;
 				if (startLat > 0 && endLat < 0) {

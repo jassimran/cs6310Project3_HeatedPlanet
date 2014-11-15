@@ -9,6 +9,7 @@ package domain;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -24,6 +25,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  *
@@ -134,4 +137,18 @@ public class EarthGrid implements Serializable {
         return "domain.TimeStep[ id=" + id + " ]";
     }
     
+	public double getLatitude(int rowIndex){
+		throw new NotImplementedException();
+//		double retVal = (rowIndex-(numberRows/2)) * gridSpacing;
+//		return retVal;
+	}
+	
+	public double getLongitude(int colIndex){
+		throw new NotImplementedException();
+//		int d = (colIndex+1) * gridSpacing;
+//		if(colIndex < numberColumns/2)
+//			return -d;
+//		else
+//			return 360 - d;
+	}
 }

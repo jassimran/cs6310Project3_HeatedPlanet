@@ -5,22 +5,27 @@ import java.util.List;
 
 public class QueryGrid {
 
-	private int gridSpacing;
-	private int numberColumns;
-	private int numberRows;
+//	private int gridSpacing;
+//	private int numberColumns;
+//	private int numberRows;
 	private Date simulatedDate;
+	private List<QueryCell> queryCells;
 	
-	public QueryGrid(Date simulatedDate, int gridSpacing, int numberColumns, int numberRows){
-		this.simulatedDate = simulatedDate;
-		this.gridSpacing = gridSpacing;
-		this.numberColumns = numberColumns;
-		this.numberRows = numberRows;
-	}
+//	public QueryGrid(Date simulatedDate, int gridSpacing, int numberColumns, int numberRows){
+//		this.simulatedDate = simulatedDate;
+//		this.gridSpacing = gridSpacing;
+//		this.numberColumns = numberColumns;
+//		this.numberRows = numberRows;
+//	}
 	
 	public List<QueryCell> getQueryCells() {
-		throw new UnsupportedOperationException();
+		return queryCells;
 	}
 
+	public void setQueryCells(List<QueryCell> queryCells) {
+		this.queryCells = queryCells;
+	}
+	
 	public QueryCell getMinTempCell() {
 		QueryCell minTempCell = null;
 
@@ -70,18 +75,7 @@ public class QueryGrid {
 	
 	
 	
-	protected double getLatitude(int rowIndex){
-		double retVal = (rowIndex-(numberRows/2)) * gridSpacing;
-		return retVal;
-	}
-	
-	protected double getLongitude(int colIndex){
-		int d = (colIndex+1) * gridSpacing;
-		if(colIndex < numberColumns/2)
-			return -d;
-		else
-			return 360 - d;
-	}
+
 
 	public Date getSimulatedDate() {
 		return simulatedDate;
@@ -90,4 +84,6 @@ public class QueryGrid {
 	public void setSimulatedDate(Date simulatedDate) {
 		this.simulatedDate = simulatedDate;
 	}
+
+
 }
