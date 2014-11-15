@@ -26,5 +26,6 @@
 	<dependencies>
 		<dependency org="org.hibernate" name="hibernate-entitymanager" rev="4.3.7.Final"/>
 		<dependency org="com.h2database" name="h2" rev="1.4.182"/>
+		<dependency org="org.mockito" name="mockito-core" rev="1.+"/>
 	</dependencies>
 </ivy-module>
