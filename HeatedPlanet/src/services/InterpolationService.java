@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 import domain.EarthCell;
@@ -17,6 +16,7 @@ public class InterpolationService {
 	
 	// used services
 	private SimulationService simulationService;
+	private AccuracyService accuracyService;
 		
 	private InterpolationService() {
 		// TODO Auto-generated constructor stub
@@ -26,6 +26,7 @@ public class InterpolationService {
 		if(serviceInstance == null) {
 			serviceInstance = new InterpolationService();
 			serviceInstance.simulationService = SimulationService.getInstance();
+			serviceInstance.accuracyService = AccuracyService.getInstance();
 		}
 		return serviceInstance;
 	}
@@ -72,22 +73,34 @@ public class InterpolationService {
 		return newGrid;
 	}
 	
+	/**
+	 * Interpolates the given simulation to full-temporal resolution.
+	 * @param simulation the simulation to interpolated
+	 * @return the simulation in full-temporal resolution
+	 */
 	public List<EarthGrid> performTemporalInterpolation(Simulation simulation){
-		
+		// get grid list
 		List<EarthGrid> list = simulation.getTimeStepList();
 		
+		// create index-based comparator
 		Comparator<EarthGrid> comp = new EarthGridComparator();
 		
+		// sort initial list
 		Collections.sort(list, comp);
 		
-		int noOfGrids = simulationService.calculateSimulaitonLenght(simulation.getLength(), simulation.getTimeStep());
+		// calculate the number of grids in full resolution
+		int totalGrids = simulationService.calculateSimulaitonLenght(simulation.getLength(), simulation.getTimeStep());
 		
-		while(list.size() < noOfGrids){
+		// calculate current gap size
+		int gapSize = accuracyService.calculateGapSize(totalGrids, simulation.getTemporalAccuracy());
+		
+		// interpolate to full-res
+		while(list.size() < (totalGrids - gapSize)) {
 			List<EarthGrid> newGrids = new ArrayList<EarthGrid>();
-			for(int i = 0; i< list.size()-1; i++){
+			for(int i = 0; i< list.size()-1; i++) {
 				EarthGrid grid1 = list.get(i);
 				EarthGrid grid2 = list.get(i+1);
-				if(grid1.getIndex() < grid2.getIndex()-1){
+				if(grid1.getIndex() < grid2.getIndex()-1) {
 					EarthGrid newGrid = interpolate(grid1, grid2, simulation.getTimeStep());;
 					newGrids.add(newGrid);	
 				}		
@@ -95,6 +108,7 @@ public class InterpolationService {
 			list.addAll(newGrids);
 			Collections.sort(list, comp);
 		}
+		
 		return list;
 	}
 	

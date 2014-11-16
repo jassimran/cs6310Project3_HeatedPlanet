@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import org.h2.tools.Server;
 
+import app.conf.BootStrap;
 import presentation.Gui;
 
 public class Demo {
@@ -26,6 +27,9 @@ public class Demo {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			// bootstrap application
+			BootStrap.init();
 
 			if (prescontrol && simcontrol){
 				System.out.println("Invalid command line arguments!");

@@ -1,36 +1,55 @@
 package services;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import buffers.BufferImplementation;
-import controllers.AbstractControl;
-import controllers.SimulationControl;
-import simulation.SimulationSettings;
+import persistence.EntityManagerFactory;
+import app.conf.BootStrap;
 import domain.EarthCell;
 import domain.EarthGrid;
+import domain.Simulation;
 
 public class InterpolationServiceTest {
 
 	// service under test
-	InterpolationService interpolationService;
+	InterpolationService interpolationService = InterpolationService.getInstance();
+	
+	// persistence context
+	EntityManager em;
+	
+	@BeforeClass
+	public static void setupBeforeClass() {
+		BootStrap.init();
+	}
+	
+	@AfterClass
+	public static void tearDownAfterClass() {
+		BootStrap.destroy();
+	}
 
 	@Before
 	public void setUp() throws Exception {
-		interpolationService = InterpolationService.getInstance();
+		em = EntityManagerFactory.createEntityManager();
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		em.close();
 	}	
 
 	public Date getBaseDate(){
@@ -85,34 +104,19 @@ public class InterpolationServiceTest {
 		assertEquals(earthCells, earthGrid.getNodeList());
 	}
 	
-	/*@Test
+	@Test
 	public void testPerformTemporalInterpolation() {
 		// given:
-		SimulationSettings settings = mock(SimulationSettings.class);
-		
-		when(settings.getName()).thenReturn("TestSimulation");
-		when(settings.getEccentricity()).thenReturn(0.016);
-		when(settings.getAxialTilt()).thenReturn(23.44);
-		when(settings.getTemporalAccuracy()).thenReturn(50);
-		when(settings.getGeoAccuracy()).thenReturn(100);
-		when(settings.getSimulationLength()).thenReturn(2);
-		
-		
-		// set settings 
-		AbstractControl.setSettings(settings);
-		
-		// create buffer
-		setBuffer(new BufferImplementation(settings.getBufferSize()));
-				
-		// create simulation control
-		simulationControl = new SimulationControl();
-		simulationControl.addListener(this);
+		TypedQuery<Simulation> simulationQuery = em.createNamedQuery("Simulation.findByName", Simulation.class);
+		simulationQuery.setParameter("name", "BootStrap Simulation");		
+		Simulation simulation = simulationQuery.getSingleResult();
+		int totalGrids = SimulationService.getInstance().calculateSimulaitonLenght(simulation.getLength(), simulation.getTimeStep());
+		int gapSize = AccuracyService.getInstance().calculateGapSize(totalGrids, simulation.getTemporalAccuracy()); 
 		
 		// when:
-		
+		List<EarthGrid> grids = interpolationService.performTemporalInterpolation(simulation);
 		
 		// then:
+		assertEquals(totalGrids - gapSize, grids.size()); // interpolation, not extrapolation
 	}
-	*/
-
 }
