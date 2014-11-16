@@ -4,18 +4,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.lang.model.type.TypeVisitor;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.ParameterExpression;
-import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.EntityType;
-import javax.persistence.metamodel.Metamodel;
-
-import org.hibernate.hql.spi.TemporaryTableBulkIdStrategy;
 
 import persistence.EntityManagerFactory;
 import presentation.earth.TemperatureGrid;
@@ -108,8 +102,13 @@ public class PersistenceService {
 		// commit transaction
 		em.getTransaction().commit();
 	}
+	
+	public List<Simulation> findAllSimulations()	{
+		TypedQuery<Simulation> query = em.createNamedQuery("Simulation.findAll", Simulation.class);
+		return query.getResultList();
+	}
 
-	public List<Simulation> searchSimulations(String simulationName) {
+	public List<Simulation> findBySimulationName(String simulationName) {
 		em.getTransaction().begin();
 		
 		CriteriaBuilder cb = em.getCriteriaBuilder();

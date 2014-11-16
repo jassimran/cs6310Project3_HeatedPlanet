@@ -8,7 +8,7 @@ import presentation.query.QueryCell;
 import presentation.query.QueryGrid;
 import presentation.query.QueryResult;
 import presentation.query.QueryResultImpl;
-import services.InterpolationService;
+//import services.InterpolationService;
 import services.PersistenceService;
 import domain.EarthCell;
 import domain.EarthGrid;
@@ -17,13 +17,23 @@ import domain.Simulation;
 public class QueryControl {
 
 	private static PersistenceService persistenceService;
-	private static InterpolationService interpolationService;
+	//private static InterpolationService interpolationService;
 
 	public QueryControl() {
 		persistenceService = PersistenceService.getInstance();
-		interpolationService = InterpolationService.getInstance();
+		//interpolationService = InterpolationService.getInstance();
 	}
-
+	
+	
+	public List<String> getSimulationList(){
+		List<String> simulationNames = new ArrayList<String>();
+		List<Simulation> simulations = persistenceService.findAllSimulations();
+		for(Simulation simulation : simulations){
+			simulationNames.add(simulation.getName());
+		}
+		return simulationNames;
+	}
+	
 	/**
 	 * Determines if a simulation name has already been used
 	 * @param simulationName the simualtion name to test
@@ -40,7 +50,7 @@ public class QueryControl {
 	 */
 	public Simulation findSimulationByName(String simulationName) {
 		List<Simulation> simulations = persistenceService
-				.searchSimulations(simulationName);
+				.findBySimulationName(simulationName);
 		if (simulations.isEmpty())
 			return null;
 		else
@@ -62,19 +72,19 @@ public class QueryControl {
 			Date startDate, Date endDate, double startLat, double endLat,
 			double startLong, double endLong) {
 
-		// TODO: Perform geographic interpolation
-		for (EarthGrid currentGrid : selectedSimulation.getTimeStepList()) {
-			EarthGrid geoInterpolatedSimulation = interpolationService
-					.performGeographicInterpolation(selectedSimulation,
-							currentGrid);
-			// TODO: replace the grid in the list?
-		}
-
-		// TODO: Perform temporal interpolation
-		List<EarthGrid> temporalInterpolatedGrids = interpolationService
-				.performTemporalInterpolation(selectedSimulation,
-						selectedSimulation.getTimeStepList());
-		selectedSimulation.setTimeStepList(temporalInterpolatedGrids);
+//		// TODO: Perform geographic interpolation
+//		for (EarthGrid currentGrid : selectedSimulation.getTimeStepList()) {
+//			EarthGrid geoInterpolatedSimulation = interpolationService
+//					.performGeographicInterpolation(selectedSimulation,
+//							currentGrid);
+//			// TODO: replace the grid in the list?
+//		}
+//
+//		// TODO: Perform temporal interpolation
+//		List<EarthGrid> temporalInterpolatedGrids = interpolationService
+//				.performTemporalInterpolation(selectedSimulation,
+//						selectedSimulation.getTimeStepList());
+//		selectedSimulation.setTimeStepList(temporalInterpolatedGrids);
 
 		List<EarthGrid> matchingGrids = filterGrids(selectedSimulation,
 				startDate, endDate, startLat, endLat, startLong, endLong);
@@ -131,7 +141,7 @@ public class QueryControl {
 			Date startDate, Date endDate, double startLat, double endLat,
 			double startLong, double endLong) {
 
-		List<EarthGrid> matchingGrids;
+		List<EarthGrid> matchingGrids = new ArrayList<EarthGrid>();
 		// Filter the time steps to only include those we are interested in
 		// examining
 		for (EarthGrid timeStep : selectedSimulation.getTimeStepList()) {
@@ -154,7 +164,7 @@ public class QueryControl {
 	private List<EarthCell> filterCells(EarthGrid timeStep, double startLat,
 			double endLat, double startLong, double endLong) {
 
-		List<EarthCell> matchingCells;
+		List<EarthCell> matchingCells = new ArrayList<EarthCell>();
 		// if all lat/long params are 0 use the whole planet
 		if (startLat == 0 && endLat == 0 && startLong == 0 && endLong == 0)
 			matchingCells = timeStep.getNodeList();
@@ -186,9 +196,8 @@ public class QueryControl {
 
 				if (latMatch && longMatch)
 					matchingCells.add(currentCell);
-
 			}
-			return matchingCells;
 		}
+		return matchingCells;
 	}
 }

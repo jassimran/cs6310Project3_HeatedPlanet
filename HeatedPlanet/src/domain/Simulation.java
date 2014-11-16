@@ -8,10 +8,12 @@ package domain;
 
 import java.io.Serializable;
 import java.util.List;
+
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -63,7 +65,7 @@ public class Simulation implements Serializable {
     @Basic(optional = false)
     @Column(name = "precision")
     private int precision;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "simulation")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "simulation", fetch = FetchType.LAZY)
     private List<EarthGrid> timeStepList;
     @Basic(optional = true)
     @Column(name = "temporal_accuracy")
