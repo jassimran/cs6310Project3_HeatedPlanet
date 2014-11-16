@@ -65,6 +65,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	static final double DEFAULT_ECCENTRICITY = .0167;
 	static final double DEFAULT_AXIAL_TILT = 23.44;
 	static final int DEFAULT_TIME_STEP = 1;
+	static final int DEFAULT_SIM_LENGTH = 12;
 
 	static final String START_TIME = "12:00 PM, Jan 4, 2014";
 	static final DateFormat DATE_FORMAT = new SimpleDateFormat(
@@ -402,7 +403,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		//optionEdits.add(initiative_Neither);
 		
 		//Simulation Length Label and Slider
-		simLengthSlider = new JSlider(JSlider.HORIZONTAL, 1, 1200, 100);
+		simLengthSlider = new JSlider(JSlider.HORIZONTAL, 1, 1200, DEFAULT_SIM_LENGTH);
         simLengthLabel = new JLabel();
         simLengthLabel.setPreferredSize(new Dimension(WIDTH_LABELS,	LABEL_HEIGHT));
         simLengthLabel.setText("Simulation Length:");
@@ -413,7 +414,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
         simLengthSlider.setMinorTickSpacing(100);
         //simLengthSlider.setPaintLabels(true);
         simLengthSlider.setPaintTicks(true);
-        simLengthEdit = new EventTextField(EDIT_BOX_WIDTH, 12); 
+        simLengthEdit = new EventTextField(EDIT_BOX_WIDTH, DEFAULT_SIM_LENGTH); 
 		simLengthEdit.setEditable(false);
 		simLengthSlider.addChangeListener(simLengthEdit);
 		optionLabels.add(simLengthLabel);
