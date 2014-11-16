@@ -4,11 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import presentation.query.QueryCell;
-import presentation.query.QueryGrid;
 import presentation.query.QueryResult;
-import presentation.query.QueryResultImpl;
-//import services.InterpolationService;
+import presentation.query.QueryResultFactory;
 import services.PersistenceService;
 import domain.EarthCell;
 import domain.EarthGrid;
@@ -40,19 +37,17 @@ public class QueryControl {
 	 * @return True, if the simualation name is not unique. Otherwise, false.
 	 */
 	public boolean simulationNameExists(String simulationName) {
-		return findSimulationByName(simulationName) != null;
+		Simulation simulation = persistenceService.findBySimulationName(simulationName);
+		return simulation != null;
 	}
 
-	/**
-	 * Finds a simulation based on the name provided
-	 * @param simulationName the simulation name to search for
-	 * @return the Simulation that matches based on the name
-	 */
-	public Simulation findSimulationByName(String simulationName) {
-		return persistenceService
-				.findBySimulationName(simulationName);
+	public QueryResult getQueryResultBySimulationName(String simulationName){
+		Simulation selectedSimulation = persistenceService.findBySimulationName(simulationName);
+		
+		// TODO Determine if we need to interpolate
+		return QueryResultFactory.buildQueryResult(selectedSimulation);
 	}
-
+	
 	/**
 	 * Computes the query results for the provided simulation based on the limitations provided
 	 * @param selectedSimulation The Simulation that we are interested in
@@ -64,9 +59,12 @@ public class QueryControl {
 	 * @param endLong the ending longitude that the user has requested
 	 * @return the query results that need to be displayed to the user
 	 */
-	public QueryResult computeQueryResults(Simulation selectedSimulation,
+	public QueryResult computeQueryResults(String simulationName,
 			Date startDate, Date endDate, double startLat, double endLat,
 			double startLong, double endLong) {
+
+		Simulation selectedSimulation = persistenceService.findBySimulationName(simulationName);
+		
 
 //		// TODO: Perform geographic interpolation
 //		for (EarthGrid currentGrid : selectedSimulation.getTimeStepList()) {
@@ -82,61 +80,25 @@ public class QueryControl {
 //						selectedSimulation.getTimeStepList());
 //		selectedSimulation.setTimeStepList(temporalInterpolatedGrids);
 
-		List<EarthGrid> matchingGrids = filterGrids(selectedSimulation,
+		List<EarthGrid> matchingGrids = filterGrids(simulationName,
 				startDate, endDate, startLat, endLat, startLong, endLong);
 
-		// TODO is this how / where we want to convert to a QueryGrid?
-		List<QueryGrid> queryGrids = convertEarthGridsToQueryGrids(matchingGrids);
-		
-		QueryResultImpl result = new QueryResultImpl();
-		result.setQueryGrids(queryGrids);
-
-		return result;
+		return QueryResultFactory.buildQueryResult(selectedSimulation);
 
 	}
 
-	protected List<QueryGrid> convertEarthGridsToQueryGrids(
-			List<EarthGrid> matchingGrids) {
-		List<QueryGrid> grids = new ArrayList<QueryGrid>();
-		
-		for(EarthGrid currentGrid : matchingGrids){
-			grids.add(convertEarthGridToQueryGrid(currentGrid));
-		}
-		
-		return grids;
-	}
 
-	protected QueryGrid convertEarthGridToQueryGrid(EarthGrid currentGrid) {
-		QueryGrid retVal = new QueryGrid();
-		retVal.setSimulatedDate(currentGrid.getSimulatedDate());
-		retVal.setQueryCells(convertEarthCellsToQueryCells(currentGrid.getNodeList()));
-		return null;
-	}
 
-	private List<QueryCell> convertEarthCellsToQueryCells(List<EarthCell> nodeList) {
-		List<QueryCell> queryCells = new ArrayList<QueryCell>();
-		
-		for(EarthCell currentCell : nodeList){
-			queryCells.add(convertEarthCellToQueryCell(currentCell));
-		}
-		
-		return queryCells;
-	}
 
-	private QueryCell convertEarthCellToQueryCell(EarthCell currentCell) {
-		QueryCell queryCell = new QueryCell();
-		
-		queryCell.setTemperature(currentCell.getTemperature());
-		// TODO Is this correct?  Where can we obtain the values
-		//queryCell.setSimulatedDate(currentCell.);
-		
-		return queryCell;
-	}
 
-	private List<EarthGrid> filterGrids(Simulation selectedSimulation,
+
+
+	private List<EarthGrid> filterGrids(String simulationName,
 			Date startDate, Date endDate, double startLat, double endLat,
 			double startLong, double endLong) {
 
+		Simulation selectedSimulation = persistenceService.findBySimulationName(simulationName);
+		
 		List<EarthGrid> matchingGrids = new ArrayList<EarthGrid>();
 		// Filter the time steps to only include those we are interested in
 		// examining

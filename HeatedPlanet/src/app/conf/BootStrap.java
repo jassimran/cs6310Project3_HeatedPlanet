@@ -64,7 +64,7 @@ public class BootStrap {
 						EarthCell earthCell = new EarthCell();
 						earthCell.setRow(x);
 						earthCell.setColumn(y);
-						earthCell.setTemperature(100.00);
+						earthCell.setTemperature((x==5&&y==5)?25.00:100.00);
 						earthCell.setGrid(earthGrid);
 						cells.add(earthCell);
 					}

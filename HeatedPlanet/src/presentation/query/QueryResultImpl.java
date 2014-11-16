@@ -3,11 +3,20 @@ package presentation.query;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QueryResultImpl implements QueryResult {
+import domain.EarthCell;
+import domain.EarthGrid;
+import domain.Simulation;
 
+public class QueryResultImpl implements QueryResult {
+	
 	private List<QueryGrid> queryGrids;
+	
+	public QueryResultImpl(Simulation simulation){
+		queryGrids = convertEarthGridsToQueryGrids(simulation.getTimeStepList());
+	}
 
 	public QueryCell getMinTempCell() {
+		// TODO Compute the result and store it instead of calculating
 		QueryCell minTempCell = null;
 
 		for (QueryGrid grid : getQueryGrids()) {
@@ -35,10 +44,6 @@ public class QueryResultImpl implements QueryResult {
 
 	public List<QueryGrid> getQueryGrids() {
 		return queryGrids;
-	}
-
-	public void setQueryGrids(List<QueryGrid> queryGrids) {
-		this.queryGrids = queryGrids;
 	}
 
 	/**
@@ -97,5 +102,43 @@ public class QueryResultImpl implements QueryResult {
 		}
 
 		return meanTempsOverTime;
+	}
+	
+	protected List<QueryGrid> convertEarthGridsToQueryGrids(
+			List<EarthGrid> grids) {
+		List<QueryGrid> queryGrids = new ArrayList<QueryGrid>();
+		
+		for(EarthGrid currentGrid : grids){
+			queryGrids.add(convertEarthGridToQueryGrid(currentGrid));
+		}
+		
+		return queryGrids;
+	}
+
+	protected QueryGrid convertEarthGridToQueryGrid(EarthGrid currentGrid) {
+		QueryGrid retVal = new QueryGrid();
+		retVal.setSimulatedDate(currentGrid.getSimulatedDate());
+		retVal.setQueryCells(convertEarthCellsToQueryCells(currentGrid.getNodeList()));
+		return retVal;
+	}
+	
+	private List<QueryCell> convertEarthCellsToQueryCells(List<EarthCell> nodeList) {
+		List<QueryCell> queryCells = new ArrayList<QueryCell>();
+		
+		for(EarthCell currentCell : nodeList){
+			queryCells.add(convertEarthCellToQueryCell(currentCell));
+		}
+		
+		return queryCells;
+	}
+	
+	private QueryCell convertEarthCellToQueryCell(EarthCell currentCell) {
+		QueryCell queryCell = new QueryCell();
+		
+		queryCell.setTemperature(currentCell.getTemperature());
+		// TODO Is this correct?  Where can we obtain the values
+		//queryCell.setSimulatedDate(currentCell.);
+		
+		return queryCell;
 	}
 }

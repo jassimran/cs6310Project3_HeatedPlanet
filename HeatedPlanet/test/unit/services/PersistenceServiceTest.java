@@ -1,6 +1,6 @@
 package services;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -79,6 +79,7 @@ public class PersistenceServiceTest {
 		
 		// then:
 		assertTrue(simulations.size() == 1);
+		assertEquals("BootStrap Simulation", simulations.get(0).getName());
 	}
 
 	@Test
