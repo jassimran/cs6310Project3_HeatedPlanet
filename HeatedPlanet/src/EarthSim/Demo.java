@@ -21,7 +21,9 @@ public class Demo {
 			// TODO remove before deliverable
 			try {
 				// start H2 web server
+				@SuppressWarnings("unused")
 				Server server = Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092").start();
+				@SuppressWarnings("unused")
 				Server webServer = Server.createWebServer("-web","-webAllowOthers", "-webPort", "8082").start();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block

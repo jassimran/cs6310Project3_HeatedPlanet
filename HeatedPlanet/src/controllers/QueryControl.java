@@ -49,12 +49,8 @@ public class QueryControl {
 	 * @return the Simulation that matches based on the name
 	 */
 	public Simulation findSimulationByName(String simulationName) {
-		List<Simulation> simulations = persistenceService
+		return persistenceService
 				.findBySimulationName(simulationName);
-		if (simulations.isEmpty())
-			return null;
-		else
-			return simulations.get(0);
 	}
 
 	/**
@@ -101,7 +97,7 @@ public class QueryControl {
 
 	protected List<QueryGrid> convertEarthGridsToQueryGrids(
 			List<EarthGrid> matchingGrids) {
-		List<QueryGrid> grids = new ArrayList();
+		List<QueryGrid> grids = new ArrayList<QueryGrid>();
 		
 		for(EarthGrid currentGrid : matchingGrids){
 			grids.add(convertEarthGridToQueryGrid(currentGrid));

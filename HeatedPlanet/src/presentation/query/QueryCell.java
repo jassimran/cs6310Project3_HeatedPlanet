@@ -2,8 +2,6 @@ package presentation.query;
 
 import java.util.Date;
 
-import domain.EarthCell;
-
 public class QueryCell {
 
 	private double latitude;

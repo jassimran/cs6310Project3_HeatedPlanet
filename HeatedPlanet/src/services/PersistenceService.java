@@ -108,7 +108,7 @@ public class PersistenceService {
 		return query.getResultList();
 	}
 
-	public List<Simulation> findBySimulationName(String simulationName) {
+	public Simulation findBySimulationName(String simulationName) {
 		em.getTransaction().begin();
 		
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -120,11 +120,11 @@ public class PersistenceService {
 		TypedQuery<Simulation> typedQuery = em.createQuery(q);
 		typedQuery.setParameter(nameParameter, simulationName);
 		
-		List<Simulation> results = typedQuery.getResultList();
+		Simulation result = typedQuery.getSingleResult();
 		
 		em.getTransaction().commit();
 		
-		return results;
+		return result;
 	}
 	
 }
