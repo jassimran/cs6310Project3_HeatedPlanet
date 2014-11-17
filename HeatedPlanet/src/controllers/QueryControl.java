@@ -31,6 +31,8 @@ public class QueryControl {
 		return simulationNames;
 	}
 	
+	
+	
 	/**
 	 * Determines if a simulation name has already been used
 	 * @param simulationName the simualtion name to test

@@ -133,10 +133,47 @@ public class PersistenceService {
 
 		try {
 			return typedQuery.getSingleResult();
-		} 
-		catch (NoResultException e) {
+		} catch (NoResultException e) {
 			return null;
 		}
 	}
 
+	public List<Simulation> findSimulationsByUserInputs(double axialTilt,
+			double orbitalEccentricity, Date endingDate) {
+		em.getTransaction().begin();
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Simulation> q = cb.createQuery(Simulation.class);
+		Root<Simulation> s = q.from(Simulation.class);
+
+		TypedQuery<Simulation> typedQuery = em.createQuery(q);
+
+		// add select
+		q = q.select(s);
+
+		// add where clauses
+		ParameterExpression<Double> tiltParameter = cb.parameter(Double.class);
+		typedQuery.setParameter(tiltParameter, axialTilt);
+		q = q.where(cb.equal(s.get("axial_tilt"), tiltParameter));
+
+		ParameterExpression<Double> eccentricityParameter = cb
+				.parameter(Double.class);
+		typedQuery.setParameter(eccentricityParameter, orbitalEccentricity);
+		q = q.where(cb.equal(s.get("orbital_eccentricity"),
+				eccentricityParameter));
+
+		// TODO: Calculate the number of months to use in this search.
+		int simulationLengthInMonths = 12;
+
+		ParameterExpression<Date> dateParameter = cb.parameter(Date.class);
+		typedQuery.setParameter(dateParameter, endingDate);
+		q = q.where(cb.greaterThanOrEqualTo(s.<Integer> get("length"),
+				simulationLengthInMonths));
+
+		List<Simulation> results = typedQuery.getResultList();
+
+		em.getTransaction().commit();
+
+		return results;
+	}
 }
