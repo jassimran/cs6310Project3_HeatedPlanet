@@ -1,6 +1,7 @@
 package presentation.query;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import domain.EarthCell;
@@ -9,17 +10,36 @@ import domain.Simulation;
 
 public class QueryResultImpl implements QueryResult {
 	
+	private QueryCell minTempCell;
+	private QueryCell maxTempCell;
+	List<QueryCell> meanTempOverTimeCells;
+	List<QueryCell> meanTempOverRegionCells;
 	private int numberOfRows;
 	private int numberOfColumns;
 	private List<QueryGrid> queryGrids;
 	
 	public QueryResultImpl(Simulation simulation){
-		queryGrids = convertEarthGridsToQueryGrids(simulation.getTimeStepList());
-	    numberOfColumns = 360 / simulation.getGridSpacing();      
-	    numberOfRows = 180 / simulation.getGridSpacing();
+		initialize(simulation);
 	}
 
-	public QueryCell getMinTempCell() {
+	public QueryResultImpl(Simulation simulation, Date startDate, Date endDate,
+			double startLat, double endLat, double startLong, double endLong) {
+
+		simulation.setTimeStepList(filterGrids(simulation, startDate, endDate, startLat, endLat, startLong, endLong));
+		initialize(simulation);
+	}
+	
+	private void initialize(Simulation simulation) {
+		queryGrids = convertEarthGridsToQueryGrids(simulation.getTimeStepList());
+	    numberOfColumns = simulation.getNumberOfColumns();      
+	    numberOfRows = simulation.getNumberOfRows();
+	    minTempCell = computeMinTempCell();
+	    maxTempCell = computeMaxTempCell();
+	    meanTempOverTimeCells = computeMeanTempOverTime();
+	    meanTempOverRegionCells = computeMeanTempOverRegion();
+	}
+
+	protected QueryCell computeMinTempCell() {
 		// TODO Compute the result and store it instead of calculating
 		QueryCell minTempCell = null;
 
@@ -32,8 +52,12 @@ public class QueryResultImpl implements QueryResult {
 		}
 		return minTempCell;
 	}
+	
+	public QueryCell getMinTempCell(){
+		return minTempCell;
+	}
 
-	public QueryCell getMaxTempCell() {
+	protected QueryCell computeMaxTempCell() {
 		QueryCell maxTempCell = null;
 
 		for (QueryGrid grid : getQueryGrids()) {
@@ -45,16 +69,20 @@ public class QueryResultImpl implements QueryResult {
 		}
 		return maxTempCell;
 	}
+	
+	public QueryCell getMaxTempCell(){
+		return maxTempCell;
+	}
 
 	public List<QueryGrid> getQueryGrids() {
 		return queryGrids;
 	}
 
 	/**
-	 * Returns the mean temp over the time for each of the locations in the
+	 * Computes the mean temp over the time for each of the locations in the
 	 * grid.  Requirement Number 4
 	 */
-	public List<QueryCell> getMeanTempOverTime() {
+	protected List<QueryCell> computeMeanTempOverTime() {
 		List<QueryGrid> grids = getQueryGrids();
 		List<QueryCell> resultCells = new ArrayList<QueryCell>();
 		double[][] temps = new double[numberOfRows][numberOfColumns];
@@ -81,12 +109,21 @@ public class QueryResultImpl implements QueryResult {
 		}
 		return resultCells;
 	}
+	
+	/**
+	 * Returns the mean temp over the time for each of the locations in the
+	 * grid.  Requirement Number 4
+	 */
+	public List<QueryCell> getMeanTempOverTime(){
+		return meanTempOverTimeCells;
+	}
+	
 
 	/**
-	 * Returns the mean temp over the selected region for each time step (grid)
+	 * Computes the mean temp over the selected region for each time step (grid)
 	 * Requirement number 3
 	 */
-	public List<QueryCell> getMeanTempOverRegion() {
+	protected List<QueryCell> computeMeanTempOverRegion() {
 		List<QueryCell> meanTempsOverRegion = new ArrayList<QueryCell>();
 
 		for (QueryGrid currentGrid : getQueryGrids()) {
@@ -94,6 +131,14 @@ public class QueryResultImpl implements QueryResult {
 		}
 
 		return meanTempsOverRegion;
+	}
+	
+	/**
+	 * Returns the mean temp over the selected region for each time step (grid)
+	 * Requirement number 3
+	 */
+	public List<QueryCell> getMeanTempOverRegion(){
+		return meanTempOverRegionCells;
 	}
 	
 	protected List<QueryGrid> convertEarthGridsToQueryGrids(
@@ -135,5 +180,71 @@ public class QueryResultImpl implements QueryResult {
 		//queryCell.setSimulatedDate(currentCell.);
 		
 		return queryCell;
+	}
+	
+	private List<EarthGrid> filterGrids(Simulation simulation,
+			Date startDate, Date endDate, double startLat, double endLat,
+			double startLong, double endLong) {
+
+		//Simulation selectedSimulation = persistenceService.findBySimulationName(simulationName);
+		
+		List<EarthGrid> matchingGrids = new ArrayList<EarthGrid>();
+		// Filter the time steps to only include those we are interested in
+		// examining
+		for (EarthGrid timeStep : simulation.getTimeStepList()) {
+			if ((timeStep.getSimulatedDate().equals(startDate) || timeStep
+					.getSimulatedDate().after(startDate))
+					&& (timeStep.getSimulatedDate().equals(endDate) || timeStep
+							.getSimulatedDate().before(endDate))) {
+
+				List<EarthCell> matchingCells = filterCells(timeStep, startLat,
+						endLat, startLong, endLong);
+
+				timeStep.setNodeList(matchingCells);
+
+				matchingGrids.add(timeStep);
+			}
+		}
+		return matchingGrids;
+	}
+
+	private List<EarthCell> filterCells(EarthGrid timeStep, double startLat,
+			double endLat, double startLong, double endLong) {
+
+		List<EarthCell> matchingCells = new ArrayList<EarthCell>();
+		// if all lat/long params are 0 use the whole planet
+		if (startLat == 0 && endLat == 0 && startLong == 0 && endLong == 0)
+			matchingCells = timeStep.getNodeList();
+		else {
+			for (EarthCell currentCell : timeStep.getNodeList()) {
+
+				double cellLat = timeStep.getLatitude(currentCell.getRow());
+				double cellLong = timeStep.getLongitude(currentCell.getColumn());
+
+				boolean latMatch = false;
+				if (startLat > 0 && endLat < 0) {
+					if ((cellLat >= startLat && cellLat <= 180)
+							|| cellLat >= -180 && cellLat <= endLat) {
+						latMatch = true;
+					}
+				} else if (cellLat >= startLat && cellLat <= endLat) {
+					latMatch = true;
+				}
+
+				boolean longMatch = false;
+				if (startLong > 0 && endLong < 0) {
+					if ((cellLong >= startLong && cellLong <= 90)
+							|| cellLong >= -90 && cellLong <= endLong) {
+						longMatch = true;
+					}
+				} else if (cellLong >= startLong && cellLong <= endLong) {
+					longMatch = true;
+				}
+
+				if (latMatch && longMatch)
+					matchingCells.add(currentCell);
+			}
+		}
+		return matchingCells;
 	}
 }

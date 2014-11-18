@@ -63,6 +63,12 @@ public class Simulation implements Serializable {
     @Column(name = "grid_spacing")
     private int gridSpacing;
     @Basic(optional = false)
+    @Column(name = "number_of_rows")
+    private int numberOfRows;
+    @Basic(optional = false)
+    @Column(name = "number_of_columns")
+    private int numberOfColumns;
+    @Basic(optional = false)
     @Column(name = "precision")
     private int precision;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "simulation", fetch = FetchType.LAZY)
@@ -81,7 +87,7 @@ public class Simulation implements Serializable {
         this.id = id;
     }
 
-    public Simulation(Integer id, String name, double axialTilt, int orbitalEccentricity, int timeStep, int length, int gridSpacing, int temporalAccuracy, int geoAccuracy, int precision) {
+    public Simulation(Integer id, String name, double axialTilt, int orbitalEccentricity, int timeStep, int length, int gridSpacing, int numberOfRows, int numberOfColumns, int temporalAccuracy, int geoAccuracy, int precision) {
         this.id = id;
         this.name = name;
         this.axialTilt = axialTilt;
@@ -89,6 +95,8 @@ public class Simulation implements Serializable {
         this.timeStep = timeStep;
         this.length = length;
         this.gridSpacing = gridSpacing;
+        this.numberOfColumns = numberOfRows;
+        this.numberOfColumns = numberOfColumns;
         this.temporalAccuracy = temporalAccuracy;
         this.geoAccuracy = geoAccuracy;
         this.precision = precision;
@@ -149,6 +157,22 @@ public class Simulation implements Serializable {
 
     public void setGridSpacing(int gridSpacing) {
         this.gridSpacing = gridSpacing;
+    }
+    
+    public int getNumberOfRows() {
+        return numberOfRows;
+    }
+
+    public void setNumberOfRows(int numberOfRows) {
+        this.numberOfRows = numberOfRows;
+    }
+    
+    public int getNumberOfColumns() {
+        return numberOfColumns;
+    }
+
+    public void setNumberOfColumns(int numberOfColumns) {
+        this.numberOfColumns = numberOfColumns;
     }
 
     public List<EarthGrid> getTimeStepList() {

@@ -92,7 +92,6 @@ public class QueryResultImplTest {
 		// then:
 		assertEquals(100, meanTempsOverTime.size());
 		
-		
 		for(QueryCell cell : meanTempsOverTime){
 			int row = cell.getRow();
 			int column = cell.getColumn();
