@@ -45,7 +45,7 @@ ActionListener, ChangeListener {
 	static final double DEFAULT_ORBITAL_ECCENTRICITY = .0167;
 	private Date simStart, simEnd;
 	private static final long serialVersionUID = -15968456987503L; 
-	private double tilt;
+	private double tilt = DEFAUL_AXIAL_TILT;
 	// persistence service
 	private PersistenceService ps;
 	private static QueryInterfaceUI instance;
@@ -54,6 +54,12 @@ ActionListener, ChangeListener {
 	int WIDTH_EDITS = WIDTH * 4 / 7 * 3
 			/ 4;
 	int LABEL_HEIGHT = 26;
+	private String simulationName = null;
+	private int latStart, latEnd, longStart, longEnd;
+	private boolean maxTemp, minTemp, meanTempRegion, meanTempTime, tempsTimeRegion;
+	
+	private double eccentricity = DEFAULT_ORBITAL_ECCENTRICITY;
+	
 
 
 	
@@ -115,6 +121,7 @@ BEGIN:initComponents
         runQuery = new javax.swing.JButton();
         reset = new javax.swing.JButton();
         filter = new javax.swing.JButton();
+        animate = new JButton();
         byNameButton = new JRadioButton();
         byPFButton = new JRadioButton();
         earthButton = new JRadioButton();
@@ -190,6 +197,7 @@ BEGIN:initComponents
         nameSpinner = new JSpinner();
         nameSpinner.setName("Name");
         nameSpinner.setSize(EDIT_BOX_WIDTH, LABEL_HEIGHT);
+        nameSpinner.addChangeListener(this);
         //nameSpinner.setModel(new SimulationNameSpinnerModel(new Object[]{}));
         nameSpinner.setModel(new SpinnerListModel(new Object[]{" "}));
         JPanel namePFPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -209,13 +217,12 @@ BEGIN:initComponents
         namePFPanel.add(namePFRadioPanel, BorderLayout.NORTH );
         
         JPanel namePFvaluePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        Border valueBorder = BorderFactory.createTitledBorder("Matching 
-
-Simulations ");
+        Border valueBorder = BorderFactory.createTitledBorder("Matching Simulations ");
         
         
         namePFvaluePanel.add(simulationNameLabel);
         namePFvaluePanel.add(nameSpinner);
+       
      
         namePFvaluePanel.setBorder(valueBorder);
         namePFPanel.add(namePFvaluePanel, BorderLayout.CENTER );
@@ -226,9 +233,14 @@ Simulations ");
         filter.addActionListener(this);
 		filter.setEnabled(true); 
         filter.setActionCommand("filter");
-        
         filterPanel.add(filter);
         
+        animate.setText("Animate");
+        animate.addActionListener(this);
+		animate.setEnabled(true); 
+        animate.setActionCommand("animate");
+        
+        filterPanel.add(animate);
         namePFPanel.add(filterPanel, BorderLayout.SOUTH );
         topPanel.add(namePFPanel, BorderLayout.WEST);
         
@@ -428,15 +440,10 @@ period");
 		minTempLabel = new javax.swing.JLabel("Minimum temperature: ");
 		 
 		maxTempLabel = new javax.swing.JLabel("Maximum Temperature: ");
-		regionMeanTempLabel = new javax.swing.JLabel("Mean Temperature in 
-
-the region: ");
-		timeMeanTempLabel = new javax.swing.JLabel("Mean Temperature 
-
-during this period:");
-		tempTimeRegionLabel = new javax.swing.JLabel("Temperature/grid 
-
-cell:");
+		regionMeanTempLabel = new javax.swing.JLabel("Mean Temperature in the region: ");
+		timeMeanTempLabel = new javax.swing.JLabel("Mean Temperature during this period:");
+		tempTimeRegionLabel = new javax.swing.JLabel("Temperature/grid cell:");
+		animate = new JButton();
 		outputTable = new JTable();
 		
 		System.out.println("Inside createOutputGui method");
@@ -447,39 +454,51 @@ cell:");
 		labelPanel.setPreferredSize(new Dimension(WIDTH_EDITS, HEIGHT));
 		
 		
-		labelPanel.add(minTempLabel);
+		labelPanel.add(minTempLabel,0);
+		
 		labelPanel.add(s1);
-		labelPanel.add(maxTempLabel);
 		labelPanel.add(s1);
-		labelPanel.add(regionMeanTempLabel);
+		labelPanel.add(maxTempLabel,1);
 		labelPanel.add(s1);
-		labelPanel.add(timeMeanTempLabel);
 		labelPanel.add(s1);
-		labelPanel.add(tempTimeRegionLabel);
+		labelPanel.add(regionMeanTempLabel,2);
+		labelPanel.add(s1);
+		labelPanel.add(s1);
+		labelPanel.add(timeMeanTempLabel,3);
+		labelPanel.add(s1);
+		labelPanel.add(s1);
+		labelPanel.add(tempTimeRegionLabel,4);
+		labelPanel.add(s1);
+		
+		
 		
 		topPanel.add(labelPanel, BorderLayout.WEST);
 		
 		JPanel valuePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		valuePanel.setPreferredSize(new Dimension(WIDTH_EDITS, HEIGHT));
 		
-		valuePanel.add(new JLabel("23"));
+		valuePanel.add(new JLabel("23"),0);
 		valuePanel.add(s1);
-		valuePanel.add(new JLabel("75"));
+		valuePanel.add(new JLabel("75"),1);
 		valuePanel.add(s1);
-		valuePanel.add(new JLabel("45"));
+		valuePanel.add(new JLabel("45"),2);
 		valuePanel.add(s1);
-		valuePanel.add(new JLabel("35"));
+		valuePanel.add(new JLabel("35"),3);
 		valuePanel.add(s1);
-		valuePanel.add(new JLabel("54"));
+		valuePanel.add(new JLabel("54"),4);
 		valuePanel.add(s1);
 		
-		
+		animate.setText("Animate");
+	    animate.addActionListener(this);
+	    animate.setEnabled(true); 
+	    animate.setActionCommand("animate");
+	    
+	    valuePanel.add(animate);
 		topPanel.add(valuePanel, BorderLayout.EAST);
 		
         Panel.add(topPanel, BorderLayout.NORTH);
 		JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		bottomPanel.setPreferredSize(new Dimension(WIDTH_EDITS,
-				HEIGHT));
+		bottomPanel.setPreferredSize(new Dimension(WIDTH_EDITS, HEIGHT));
 		
 		outputTable.setModel(new javax.swing.table.DefaultTableModel(
 		            new Object [][] {
@@ -514,7 +533,7 @@ cell:");
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code  (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the 
 
 default look and feel.
@@ -596,9 +615,7 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 			lst.add("Nov12-2014");
 			lst.add("Oct19-2014");
 			
-			SpinnerListModel smodel = (SpinnerListModel) 
-
-nameSpinner.getModel();
+			SpinnerListModel smodel = (SpinnerListModel) nameSpinner.getModel();
 			smodel.setList(lst);
 			
 			
@@ -663,11 +680,21 @@ nameSpinner.getModel();
 		{
 		 //simulationEndFieldActionPerformed(evt)
     	
-			setSimulationPeriod(simulationStartField.getText
-
-(),simulationEndField.getText());
+			setSimulationPeriod(simulationStartField.getText(),simulationEndField.getText());
+		}
+		else if(command.equals("animate"))
+		{
+			
 		}
     }
+    
+    public void stateChanged(ChangeEvent e) {
+        SpinnerListModel sModel = nameSpinner.getModel();
+        if (sModel instanceof SpinnerListModel) {
+            
+        }
+    }
+
     
    
   //enable/disable all controls
@@ -776,6 +803,7 @@ meanTempTimeCheckbox.isSelected() );
     private javax.swing.JButton runQuery;
     private javax.swing.JButton filter;
     private javax.swing.JButton reset;
+    private javax.swing.JButton animate;
     private javax.swing.JTextField simulationEndField;
     private javax.swing.JTextField simulationNameField;
     private javax.swing.JLabel simulationNameLabel;
