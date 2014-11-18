@@ -63,19 +63,17 @@ public class QueryGrid {
 		return new QueryCell();
 	}
 
-
-
 	public int getGridSize() {
-		throw new UnsupportedOperationException();
+		return queryCells.size();
 	}
 
-	public QueryCell getQueryCell(int x) {
-		throw new UnsupportedOperationException();
+	public QueryCell getQueryCell(int row, int column) {
+		for(QueryCell cell : queryCells){
+			if(cell.getRow() == row && cell.getColumn() == column)
+				return cell;
+		}
+		return null;
 	}
-	
-	
-	
-
 
 	public Date getSimulatedDate() {
 		return simulatedDate;

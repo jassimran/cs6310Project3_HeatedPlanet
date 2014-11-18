@@ -4,6 +4,8 @@ import java.util.Date;
 
 public class QueryCell {
 
+	private int column;
+	private int row;
 	private double latitude;
 	private double longitude;
 	private double temperature;
@@ -43,6 +45,22 @@ public class QueryCell {
 
 	public void setSimulatedDate(Date simulatedDate) {
 		this.simulatedDate = simulatedDate;
+	}
+
+	public int getColumn() {
+		return column;
+	}
+
+	public void setColumn(int column) {
+		this.column = column;
+	}
+
+	public int getRow() {
+		return row;
+	}
+
+	public void setRow(int row) {
+		this.row = row;
 	}
 	
 }

@@ -9,10 +9,14 @@ import domain.Simulation;
 
 public class QueryResultImpl implements QueryResult {
 	
+	private int numberOfRows;
+	private int numberOfColumns;
 	private List<QueryGrid> queryGrids;
 	
 	public QueryResultImpl(Simulation simulation){
 		queryGrids = convertEarthGridsToQueryGrids(simulation.getTimeStepList());
+	    numberOfColumns = 360 / simulation.getGridSpacing();      
+	    numberOfRows = 180 / simulation.getGridSpacing();
 	}
 
 	public QueryCell getMinTempCell() {
@@ -48,60 +52,48 @@ public class QueryResultImpl implements QueryResult {
 
 	/**
 	 * Returns the mean temp over the time for each of the locations in the
-	 * grid.
+	 * grid.  Requirement Number 4
 	 */
 	public List<QueryCell> getMeanTempOverTime() {
-
-		List<QueryCell> meanTempsOverRegion = new ArrayList<QueryCell>();
-
-		List<QueryGrid> queryGrids = getQueryGrids();
-		for (int i = 0; i < queryGrids.size(); i++) {
-			QueryGrid currentGrid = queryGrids.get(i);
-			for (int j = 0; j < currentGrid.getGridSize(); j++) {
-				QueryCell currentQueryCell = currentGrid.getQueryCell(j);
-
-				// If this is the first grid, initialize the return value (mean
-				// temps over region)
-				if (i == 0) {
-
-					// Make a new Query Cell to hold the totals
-					QueryCell newMeanTempQueryCell = new QueryCell();
-
-					// TODO newMeanTempQueryCell.setLatitude(latitude);
-					// TODO newMeanTempQueryCell.setLongitude(longitude);
-					newMeanTempQueryCell.setTemperature(currentQueryCell.getTemperature());
-				}
-				// else (this is a subsequent grid after the first one)
-				else{
-					QueryCell existingMeanQueryCell = meanTempsOverRegion.get(j);
-					double newTemp = existingMeanQueryCell.getTemperature() + currentQueryCell.getTemperature();
-					existingMeanQueryCell.setTemperature(newTemp);
-				}
-				
-				// If this is the last iteration
-				if(i+1 == queryGrids.size()){
-					QueryCell existingMeanQueryCell = meanTempsOverRegion.get(j);
-					double meanTemp = existingMeanQueryCell.getTemperature() / currentGrid.getQueryCells().size();
-					existingMeanQueryCell.setTemperature(meanTemp);
+		List<QueryGrid> grids = getQueryGrids();
+		List<QueryCell> resultCells = new ArrayList<QueryCell>();
+		double[][] temps = new double[numberOfRows][numberOfColumns];
+		for(int row = 0; row < numberOfRows; row++){
+			for(int column = 0; column < numberOfColumns; column++){
+				for(int gridIndex = 0; gridIndex < grids.size(); gridIndex++){
+					QueryGrid grid = grids.get(gridIndex);
+					QueryCell cell = grid.getQueryCell(row, column);
+					if(gridIndex ==0)
+						temps[row][column] = cell.getTemperature();
+					else 
+						temps[row][column] += cell.getTemperature();
+					
+					if(gridIndex == grids.size()-1){
+						double meanTemp = temps[row][column] / grids.size();
+						QueryCell newCell = new QueryCell();
+						newCell.setRow(row);
+						newCell.setColumn(column);
+						newCell.setTemperature(meanTemp);
+						resultCells.add(newCell);
+					}
 				}
 			}
 		}
-
-		return meanTempsOverRegion;
-
+		return resultCells;
 	}
 
 	/**
 	 * Returns the mean temp over the selected region for each time step (grid)
+	 * Requirement number 3
 	 */
 	public List<QueryCell> getMeanTempOverRegion() {
-		List<QueryCell> meanTempsOverTime = new ArrayList<QueryCell>();
+		List<QueryCell> meanTempsOverRegion = new ArrayList<QueryCell>();
 
 		for (QueryGrid currentGrid : getQueryGrids()) {
-			meanTempsOverTime.add(currentGrid.getMeanTempCell());
+			meanTempsOverRegion.add(currentGrid.getMeanTempCell());
 		}
 
-		return meanTempsOverTime;
+		return meanTempsOverRegion;
 	}
 	
 	protected List<QueryGrid> convertEarthGridsToQueryGrids(
@@ -136,6 +128,9 @@ public class QueryResultImpl implements QueryResult {
 		QueryCell queryCell = new QueryCell();
 		
 		queryCell.setTemperature(currentCell.getTemperature());
+		queryCell.setRow(currentCell.getRow());
+		queryCell.setColumn(currentCell.getColumn());
+		//TODO Set Latitude and Longitude
 		// TODO Is this correct?  Where can we obtain the values
 		//queryCell.setSimulatedDate(currentCell.);
 		

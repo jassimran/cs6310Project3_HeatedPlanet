@@ -31,12 +31,10 @@ public class QueryControl {
 		return simulationNames;
 	}
 	
-	
-	
 	/**
 	 * Determines if a simulation name has already been used
-	 * @param simulationName the simualtion name to test
-	 * @return True, if the simualation name is not unique. Otherwise, false.
+	 * @param simulationName the simulation name to test
+	 * @return True, if the simulation name is not unique. Otherwise, false.
 	 */
 	public boolean simulationNameExists(String simulationName) {
 		Simulation simulation = persistenceService.findBySimulationName(simulationName);

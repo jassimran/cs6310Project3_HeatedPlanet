@@ -2,9 +2,12 @@ package presentation.query;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -42,10 +45,7 @@ public class QueryResultImplTest {
 
 	@Test
 	public final void testGetMinTempCell() {
-		// given:
-		TypedQuery<Simulation> q = em.createNamedQuery("Simulation.findByName", Simulation.class);
-		q.setParameter("name", "BootStrap Simulation");
-		Simulation simulation = q.getSingleResult();
+		Simulation simulation = getBootstrapSimulation();
 		
 		// when:
 		QueryResultImpl qr = new QueryResultImpl(simulation);
@@ -57,10 +57,7 @@ public class QueryResultImplTest {
 
 	@Test
 	public final void testGetMaxTempCell() {
-		// given:
-		TypedQuery<Simulation> q = em.createNamedQuery("Simulation.findByName", Simulation.class);
-		q.setParameter("name", "BootStrap Simulation");
-		Simulation simulation = q.getSingleResult();
+		Simulation simulation = getBootstrapSimulation();
 		
 		// when:
 		QueryResultImpl qr = new QueryResultImpl(simulation);
@@ -72,9 +69,7 @@ public class QueryResultImplTest {
 	@Test
 	public final void testGetQueryGrids() {
 		// given:
-		TypedQuery<Simulation> q = em.createNamedQuery("Simulation.findByName", Simulation.class);
-		q.setParameter("name", "BootStrap Simulation");
-		Simulation simulation = q.getSingleResult();
+		Simulation simulation = getBootstrapSimulation();
 		int simulationLength = SimulationService.getInstance().calculateSimulaitonLenght(simulation.getLength(), simulation.getTimeStep());
 		
 		// when:
@@ -86,12 +81,49 @@ public class QueryResultImplTest {
 
 	@Test
 	public final void testGetMeanTempOverTime() {
-		fail("Not yet implemented"); // TODO
+		// given:
+		Simulation simulation = getBootstrapSimulation();
+		//DateTime baseDate = new DateTime(2014, 1, 4, 12, 0, 0);
+		
+		// when: 
+		QueryResultImpl qr = new QueryResultImpl(simulation);
+		List<QueryCell> meanTempsOverTime = qr.getMeanTempOverTime();
+		
+		// then:
+		assertEquals(100, meanTempsOverTime.size());
+		
+		
+		for(QueryCell cell : meanTempsOverTime){
+			int row = cell.getRow();
+			int column = cell.getColumn();
+			assertEquals((column==5&&row==5)?25.00:100.00, cell.getTemperature(), 0);
+		}
 	}
 
 	@Test
 	public final void testGetMeanTempOverRegion() {
-		fail("Not yet implemented"); // TODO
+		// given:
+		Simulation simulation = getBootstrapSimulation();
+		DateTime baseDate = new DateTime(2014, 1, 4, 12, 0, 0);
+		
+		// when: 
+		QueryResultImpl qr = new QueryResultImpl(simulation);
+		List<QueryCell> meanTempsOverRegion = qr.getMeanTempOverRegion();
+		
+		// then:
+		assertEquals(372, meanTempsOverRegion.size());
+		
+		for(QueryCell cell : meanTempsOverRegion){
+			assertEquals(baseDate.toDate(), cell.getSimulatedDate());
+			assertEquals(99.25, cell.getTemperature(), 0);
+			baseDate = baseDate.plusMinutes(simulation.getTimeStep());
+		}
 	}
 
+	private Simulation getBootstrapSimulation() {
+		TypedQuery<Simulation> q = em.createNamedQuery("Simulation.findByName", Simulation.class);
+		q.setParameter("name", "BootStrap Simulation");
+		Simulation simulation = q.getSingleResult();
+		return simulation;
+	}
 }

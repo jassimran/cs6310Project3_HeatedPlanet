@@ -53,7 +53,7 @@ public class BootStrap {
 			for(int i = 1; i <= totalGrids; i = ( i + 1 ) + gapSize) {
 				EarthGrid earthGrid = new EarthGrid();
 				earthGrid.setIndex(i);
-				earthGrid.setSimulatedDate(dateTime.plusMinutes(simulation.getTimeStep()).toDate());
+				earthGrid.setSimulatedDate(dateTime.toDate());
 				earthGrid.setSimulation(simulation);
 				grids.add(earthGrid);
 				
@@ -72,6 +72,7 @@ public class BootStrap {
 				
 				// add cells
 				earthGrid.setNodeList(cells);
+				dateTime = dateTime.plusMinutes(simulation.getTimeStep());
 			}
 			
 			// set grids
