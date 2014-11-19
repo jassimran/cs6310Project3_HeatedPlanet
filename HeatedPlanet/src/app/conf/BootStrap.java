@@ -38,6 +38,9 @@ public class BootStrap {
 			simulation.setGeoAccuracy(100);
 			simulation.setLength(1);
 			simulation.setTimeStep(60);
+			simulation.setGridSpacing(15);
+			simulation.setNumberOfColumns(10);
+			simulation.setNumberOfRows(10);
 			
 			// get total number of grids
 			int totalGrids = SimulationService.getInstance().calculateSimulaitonLenght(simulation.getLength(), simulation.getTimeStep()); // 744
