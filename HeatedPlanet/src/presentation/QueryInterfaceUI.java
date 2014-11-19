@@ -107,12 +107,13 @@ BEGIN:initComponents
 				new Dimension(800, 620));
     	int EDIT_BOX_WIDTH = 4;
 		int LABEL_HEIGHT = 26;
-    	/*JPanel Panel;
-		Panel = new JPanel();
+    	/*JPanel mainPanel;
+		mainPanel = new JPanel();
 		Panel.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1,
 				Color.blue));
 		Panel.setLayout(new java.awt.BorderLayout());*/
-		//Panel.add(createPanel(), BorderLayout.CENTER);
+		Panel.add(createPanel(), BorderLayout.CENTER);
+		*/
 		
 		QueryInterfaceLabel = new javax.swing.JLabel();
         tableOptionsLabel = new javax.swing.JLabel();
@@ -121,7 +122,7 @@ BEGIN:initComponents
         runQuery = new javax.swing.JButton();
         reset = new javax.swing.JButton();
         filter = new javax.swing.JButton();
-        animate = new JButton();
+        animate = new javax.swing.JButton();
         byNameButton = new JRadioButton();
         byPFButton = new JRadioButton();
         earthButton = new JRadioButton();
@@ -235,12 +236,7 @@ BEGIN:initComponents
         filter.setActionCommand("filter");
         filterPanel.add(filter);
         
-        animate.setText("Animate");
-        animate.addActionListener(this);
-		animate.setEnabled(true); 
-        animate.setActionCommand("animate");
         
-        filterPanel.add(animate);
         namePFPanel.add(filterPanel, BorderLayout.SOUTH );
         topPanel.add(namePFPanel, BorderLayout.WEST);
         
@@ -400,7 +396,15 @@ period");
         reset.addActionListener(this);
         reset.setEnabled(true); 
         reset.setActionCommand("reset");
+        animate.setText("Animate");
+        animate.addActionListener(this);
+		animate.setEnabled(true); 
+        animate.setActionCommand("animate");
+        
+        
+        
         runresetPanel.add(reset);
+        runresetPanel.add(animate);
         
         optionsPanel.add(optionlabelsPanel, BorderLayout.WEST);
         optionsPanel.add(optionchkboxPanel, BorderLayout.EAST);
@@ -443,7 +447,7 @@ period");
 		regionMeanTempLabel = new javax.swing.JLabel("Mean Temperature in the region: ");
 		timeMeanTempLabel = new javax.swing.JLabel("Mean Temperature during this period:");
 		tempTimeRegionLabel = new javax.swing.JLabel("Temperature/grid cell:");
-		animate = new JButton();
+		animate = new javax.swing.JButton();
 		outputTable = new JTable();
 		
 		System.out.println("Inside createOutputGui method");
@@ -655,16 +659,16 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 	    	//this.getContentPane().repaint();
 			
 			JPanel newoutput = runQuery();
-			this.getContentPane().removeAll();
+			//this.getContentPane().removeAll();
 			this.setVisible(true);
 			
 			System.out.println("Before validating");
 			
-			this.getContentPane().invalidate();
+			//this.getContentPane().invalidate();
 			System.out.println("Before repainting");
-			this.getContentPane().add(newoutput, BorderLayout.CENTER);
+			this.getContentPane().add(newoutput, BorderLayout.EAST);
 			System.out.println(newoutput.getComponentCount());
-	    	this.getContentPane().repaint();
+	    	//this.getContentPane().repaint();
 	    	System.out.println("after repainting");
 	    	this.setVisible(true);
 	    	
