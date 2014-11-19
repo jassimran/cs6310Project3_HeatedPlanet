@@ -26,7 +26,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -41,6 +40,7 @@ import controllers.AbstractControl;
 import controllers.MasterControl;
 import controllers.PresentationControl;
 import controllers.SimulationControl;
+import edu.gatech.cs6310.project3.team17.GUI.QueryInterfaceUI;
 import events.EventType;
 import events.Listener;
 
@@ -56,6 +56,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	static final String ACTION_STOP = "Stop";
 	static final String ACTION_GRID_EDIT = "Grid_Spacing";
 	static final String ACTION_NUM_EDIT = "Num_Edit";
+	static final String ACTION_LAUNCH_QUERY = "Launch Query Interface";
 
 	static final int DEFAULT_GRID_SPACING = 15;
 	static final int DEFAULT_SIM_DELAY = 200;
@@ -75,6 +76,8 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	private JButton runButton = new JButton(ACTION_RUN);
 	private JButton pauseButton = new JButton(ACTION_PAUSE);
 	private JButton stopButton = new JButton(ACTION_STOP);
+	
+	private JButton initQueryButton = new JButton(ACTION_LAUNCH_QUERY);
 
 	private ControlledEventTextField gridEdit = null;
 	private JSlider gridSlider = null;
@@ -173,7 +176,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 
 	private void createGui() {
 		this.getContentPane().setPreferredSize(
-				new Dimension(800, 725));
+				new Dimension(800, 700));
 
 		//set the time
 		try {
@@ -291,7 +294,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	}
 	private JPanel createPanel() {
 		JPanel panel = new JPanel();
-		panel.setPreferredSize(new Dimension(800, 300));
+		panel.setPreferredSize(new Dimension(800, 275));
 		panel.setLayout(new BorderLayout());
 
 		int WIDTH_LABELS = WIDTH * 4 / 7 * 1
@@ -407,7 +410,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
         simLengthLabel = new JLabel();
         simLengthLabel.setPreferredSize(new Dimension(WIDTH_LABELS,	LABEL_HEIGHT));
         simLengthLabel.setText("Simulation Length:");
-        lblmonths = new JLabel("month");
+        lblmonths = new JLabel("months");
         simLengthSlider.setMajorTickSpacing(200);
         simLengthSlider.setMaximum(1200);        
         simLengthSlider.setMinimum(1);
@@ -491,10 +494,10 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		
 		panel.add(configOpts, BorderLayout.WEST);
 
+		// Run Panel
 		JPanel runAndTimePanel = new JPanel(new BorderLayout());
 		Border runBorder = BorderFactory.createTitledBorder("Run ");
 		JPanel runOpts = new JPanel();
-		runOpts.setBorder(runBorder);
 
 		runButton.setActionCommand(ACTION_RUN);
 		runButton.addActionListener(this);
@@ -511,17 +514,36 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		stopButton.setEnabled(false);
 		runOpts.add(stopButton);
 
-		runOpts.setPreferredSize(new Dimension(100, 120));
-		runAndTimePanel.add(runOpts, BorderLayout.CENTER);
-		
-
+		//runOpts.setPreferredSize(new Dimension(290, 30));
+		runOpts.setBorder(runBorder);
+				
+		// Time Panel
 		JPanel simTimePanel = new JPanel();
-		simTimePanel.setBorder(BorderFactory
-				.createTitledBorder("Simulation Time"));
+		simTimePanel.setBorder(BorderFactory.createTitledBorder("Simulation Time"));
 		simTime = new JLabel(START_TIME);
-		simTime.setFont(new Font("Arial Black", Font.BOLD, 12));
+		simTime.setPreferredSize(new Dimension(310, 30));
+		simTime.setFont(new Font("Arial Black",Font.BOLD, 12));
 		simTimePanel.add(simTime);
-		runAndTimePanel.add(simTimePanel, BorderLayout.SOUTH);
+	
+		runOpts.add(simTimePanel, BorderLayout.SOUTH);
+		runAndTimePanel.add(runOpts, BorderLayout.CENTER);
+				
+		
+		//Query Panel
+		JPanel initQueryPanel = new JPanel(new BorderLayout());
+		Border initQueryBorder = BorderFactory.createTitledBorder("Launch ");		
+		JPanel queryOpts = new JPanel();
+
+		initQueryButton.setActionCommand(ACTION_LAUNCH_QUERY);
+		initQueryButton.addActionListener(this);
+		initQueryButton.setEnabled(true); 
+		queryOpts.add(initQueryButton); 
+		
+		//queryOpts.setPreferredSize(new Dimension(30,30));
+		queryOpts.setBorder(initQueryBorder);
+		initQueryPanel.add(queryOpts, BorderLayout.CENTER);
+		runAndTimePanel.add(initQueryPanel, BorderLayout.SOUTH);
+		
 		
 		
 		Border PFBorder = BorderFactory.createTitledBorder("Physical factors ");
@@ -530,7 +552,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		JPanel option2Edits = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		option2Labels.setPreferredSize(new Dimension( WIDTH_LABELS, HEIGHT));
 		option2Edits.setPreferredSize(new Dimension(WIDTH_EDITS,HEIGHT));
-		PFPanel.setPreferredSize(new Dimension(290, 100));	
+		PFPanel.setPreferredSize(new Dimension(290, 97));	
 		
 		PFPanel.setBorder(simBorder);
 	    
@@ -584,6 +606,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		
 		runAndTimePanel.add(PFPanel, BorderLayout.NORTH );
 		panel.add(runAndTimePanel, BorderLayout.CENTER);
+		runAndTimePanel.add(initQueryPanel, BorderLayout.SOUTH);
 
 		return panel;
 	}
@@ -655,6 +678,19 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		} else if (command.equals(ACTION_GRID_EDIT)) {
 			//update the visual grid with new value
 			EarthPanel.drawGrid(gridEdit.getValue());
+		} else if (command.equals(ACTION_LAUNCH_QUERY)){
+			//For launching query interface
+			//But before that, disable all controls
+			this.setEnableAllUserOptions(false);
+			//disable the run button
+			runButton.setEnabled(false);
+			//disable the stop button
+			pauseButton.setEnabled(false);
+			//disable the restart button
+			stopButton.setEnabled(false);
+			QueryInterfaceUI gui = new QueryInterfaceUI();
+			gui.launchQueryInterface();
+			
 		}
 	}
 
