@@ -2,8 +2,6 @@ package services;
 
 import java.util.Calendar;
 
-import com.sun.org.apache.bcel.internal.generic.CALOAD;
-
 public class SimulationService {
 
 	// singleton instance
