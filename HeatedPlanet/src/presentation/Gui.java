@@ -746,12 +746,12 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		AbstractControl.setPresentationEngine(presentationEngine);
 		
 		// create control based on r|t
-		if(simulationSettings.isROption()) {
+		if(simulationSettings.isROption()) { // TODO create control using AbstractControlFactory and the desired initiative
 			control = new PresentationControl();
 		} else if (simulationSettings.isTOption()) {
 			control = new SimulationControl();
 		} else {
-			MasterControl masterControl = new MasterControl();
+			MasterControl masterControl = new MasterControl(); // TODO handle just one instance of each control, so they can be reused by the views
 			masterControl.addListener(this);
 			control = masterControl;
 		}
