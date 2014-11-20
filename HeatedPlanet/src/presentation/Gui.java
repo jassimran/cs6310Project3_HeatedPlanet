@@ -39,6 +39,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import controllers.AbstractControl;
 import controllers.MasterControl;
 import controllers.PresentationControl;
+import controllers.QueryControl;
 import controllers.SimulationControl;
 import edu.gatech.cs6310.project3.team17.GUI.QueryInterfaceUI;
 import events.EventType;
@@ -728,6 +729,10 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		simulationSettings.setAxialTilt(Double.parseDouble(axisTilt.getText()));
 		simulationSettings.setEccentricity(Double.parseDouble(eccentricity.getText().toString()));
 		simulationSettings.setName(simName.getText());
+		if(new QueryControl().simulationNameExists(simName.getText())){
+			// TODO: display a message to the user if the simulation name exists
+			return;
+		}	
 		simulationSettings.setSimulationLength(simLengthEdit.getValue()); // default 12
 		simulationSettings.setTemporalAccuracy(tempAccuracyEdit.getValue());
 		simulationSettings.setGeoAccuracy(geoAccuracyEdit.getValue());
