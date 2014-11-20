@@ -1,5 +1,6 @@
 package presentation.query;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -93,6 +94,10 @@ public class QueryResultImpl implements QueryResult {
 				for (int gridIndex = 0; gridIndex < grids.size(); gridIndex++) {
 					QueryGrid grid = grids.get(gridIndex);
 					QueryCell cell = grid.getQueryCell(row, column);
+					if(cell==null)
+					{
+						System.out.println("null cell");
+					}
 					if (gridIndex == 0)
 						temps[row][column] = cell.getTemperature();
 					else

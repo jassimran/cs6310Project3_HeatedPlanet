@@ -39,8 +39,8 @@ public class BootStrap {
 			simulation.setLength(1);
 			simulation.setTimeStep(60);
 			simulation.setGridSpacing(15);
-			simulation.setNumberOfColumns(10);
-			simulation.setNumberOfRows(10);
+			simulation.setNumberOfColumns(24);
+			simulation.setNumberOfRows(12);
 			
 			// get total number of grids
 			int totalGrids = SimulationService.getInstance().calculateSimulaitonLenght(simulation.getLength(), simulation.getTimeStep()); // 744
@@ -62,11 +62,11 @@ public class BootStrap {
 				
 				// crate cells
 				List<EarthCell> cells = new ArrayList<EarthCell>();
-				for(int x = 0 ; x < 10; x++) {
-					for(int y = 0 ; y < 10; y ++) {
+				for(int x = 0 ; x < 24; x++) {
+					for(int y = 0 ; y < 12; y ++) {
 						EarthCell earthCell = new EarthCell();
-						earthCell.setRow(x);
-						earthCell.setColumn(y);
+						earthCell.setRow(y);
+						earthCell.setColumn(x);
 						earthCell.setTemperature((x==5&&y==5)?25.00:100.00);
 						earthCell.setGrid(earthGrid);
 						cells.add(earthCell);

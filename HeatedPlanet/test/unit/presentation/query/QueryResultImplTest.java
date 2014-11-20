@@ -90,7 +90,7 @@ public class QueryResultImplTest {
 		List<QueryCell> meanTempsOverTime = qr.getMeanTempOverTime();
 		
 		// then:
-		assertEquals(100, meanTempsOverTime.size());
+		assertEquals(288, meanTempsOverTime.size());
 		
 		for(QueryCell cell : meanTempsOverTime){
 			int row = cell.getRow();
@@ -114,7 +114,7 @@ public class QueryResultImplTest {
 		
 		for(QueryCell cell : meanTempsOverRegion){
 			assertEquals(baseDate.toDate(), cell.getSimulatedDate());
-			assertEquals(99.25, cell.getTemperature(), 0);
+			assertEquals(99.74, cell.getTemperature(), 0.01);
 			baseDate = baseDate.plusMinutes(simulation.getTimeStep());
 		}
 	}
