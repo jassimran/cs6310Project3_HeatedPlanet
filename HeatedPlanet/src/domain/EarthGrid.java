@@ -26,8 +26,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 /**
  *
  * @author jsoto

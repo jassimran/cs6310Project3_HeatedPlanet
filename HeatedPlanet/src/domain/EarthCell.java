@@ -50,8 +50,6 @@ public class EarthCell implements Serializable {
     @JoinColumn(name = "grid", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private EarthGrid grid;
-//    private double latitude;
-//    private double longitude;
 
     public EarthCell() {
     }
@@ -106,22 +104,6 @@ public class EarthCell implements Serializable {
     public void setGrid(EarthGrid grid) {
         this.grid = grid;
     }
-
-//	public double getLatitude() {
-//		return latitude;
-//	}
-//
-//	public void setLatitude(double latitude) {
-//		this.latitude = latitude;
-//	}
-//
-//	public double getLongitude() {
-//		return longitude;
-//	}
-//
-//	public void setLongitude(double longitude) {
-//		this.longitude = longitude;
-//	}
  
     @Override
     public int hashCode() {
