@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import org.h2.tools.Server;
 
+import app.conf.BootStrap;
 import presentation.Gui;
 
 public class Demo {
@@ -20,12 +21,17 @@ public class Demo {
 			// TODO remove before deliverable
 			try {
 				// start H2 web server
+				@SuppressWarnings("unused")
 				Server server = Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092").start();
+				@SuppressWarnings("unused")
 				Server webServer = Server.createWebServer("-web","-webAllowOthers", "-webPort", "8082").start();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			// bootstrap application
+			BootStrap.init();
 
 			if (prescontrol && simcontrol){
 				System.out.println("Invalid command line arguments!");

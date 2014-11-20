@@ -104,7 +104,7 @@ public class EarthCell implements Serializable {
     public void setGrid(EarthGrid grid) {
         this.grid = grid;
     }
-
+ 
     @Override
     public int hashCode() {
         int hash = 0;
@@ -123,11 +123,10 @@ public class EarthCell implements Serializable {
             return false;
         }
         return true;
-    }
+    }   
 
     @Override
     public String toString() {
         return "domain.Node[ id=" + id + " ]";
     }
-    
 }

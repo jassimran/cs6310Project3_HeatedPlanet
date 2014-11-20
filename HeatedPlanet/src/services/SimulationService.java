@@ -28,14 +28,14 @@ public class SimulationService {
 	public synchronized int calculateSimulaitonLenght(int months, int timeStep) {
 		Calendar calendar = Calendar.getInstance();
 		
-		// calculate base time (12:00 AM, January 4, 2000)
+		// calculate base time (12:00 PM, January 4, 2014)
 		calendar.set(Calendar.HOUR_OF_DAY, 12);
 		calendar.set(Calendar.MINUTE, 00);
 		calendar.set(Calendar.SECOND, 00);
 		calendar.set(Calendar.MILLISECOND, 00);
-		calendar.set(Calendar.MONTH, 0);
+		calendar.set(Calendar.MONTH, Calendar.JANUARY);
 		calendar.set(Calendar.DAY_OF_MONTH, 4);
-		calendar.set(Calendar.YEAR, 2000);
+		calendar.set(Calendar.YEAR, 2014);
 		long baseTime = calendar.getTimeInMillis();
 		
 		// calculate target time
