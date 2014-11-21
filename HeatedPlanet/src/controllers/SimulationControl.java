@@ -15,7 +15,7 @@ import domain.Simulation;
 import events.EventType;
 import events.Listener;
 
-public class SimulationControl extends AbstractControl implements Listener, Runnable {
+public class SimulationControl extends AbstractControl implements Runnable {
 	
 	private List<Listener> listeners;
 		

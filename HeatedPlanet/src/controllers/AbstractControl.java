@@ -1,11 +1,12 @@
 package controllers;
 
+import events.Listener;
 import presentation.PresentationEngine;
 import simulation.SimulationEngine;
 import simulation.SimulationSettings;
 import buffers.Buffer;
 
-public abstract class AbstractControl {
+public abstract class AbstractControl implements Listener {
 
 	/**
 	 * Amount of simulated time since the start of the execution (in minutes).

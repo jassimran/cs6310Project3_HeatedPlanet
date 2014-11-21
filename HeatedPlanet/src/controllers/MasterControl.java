@@ -11,7 +11,7 @@ import buffers.BufferImplementation;
 import events.EventType;
 import events.Listener;
 
-public class MasterControl extends AbstractControl implements Listener {
+public class MasterControl extends AbstractControl {
 	
 	private List<Listener> listeners;
 	
