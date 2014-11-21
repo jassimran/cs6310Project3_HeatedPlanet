@@ -126,8 +126,6 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
     
 	JSpinner spinner = new JSpinner();
 	
-	private long millisToPuse = 0;
-	
 	private JLabel simTime = null;
 	private Calendar simTimeCal = DATE_FORMAT.getCalendar();
 
@@ -759,7 +757,6 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		control.addListener(this);
 		
 		// run simulation
-		millisToPuse = (new Date()).getTime();
 		control.runSimulation(simulationSettings);
 	}
 	
@@ -768,8 +765,6 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	 */
 	private void pauseSimulation() {
 		if(control.isSimulationRunning()) {
-			millisToPuse = (new Date()).getTime() - millisToPuse;
-			System.out.println("Stabiliation time in millis: " + millisToPuse);
 			control.pauseSimulation();
 		} else {
 			control.resumeSimulation();
