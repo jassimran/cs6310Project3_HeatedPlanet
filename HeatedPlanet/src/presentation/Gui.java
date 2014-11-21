@@ -737,7 +737,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		simulationSettings.setGeoAccuracy(geoAccuracyEdit.getValue());
 		
 		// create simulation engines
-		SimulationEngine simulationEngine = new SimpleSimulationEngineImpl(EarthPanel);
+		SimulationEngine simulationEngine = new SimpleSimulationEngineImpl(EarthPanel); // TODO wire engines in bootstrap/demo class (those are points of entry for the entire app and will shield the app from a specific implementation)
 		PresentationEngine presentationEngine = new SimplePresentationEngineImpl(EarthPanel);
 		
 		// initialize AbstractControl
