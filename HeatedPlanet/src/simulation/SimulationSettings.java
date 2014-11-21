@@ -86,7 +86,7 @@ public class SimulationSettings {
 	public synchronized int getGridSpacing() {
 		return this.gridSpacing;
 	}
-	public synchronized void SetGridSpacing(int gridSpacing) {
+	public synchronized void setGridSpacing(int gridSpacing) {
 		this.gridSpacing = gridSpacing;
 	}
 

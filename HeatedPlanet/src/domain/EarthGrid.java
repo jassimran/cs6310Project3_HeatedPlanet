@@ -9,6 +9,7 @@ package domain;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -133,5 +134,4 @@ public class EarthGrid implements Serializable {
     public String toString() {
         return "domain.TimeStep[ id=" + id + " ]";
     }
-    
 }
