@@ -772,8 +772,7 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
     {
     	//for now it just prints all the values to console.
     	
-    	//System.out.println("Name: "+ simulationNameField.getText());
-    	//System.out.println("Axial tilt: "+ axisTiltSlider.getValue());
+    	 
     	System.out.println("ecc: "+ orbitalEccentricityField.getText());
     	System.out.println("latitude: "+ latitudeFromField.getText() + " to " + 
 
