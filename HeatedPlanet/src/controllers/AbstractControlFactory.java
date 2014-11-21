@@ -10,6 +10,12 @@ public class AbstractControlFactory {
 	
 	// singleton instance
 	private static AbstractControlFactory abstractControlFactory;
+	
+	// control types/ids
+	public static final int MAB = 0; // master-consumer-producer initiative
+	public static final int AB 	= 1; // producer-consumer initiative
+	public static final int BA 	= 2; // consumer-producer initiative
+	
 		
 	private AbstractControlFactory() {
 		// TODO Auto-generated constructor stub
@@ -20,6 +26,29 @@ public class AbstractControlFactory {
 			abstractControlFactory = new AbstractControlFactory();
 		}
 		return abstractControlFactory;
+	}
+	
+	/**
+	 * Factory method for creating controls with different initiatives.
+	 * @param controlId the id of the control type to create
+	 * @return an abstract control
+	 */
+	public AbstractControl createControl(int controlId) {
+		AbstractControl control = null;
+		
+		if(controlId == MAB) {
+			// TODO implement
+		}
+		
+		if(controlId == AB) {
+			// TODO implement
+		}
+		
+		if(controlId == BA) {
+			// TODO implement
+		}
+		
+		return control;
 	}
 
 }
