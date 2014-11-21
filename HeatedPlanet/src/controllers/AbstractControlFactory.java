@@ -37,15 +37,15 @@ public class AbstractControlFactory {
 		AbstractControl control = null;
 		
 		if(controlId == MAB) {
-			// TODO implement
+			control = new MasterControl();
 		}
 		
 		if(controlId == AB) {
-			// TODO implement
+			control = new SimulationControl();
 		}
 		
 		if(controlId == BA) {
-			// TODO implement
+			control = new PresentationControl();
 		}
 		
 		return control;
