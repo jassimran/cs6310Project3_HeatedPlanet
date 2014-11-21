@@ -37,6 +37,7 @@ import simulation.SimulationEngine;
 import simulation.SimulationSettings;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import controllers.AbstractControl;
+import controllers.AbstractControlFactory;
 import controllers.MasterControl;
 import controllers.PresentationControl;
 import controllers.QueryControl;
@@ -746,15 +747,16 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		AbstractControl.setPresentationEngine(presentationEngine);
 		
 		// create control based on r|t
-		if(simulationSettings.isROption()) { // TODO create control using AbstractControlFactory and the desired initiative
-			control = new PresentationControl();
+		if(simulationSettings.isROption()) {
+			control = AbstractControlFactory.getInstance().createControl(AbstractControlFactory.BA);
 		} else if (simulationSettings.isTOption()) {
-			control = new SimulationControl();
-		} else {
-			MasterControl masterControl = new MasterControl(); // TODO handle just one instance of each control, so they can be reused by the views
-			masterControl.addListener(this);
-			control = masterControl;
+			control = AbstractControlFactory.getInstance().createControl(AbstractControlFactory.AB);
+		} else { 
+			control = AbstractControlFactory.getInstance().createControl(AbstractControlFactory.MAB); // TODO handle just one instance of each control, so they can be reused by the views
 		}
+		
+		// register UI as listener for control events
+		control.addListener(this);
 		
 		// run simulation
 		millisToPuse = (new Date()).getTime();
