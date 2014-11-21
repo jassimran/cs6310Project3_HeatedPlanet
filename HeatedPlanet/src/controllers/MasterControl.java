@@ -112,7 +112,7 @@ public class MasterControl extends AbstractControl implements Listener {
 		
 		// calculate simulation length (in terms of simulation steps to produce)
 		synchronized (abstractLock) {
-			simulationLength = simulationService.calculateSimulaitonLenght(simulationSettings.getSimulationLength(), simulationSettings.getSimulationTimeStep());
+			simulationLength = simulationService.calculateSimulationLength(simulationSettings.getSimulationLength(), simulationSettings.getSimulationTimeStep());
 		}
 		
 		// reset simulation progress

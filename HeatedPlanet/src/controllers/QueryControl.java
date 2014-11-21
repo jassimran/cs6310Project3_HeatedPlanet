@@ -7,6 +7,7 @@ import java.util.List;
 import presentation.query.QueryResult;
 import presentation.query.QueryResultFactory;
 import services.PersistenceService;
+import simulation.SimulationSettings;
 import domain.Simulation;
 
 public class QueryControl {
@@ -80,7 +81,39 @@ public class QueryControl {
 
 		Simulation selectedSimulation = persistenceService.findBySimulationName(simulationName);
 		
-
+		if(selectedSimulation == null){
+			SimulationSettings settings = new SimulationSettings();
+			
+			// TODO: Determine what these values should be
+//			settings.setSOption(concurrency_Sim.isSelected());
+//			settings.setPOption(concurrency_Pres.isSelected());
+//			settings.setROption(initiative_R.isSelected());
+//			settings.setTOption(initiative_T.isSelected());
+//
+//			
+//			settings.numCellsX = EarthPanel.getNumCellsX();
+//			settings.numCellsY = EarthPanel.getNumCellsY();
+//			settings.setBufferSize((Integer) spinner.getValue());
+			// End TODO
+			
+			settings.setTemporalAccuracy(100); // 100 percent
+			settings.setGeoAccuracy(100); // 100 percent
+			settings.setPresentationDisplayRate(1 * 1000); // milliseconds
+			settings.setSimulationTimeStep(1440); // 1 solar day in minutes
+			settings.setGridSpacing(15); // 15 degrees; the size of a time zone
+			settings.setPrecision(7);	// the number of digits storable in a float
+			settings.setAxialTilt(23.44); // The tilt of the Earth
+			settings.setEccentricity(0.0167); // The eccentricity of the Earth						
+			settings.setSimulationLength(12); // default 12 months
+			settings.setName(simulationName); // The provided name
+			
+			new SimulationControl().runSimulation(settings);
+		}
+		
+		// TODO Do we need to do something to force the system to wait until the simulation is completed?
+		// I was thinking this might be necessary if it would be running on another thread
+		selectedSimulation = persistenceService.findBySimulationName(simulationName);
+		
 //		// TODO: Perform geographic interpolation
 //		for (EarthGrid currentGrid : selectedSimulation.getTimeStepList()) {
 //			EarthGrid geoInterpolatedSimulation = interpolationService

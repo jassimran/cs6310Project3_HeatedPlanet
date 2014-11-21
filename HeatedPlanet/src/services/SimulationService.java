@@ -1,6 +1,7 @@
 package services;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class SimulationService {
 
@@ -25,7 +26,7 @@ public class SimulationService {
 	 * @param timeStep number of minutes between 1 and 1440 (1 day)
 	 * @return the number of grids to produce in a simulation
 	 */
-	public synchronized int calculateSimulaitonLenght(int months, int timeStep) {
+	public synchronized int calculateSimulationLength(int months, int timeStep) {
 		Calendar calendar = Calendar.getInstance();
 		
 		// calculate base time (12:00 PM, January 4, 2014)
@@ -53,5 +54,34 @@ public class SimulationService {
 		}
 		
 		return numberOfgrids;
+	}
+	
+	public synchronized int calculateSimulationMonths(Date endingDate) {
+		Calendar calendar = Calendar.getInstance();
+		
+		// calculate base time (12:00 PM, January 4, 2014)
+		calendar.set(Calendar.HOUR_OF_DAY, 12);
+		calendar.set(Calendar.MINUTE, 00);
+		calendar.set(Calendar.SECOND, 00);
+		calendar.set(Calendar.MILLISECOND, 00);
+		calendar.set(Calendar.MONTH, Calendar.JANUARY);
+		calendar.set(Calendar.DAY_OF_MONTH, 4);
+		calendar.set(Calendar.YEAR, 2014);
+		long baseTime = calendar.getTimeInMillis();
+		
+		// calculate target time
+		long targetTime = endingDate.getTime();
+		
+		// calculate number of months
+		int numberOfMonths = 0;
+		long simulationTime = baseTime;
+		while(simulationTime < targetTime) {
+			calendar.setTimeInMillis(simulationTime);
+			calendar.add(Calendar.MONTH, 1);
+			simulationTime = calendar.getTimeInMillis();
+			numberOfMonths++;
+		}
+		
+		return numberOfMonths;
 	}
 }
