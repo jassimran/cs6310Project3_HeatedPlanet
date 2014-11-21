@@ -26,7 +26,13 @@ import javax.swing.table.TableModel;
 import javax.swing.text.DateFormatter;
 import javax.swing.text.DefaultFormatterFactory;
 
+import presentation.*;
+import presentation.query.*;
+import controllers.QueryControl;
+import persistence.*;
 import services.PersistenceService;
+import javax.persistence.PersistenceContext;
+import javax.persistence.EntityManager;
 
 public class QueryInterfaceUI extends javax.swing.JFrame implements 
 
@@ -60,6 +66,9 @@ ActionListener, ChangeListener {
 	
 	private double eccentricity = DEFAULT_ORBITAL_ECCENTRICITY;
 	private boolean entireEarth;
+	public QueryControl qc = new QueryControl();
+	private QueryResult res;
+	
 	
 	
 	
@@ -435,7 +444,7 @@ ActionListener, ChangeListener {
 
          
     
-    public JPanel createOutputGui()
+    public JPanel createOutputGui(QueryResult res)
     {
     	
     	this.getContentPane().setPreferredSize( new Dimension(1220, 620));
@@ -600,17 +609,18 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 		
 		if (command.equals("byName"))
 		{
-			//Remove 2 lines and add code to retrieve values from DB
 			
 			this.setEnableAllUserOptions(false);
 			List<String> lst = new ArrayList<String>();
-			lst.add("Nov12-2014");
-			lst.add("Oct19-2014");
+			lst = qc.getSimulationList();
 			
-			nameSpinner.addItem("Nov12-2014");
-			nameSpinner.addItem("Oct19-2014");
-			//SpinnerListModel smodel = (SpinnerListModel) nameSpinner.getModel();
-			//smodel.setList(lst);
+			for(Iterator<String> s = lst.iterator(); s.hasNext();)
+			{
+				nameSpinner.addItem(s);
+				
+			}
+			
+			
 			
 			
 			
@@ -624,10 +634,7 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 		}
 		else if(command.equals("byPF"))
 		{
-			//axisTiltField.setEnabled(true);
-	        //orbitalEccentricityField.setEnabled(true);
-	        //simulationStartField.setEnabled(true);
-	        //simulationEndField.setEnabled(true);
+			
 	        
 	        this.setEnableAllUserOptions(true);
 	        tilt = Double.parseDouble(axisTiltField.getText());
@@ -672,10 +679,16 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 			runQuery.setEnabled(false);
 			
 			//call query controller here
-			
+			if(byNameButton.isSelected())
+			{
+				if(!simulationName.isEmpty())
+					res = qc.getQueryResultBySimulationName(simulationName);
+				
+			}
+				
 	    	
 			
-			JPanel newoutput = runQuery();
+			JPanel newoutput = createOutputGui(res);
 			JScrollPane outputScroller = new JScrollPane(newoutput);
 			//this.getContentPane().removeAll();
 			this.setVisible(true);
@@ -700,9 +713,18 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 		}
 		else if(command.equals("filter"))
 		{
+			List<String> lst = new ArrayList<String>();
+			lst = qc.getSimulationListByUserInputs(tilt, eccentricity, simEnd);
 			
+			for(Iterator<String> s = lst.iterator(); s.hasNext();)
+			{
+				nameSpinner.addItem(s);
+				
+			}
 			Border valueBorder = BorderFactory.createTitledBorder("Filtered Results ");
 			namePFvaluePanel.setBorder(valueBorder);
+			
+			
 		}
 		else if(command.equals(simulationEndField.getAction()))
 		{
