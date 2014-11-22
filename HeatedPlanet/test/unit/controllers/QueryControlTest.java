@@ -57,6 +57,27 @@ public class QueryControlTest {
 	}
 	
 	@Test
+	public void testGenerateSimulationName(){
+		// given:
+		Double tilt = 23.44; // The tilt of the Earth
+		int geographicAccuracy = 100; // 100 percent
+		Double eccentricity = 0.0167; // The eccentricity of the Earth
+		int gridSpacing = 15; // 15 degrees; the size of a time zone
+		int temporalAccuracy = 100; // 100 percent 
+		int timeStep = 1440; // 1 solar day in minutes
+		int simulationLength = 12; // 12 months
+		
+		// when:
+		String generatedName = new QueryControl().generateSimulationName(tilt, 
+				eccentricity, simulationLength, gridSpacing, timeStep, 
+				temporalAccuracy, geographicAccuracy);
+		
+		// then:
+		final String expected = "Tilt: 23.44 Ecc: 0.0167 Len: 12 GS: 15 TS: 1440 TA: 100 GA: 100 Run: 1";
+		assertEquals(expected, generatedName);
+	}
+	
+	@Test
 	public void testGetSimulationList() {
 		// when:
 		List<String> simulations = qc.getSimulationList();

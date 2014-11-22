@@ -82,6 +82,16 @@ public class QueryControl {
 		Simulation selectedSimulation = persistenceService.findBySimulationName(simulationName);
 		
 		if(selectedSimulation == null){
+			
+			Double tilt = 23.44; // The tilt of the Earth
+			int geographicAccuracy = 100; // 100 percent
+			Double eccentricity = 0.0167; // The eccentricity of the Earth
+			int gridSpacing = 15; // 15 degrees; the size of a time zone
+			int temporalAccuracy = 100; // 100 percent 
+			int timeStep = 1440; // 1 solar day in minutes
+			int simulationLength = 12; // 12 months
+			int precision = 7; // the number of digits storable in a float
+			
 			SimulationSettings settings = new SimulationSettings();
 			
 			// TODO: Determine what these values should be
@@ -96,16 +106,20 @@ public class QueryControl {
 //			settings.setBufferSize((Integer) spinner.getValue());
 			// End TODO
 			
-			settings.setTemporalAccuracy(100); // 100 percent
-			settings.setGeoAccuracy(100); // 100 percent
+			settings.setTemporalAccuracy(temporalAccuracy);
+			settings.setGeoAccuracy(geographicAccuracy);
 			settings.setPresentationDisplayRate(1 * 1000); // milliseconds
-			settings.setSimulationTimeStep(1440); // 1 solar day in minutes
-			settings.setGridSpacing(15); // 15 degrees; the size of a time zone
-			settings.setPrecision(7);	// the number of digits storable in a float
-			settings.setAxialTilt(23.44); // The tilt of the Earth
-			settings.setEccentricity(0.0167); // The eccentricity of the Earth						
-			settings.setSimulationLength(12); // default 12 months
-			settings.setName(simulationName); // The provided name
+			settings.setSimulationTimeStep(timeStep); 
+			settings.setGridSpacing(gridSpacing); 
+			settings.setPrecision(precision);	
+			settings.setAxialTilt(tilt); 
+			settings.setEccentricity(eccentricity); 						
+			settings.setSimulationLength(simulationLength); 
+			
+			//Generate the simulation name to use
+			settings.setName(generateSimulationName(tilt, eccentricity, 
+					simulationLength, gridSpacing, timeStep, 
+					temporalAccuracy, geographicAccuracy));
 			
 			new SimulationControl().runSimulation(settings);
 		}
@@ -130,5 +144,27 @@ public class QueryControl {
 
 		return QueryResultFactory.buildQueryResult(selectedSimulation, startDate, endDate, startLat, endLat, startLong, endLong);
 
+	}
+	
+	public String generateSimulationName(Double tilt, Double eccentricity,
+			int simulationLength, int gridSpacing, int timeStep, int temporalAccuracy,
+			int geographicAccuracy){
+		
+		String retVal = null;
+		
+		Object[] args = new Object[]
+				{tilt, eccentricity, simulationLength, gridSpacing, timeStep,
+				temporalAccuracy, geographicAccuracy, 1};
+		
+		final String format = "Tilt: % Ecc: % Len: % GS: % TS: % TA: % GA: % Run: %";
+		
+		retVal = String.format(format, args);
+		
+		while(simulationNameExists(retVal)){
+			args[7] = ((Integer)args[7])+1;
+			retVal = String.format(format, args);
+		}
+		
+		return retVal;
 	}
 }
