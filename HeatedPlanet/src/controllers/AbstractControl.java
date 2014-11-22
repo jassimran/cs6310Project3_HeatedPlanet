@@ -2,6 +2,7 @@ package controllers;
 
 import events.Listener;
 import presentation.PresentationEngine;
+import services.PersistenceService;
 import simulation.SimulationEngine;
 import simulation.SimulationSettings;
 import buffers.Buffer;
@@ -77,6 +78,13 @@ public abstract class AbstractControl implements Listener {
 
 	public static void setBuffer(Buffer buffer) {
 		AbstractControl.buffer = buffer;
+	}
+	
+	/**
+	 * @return true if a simulation with the given name exists
+	 */
+	public boolean simulationExists(String simulationName) {
+		return (PersistenceService.getInstance().findBySimulationName(simulationName) != null)? true : false;
 	}
 	
 	/**

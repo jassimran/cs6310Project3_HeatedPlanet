@@ -150,6 +150,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		setResizable(false);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		createGui();
+		createControl();
 		this.setVisible(true);
 	}
 
@@ -274,24 +275,22 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	    }
 	}
 	
-	public class SimulationNameInputVerifier extends InputVerifier{
+	public class SimulationNameInputVerifier extends InputVerifier {
 		@Override
 	    public boolean verify(JComponent input) {
-	        String text = ((JTextField) input).getText();
-	        try {
-	        	if (text.length() <1){
-	        		JOptionPane.showMessageDialog(null, "Please enter Simulation name!");
-	        		return false;
-	        	}
-	        	else
-	        		return true;
-	        		
-	        } catch (NumberFormatException e) {
-	        	JOptionPane.showMessageDialog(null, "Please enter Simulation name");
+	        String simulationName = ((JTextField) input).getText();
+        	if (simulationName.length() <1) { // verify not empty
+        		showMessage("Please enter simulation name!");
         		return false;
-	        }
+        	}
+        	if(control.simulationExists(simulationName)) { // verify unique
+        		showMessage("Simulation name already exists!");
+        		return false;
+        	}
+        	return true;
 	    }
 	}
+	
 	private JPanel createPanel() {
 		JPanel panel = new JPanel();
 		panel.setPreferredSize(new Dimension(800, 275));
@@ -623,30 +622,21 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		String command = e.getActionCommand();
 
 		if (command.equals(ACTION_RUN)) {
-			
-			//Validation check for Simulation Name
-			try {
-				String text = ((JTextField) simName).getText();
-	        	if (text.length() <1){
-	        		JOptionPane.showMessageDialog(null, "Please enter Simulation name!");
-	        	}
-	        	else{
-	        		//disable all controls
-	    			this.setEnableAllUserOptions(false);
-	    			//disable the run button
-	    			runButton.setEnabled(false);
-	    			//enable the stop button
-	    			pauseButton.setEnabled(true);
-	    			//disable the restart button
-	    			stopButton.setEnabled(false);
-	    			// run simulation
-	    			runSimulation();
-	        	}
-	        		
-	        } catch (NumberFormatException ex) {
-	        	JOptionPane.showMessageDialog(null, "Please enter Simulation name");
-	        }	
-			
+			// check simulation name is valid
+			InputVerifier simulaitonVerifier = new SimulationNameInputVerifier();
+        	if (!simulaitonVerifier.verify(simName)) {
+        		return;
+        	}
+    		//disable all controls
+			this.setEnableAllUserOptions(false);
+			//disable the run button
+			runButton.setEnabled(false);
+			//enable the stop button
+			pauseButton.setEnabled(true);
+			//disable the restart button
+			stopButton.setEnabled(false);
+			// run simulation
+			runSimulation();
 		} else if (command.equals(ACTION_PAUSE)) {
 			//enable the restart button
 			stopButton.setEnabled(true);
@@ -698,7 +688,6 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	 * Executes a simulation based on the selected settings.
 	 */
 	private void runSimulation() {
-		
 		// create settings object
 		SimulationSettings simulationSettings = new SimulationSettings();
 		//Set simulation Settings according to Gui Selections
@@ -728,36 +717,29 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		simulationSettings.setAxialTilt(Double.parseDouble(axisTilt.getText()));
 		simulationSettings.setEccentricity(Double.parseDouble(eccentricity.getText().toString()));
 		simulationSettings.setName(simName.getText());
-		if(new QueryControl().simulationNameExists(simName.getText())){
-			// TODO: display a message to the user if the simulation name exists
-			return;
-		}	
 		simulationSettings.setSimulationLength(simLengthEdit.getValue()); // default 12
 		simulationSettings.setTemporalAccuracy(tempAccuracyEdit.getValue());
 		simulationSettings.setGeoAccuracy(geoAccuracyEdit.getValue());
 		
-		// create simulation engines
-		SimulationEngine simulationEngine = new SimpleSimulationEngineImpl(EarthPanel); // TODO wire engines in bootstrap/demo class (those are points of entry for the entire app and will shield the app from a specific implementation)
-		PresentationEngine presentationEngine = new SimplePresentationEngineImpl(EarthPanel);
-		
-		// initialize AbstractControl
-		AbstractControl.setSimulationEngine(simulationEngine);
-		AbstractControl.setPresentationEngine(presentationEngine);
-		
-		// create control based on r|t
-		if(simulationSettings.isROption()) {
-			control = AbstractControlFactory.getInstance().createControl(AbstractControlFactory.BA);
-		} else if (simulationSettings.isTOption()) {
-			control = AbstractControlFactory.getInstance().createControl(AbstractControlFactory.AB);
-		} else { 
-			control = AbstractControlFactory.getInstance().createControl(AbstractControlFactory.MAB); // TODO handle just one instance of each control, so they can be reused by the views
-		}
-		
-		// register UI as listener for control events
-		control.addListener(this);
+		// wire simulation engines
+		AbstractControl.setSimulationEngine(new SimpleSimulationEngineImpl(EarthPanel));
+		AbstractControl.setPresentationEngine(new SimplePresentationEngineImpl(EarthPanel));
 		
 		// run simulation
 		control.runSimulation(simulationSettings);
+	}
+
+	private void createControl() {
+		// create control based on r|t
+		if(prescontrol) {
+			control = AbstractControlFactory.getInstance().createControl(AbstractControlFactory.BA);
+		} else if (simcontrol) {
+			control = AbstractControlFactory.getInstance().createControl(AbstractControlFactory.AB);
+		} else { 
+			control = AbstractControlFactory.getInstance().createControl(AbstractControlFactory.MAB);
+		}		
+		// register UI as listener for control events
+		control.addListener(this);
 	}
 	
 	/**
@@ -838,6 +820,14 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	@Override
 	public void removeListener(Listener l) {
 		throw new NotImplementedException();
+	}
+
+	/**
+	 * Shows the given message in dialog.
+	 * @param message the message to show
+	 */
+	protected void showMessage(String message) {
+		JOptionPane.showMessageDialog(this, message);
 	}
 
 }
