@@ -26,7 +26,13 @@ import javax.swing.table.TableModel;
 import javax.swing.text.DateFormatter;
 import javax.swing.text.DefaultFormatterFactory;
 
+import presentation.*;
+import presentation.query.*;
+import controllers.QueryControl;
+import persistence.*;
 import services.PersistenceService;
+import javax.persistence.PersistenceContext;
+import javax.persistence.EntityManager;
 
 public class QueryInterfaceUI extends javax.swing.JFrame implements 
 
@@ -60,6 +66,9 @@ ActionListener, ChangeListener {
 	
 	private double eccentricity = DEFAULT_ORBITAL_ECCENTRICITY;
 	private boolean entireEarth;
+	public QueryControl qc = new QueryControl();
+	private QueryResult res;
+	
 	
 	
 	
@@ -153,6 +162,7 @@ ActionListener, ChangeListener {
         simulationStartField = new javax.swing.JFormattedTextField();
         simulationStartField.setColumns(5);
         simulationStartField.setActionCommand(getName());
+        simulationStartField.setEnabled(false);
         
         latitudeFromField.setEnabled(false);
         latitudeToField.setEnabled(false);
@@ -162,6 +172,7 @@ ActionListener, ChangeListener {
         jLabel9 = new javax.swing.JLabel();
         simulationEndField = new javax.swing.JFormattedTextField();
         simulationEndField.setColumns(5);
+        simulationEndField.setEnabled(false);
         
         simulationEndField.setActionCommand(getName());
         jPanel2 = new javax.swing.JPanel();
@@ -451,51 +462,77 @@ ActionListener, ChangeListener {
 		Panel.setLayout(new java.awt.BorderLayout());
 		Panel.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Color.blue));
 		
-		
+		JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		infoPanel.setPreferredSize(new Dimension(WIDTH_EDITS, HEIGHT+5));
 		minTempLabel = new javax.swing.JLabel("1. Minimum temperature for region: ");
 		minTempLabel1 = new javax.swing.JLabel("Min Temperature: ");
 		readingTimeLabel = new javax.swing.JLabel("Reading Time: ");
 		locationLabel = new javax.swing.JLabel("Location(latitude/longitude): ");
 		
-		Panel.add(minTempLabel);
-		Panel.add(minTempLabel1);
-		Panel.add(readingTimeLabel);
-		Panel.add(locationLabel);
-		Panel.add(s1);
-		Panel.add(s1);
+		infoPanel.add(minTempLabel);
+		infoPanel.add(new JLabel("                                                 "));
+		infoPanel.add(minTempLabel1);
+		infoPanel.add(new JLabel("                                                "));
+		infoPanel.add(readingTimeLabel);
+		infoPanel.add(new JLabel("                 "));
+		infoPanel.add(locationLabel);
+		infoPanel.add(new JLabel("                                                                     "));
+		infoPanel.add(new JLabel("****************"));
+		infoPanel.add(new JLabel("                                                  "));
+		infoPanel.add(s1);
 		 
 		maxTempLabel = new javax.swing.JLabel("2. Maximum Temperature for region: ");
+		
 		maxTempLabel1 = new javax.swing.JLabel("Max Temperature: ");
 		
-		Panel.add(maxTempLabel);
-		Panel.add(maxTempLabel1);
-		Panel.add(readingTimeLabel);
-		Panel.add(locationLabel);
-		
+		infoPanel.add(maxTempLabel);
+		infoPanel.add(new JLabel("                                                 "));
+		infoPanel.add(maxTempLabel1);
+		infoPanel.add(new JLabel("                                                "));
+		infoPanel.add(new JLabel("Reading Time:"));
+		infoPanel.add(new JLabel("                 "));
+		infoPanel.add(new javax.swing.JLabel("Location(latitude/longitude): "));
+		infoPanel.add(new JLabel("                                                                     "));
+		infoPanel.add(new JLabel("****************"));
+		infoPanel.add(new JLabel("                                                                         "));
 		regionMeanTempLabel = new javax.swing.JLabel("Mean Temperature over region: ");
+		
 		regionMeanTempLabel2 = new JLabel("Date, Temperature");
 		
-		Panel.add(s1);
-		Panel.add(s1);
-		Panel.add(regionMeanTempLabel);
-		Panel.add(regionMeanTempLabel2);
+		infoPanel.add(s1);
+		infoPanel.add(s1);
+		infoPanel.add(regionMeanTempLabel);
+		infoPanel.add(new JLabel("                                                                         "));
+		infoPanel.add(regionMeanTempLabel2);
+		infoPanel.add(new JLabel("                                                                                        "));
 		
-
+		infoPanel.add(new JLabel("****************"));
+		infoPanel.add(new JLabel("                                                                         "));
 		timeMeanTempLabel = new javax.swing.JLabel("Mean Temperature during over time:");
 		timeMeanTempLabel2 = new JLabel("Latitude/Longitude, Temperature");
 		
-		Panel.add(s1);
-		Panel.add(s1);
-		Panel.add(timeMeanTempLabel);
-		Panel.add(timeMeanTempLabel2);
+		
+		
+		infoPanel.add(s1);
+		infoPanel.add(s1);
+		infoPanel.add(timeMeanTempLabel);
+		infoPanel.add(new JLabel("                                                                         "));
+		infoPanel.add(timeMeanTempLabel2);
+		infoPanel.add(new JLabel("                                                                         "));
+		infoPanel.add(new JLabel("****************"));
+		infoPanel.add(new JLabel("                                                                         "));
+		Panel.add(infoPanel, BorderLayout.NORTH);
+		
+		JPanel gridPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		gridPanel.setPreferredSize(new Dimension(WIDTH_EDITS, HEIGHT));
 		
 		tempTimeRegionLabel = new javax.swing.JLabel("Grid Temperatures:");
 		
-		Panel.add(s1);
-		Panel.add(s1);
-		Panel.add(tempTimeRegionLabel);
+		gridPanel.add(s1);
+		gridPanel.add(s1);
+		gridPanel.add(tempTimeRegionLabel);
 		
-		
+		gridPanel.add(new JLabel("                                                                         "));
 		//get dates from each Grid cell and display here.
 		
 		for(int k=0;k<=5;k++)
@@ -503,9 +540,9 @@ ActionListener, ChangeListener {
 		
 		tempTimeRegionLabel1 = new javax.swing.JLabel("== Grid 1 - Jan 1, 2014 ==");
 		
-		Panel.add(tempTimeRegionLabel1);
-		Panel.add(s1);
-		Panel.add(s1);
+		gridPanel.add(tempTimeRegionLabel1);
+		gridPanel.add(s1);
+		gridPanel.add(s1);
 		}
 		
 		System.out.println("Inside createOutputGui method");	
@@ -513,7 +550,7 @@ ActionListener, ChangeListener {
 	    
 	     pack();
 	     
-	     
+	     Panel.add(gridPanel, BorderLayout.SOUTH);
 	     return Panel;
     	
     }
@@ -600,17 +637,19 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 		
 		if (command.equals("byName"))
 		{
-			//Remove 2 lines and add code to retrieve values from DB
 			
 			this.setEnableAllUserOptions(false);
 			List<String> lst = new ArrayList<String>();
-			lst.add("Nov12-2014");
-			lst.add("Oct19-2014");
+			lst = qc.getSimulationList();
 			
-			nameSpinner.addItem("Nov12-2014");
-			nameSpinner.addItem("Oct19-2014");
-			//SpinnerListModel smodel = (SpinnerListModel) nameSpinner.getModel();
-			//smodel.setList(lst);
+			for(Iterator<String> s = lst.iterator(); s.hasNext();)
+			{
+				nameSpinner.addItem(s);
+				//nameSpinner.addItem("test");
+				
+			}
+			
+			
 			
 			
 			
@@ -624,10 +663,7 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 		}
 		else if(command.equals("byPF"))
 		{
-			//axisTiltField.setEnabled(true);
-	        //orbitalEccentricityField.setEnabled(true);
-	        //simulationStartField.setEnabled(true);
-	        //simulationEndField.setEnabled(true);
+			
 	        
 	        this.setEnableAllUserOptions(true);
 	        tilt = Double.parseDouble(axisTiltField.getText());
@@ -672,10 +708,17 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 			runQuery.setEnabled(false);
 			
 			//call query controller here
-			
+			if(byNameButton.isSelected())
+			{
+				if(!simulationName.isEmpty())
+					res = qc.getQueryResultBySimulationName(simulationName);
+				
+			}
+				
 	    	
 			
-			JPanel newoutput = runQuery();
+			//JPanel newoutput = createOutputGui(res);
+			JPanel newoutput = createOutputGui();
 			JScrollPane outputScroller = new JScrollPane(newoutput);
 			//this.getContentPane().removeAll();
 			this.setVisible(true);
@@ -700,9 +743,18 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 		}
 		else if(command.equals("filter"))
 		{
+			List<String> lst = new ArrayList<String>();
+			//lst = qc.getSimulationListByUserInputs(tilt, eccentricity, simEnd);
 			
+			for(Iterator<String> s = lst.iterator(); s.hasNext();)
+			{
+				//nameSpinner.addItem(s);
+				
+			}
 			Border valueBorder = BorderFactory.createTitledBorder("Filtered Results ");
 			namePFvaluePanel.setBorder(valueBorder);
+			
+			
 		}
 		else if(command.equals(simulationEndField.getAction()))
 		{
