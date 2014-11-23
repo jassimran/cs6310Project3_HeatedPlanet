@@ -152,6 +152,9 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		createGui();
 		createControl();
 		this.setVisible(true);
+		
+		// TODO remove
+		simName.setText("abc");
 	}
 
 	private static Gui instance = null;

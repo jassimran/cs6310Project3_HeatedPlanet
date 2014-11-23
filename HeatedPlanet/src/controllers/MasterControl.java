@@ -13,11 +13,11 @@ import events.Listener;
 
 public class MasterControl extends AbstractControl {
 	
-	private List<Listener> listeners;
-	
 	// used services
 	private SimulationService simulationService;
 	
+	private List<Listener> listeners;
+		
 	public MasterControl() {
 		super();
 		
@@ -25,7 +25,7 @@ public class MasterControl extends AbstractControl {
 		
 		simulationControl = null;
 		presentationControl = null;
-		
+		// get services reference
 		simulationService = SimulationService.getInstance();
 	}
 

@@ -17,20 +17,20 @@ import events.Listener;
 
 public class SimulationControl extends AbstractControl implements Runnable {
 	
+	// used services
+	private PersistenceService persistenceService;
+	private AccuracyService accuracyService;
+	
 	private List<Listener> listeners;
 		
 	private long simulationStart;
 	private long iddleTime;
-	
-	// used services
-	private PersistenceService persistenceService;
-	private AccuracyService accuracyService;
 		
 	public SimulationControl() {
 		super();
 		
 		listeners = new ArrayList<Listener>();
-		
+		// get services reference
 		persistenceService = PersistenceService.getInstance();
 		accuracyService = AccuracyService.getInstance();
 	}

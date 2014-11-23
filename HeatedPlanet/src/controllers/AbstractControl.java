@@ -1,11 +1,11 @@
 package controllers;
 
-import events.Listener;
 import presentation.PresentationEngine;
 import services.PersistenceService;
 import simulation.SimulationEngine;
 import simulation.SimulationSettings;
 import buffers.Buffer;
+import events.Listener;
 
 public abstract class AbstractControl implements Listener {
 
@@ -55,6 +55,7 @@ public abstract class AbstractControl implements Listener {
 	protected static int presentationIndex;
 
 	protected AbstractControl() {
+		// initialize state
 		simulationRunning = false;
 		terminateSimulation = false;
 		simulationTime = 0;
