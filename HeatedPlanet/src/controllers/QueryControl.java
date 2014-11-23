@@ -156,7 +156,7 @@ public class QueryControl {
 				{tilt, eccentricity, simulationLength, gridSpacing, timeStep,
 				temporalAccuracy, geographicAccuracy, 1};
 		
-		final String format = "Tilt: % Ecc: % Len: % GS: % TS: % TA: % GA: % Run: %";
+		final String format = "Tilt: %s Ecc: %s Len: %s GS: %d TS: %s TA: %s GA: %s Run: %s";
 		
 		retVal = String.format(format, args);
 		
