@@ -11,6 +11,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
@@ -31,6 +32,7 @@ import presentation.query.*;
 import controllers.QueryControl;
 import persistence.*;
 import services.PersistenceService;
+
 import javax.persistence.PersistenceContext;
 import javax.persistence.EntityManager;
 
@@ -41,7 +43,7 @@ ActionListener, ChangeListener {
    
 	
 	
-	static final int WIDTH = 800;
+	static final int WIDTH = 750;
 	static final int HEIGHT = 220;
 
 	static final String ACTION_RUN = "runQuery";
@@ -61,13 +63,14 @@ ActionListener, ChangeListener {
 			/ 4;
 	int LABEL_HEIGHT = 26;
 	private String simulationName = null;
-	private double lat_Start, lat_End, long_Start, long_End, lat, longt;
+	private double lat_start, lat_end, long_start, long_end, lat, longt;
 	private boolean maxTemp, minTemp, meanTempRegion, meanTempTime, tempsTimeRegion;
 	
 	private double eccentricity = DEFAULT_ORBITAL_ECCENTRICITY;
 	private boolean entireEarth;
 	public QueryControl qc = new QueryControl();
 	private QueryResult res;
+	private QueryCell q1, q2;
 	
 	
 	
@@ -159,7 +162,7 @@ ActionListener, ChangeListener {
         jLabel11 = new javax.swing.JLabel();
         longitudeToField = new javax.swing.JTextField(EDIT_BOX_WIDTH);
         simulationPeriodLabel = new javax.swing.JLabel();
-        simulationStartField = new javax.swing.JFormattedTextField();
+        simulationStartField = new javax.swing.JFormattedTextField(new SimpleDateFormat("mm/dd/yy"));
         simulationStartField.setColumns(5);
         simulationStartField.setActionCommand(getName());
         simulationStartField.setEnabled(false);
@@ -170,7 +173,7 @@ ActionListener, ChangeListener {
         longitudeToField.setEnabled(false);
         
         jLabel9 = new javax.swing.JLabel();
-        simulationEndField = new javax.swing.JFormattedTextField();
+        simulationEndField = new javax.swing.JFormattedTextField(new SimpleDateFormat("mm/dd/yy"));
         simulationEndField.setColumns(5);
         simulationEndField.setEnabled(false);
         
@@ -449,52 +452,72 @@ ActionListener, ChangeListener {
     public JPanel createOutputGui()
     {
     	
-    	this.getContentPane().setPreferredSize( new Dimension(1220, 620));
+    	this.getContentPane().setPreferredSize( new Dimension(1320, 620));
     	int EDIT_BOX_WIDTH = 4;
 		int LABEL_HEIGHT = 26;
 		JLabel s1 = new JLabel("                                             ");
         JLabel s2 = new JLabel("                   ");
         JLabel s3 = new JLabel("   ");
+        
+       
+        
     	JPanel Panel;
 		Panel = new JPanel();
 		//Panel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1,Color.blue));
-		Panel.setPreferredSize(new Dimension(420, 620));
+		Panel.setPreferredSize(new Dimension(520, 620));
 		Panel.setLayout(new java.awt.BorderLayout());
 		Panel.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Color.blue));
 		
 		JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		infoPanel.setPreferredSize(new Dimension(WIDTH_EDITS, HEIGHT+5));
+		
+		//infoPanel.setPreferredSize(new Dimension(WIDTH_EDITS, HEIGHT));
+		JScrollPane outputScroller1 = new JScrollPane(infoPanel,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		outputScroller1.setPreferredSize(new Dimension(520, 220));
+		
+		
 		minTempLabel = new javax.swing.JLabel("1. Minimum temperature for region: ");
 		minTempLabel1 = new javax.swing.JLabel("Min Temperature: ");
 		readingTimeLabel = new javax.swing.JLabel("Reading Time: ");
 		locationLabel = new javax.swing.JLabel("Location(latitude/longitude): ");
 		
-		infoPanel.add(minTempLabel);
-		infoPanel.add(new JLabel("                                                 "));
+		//get data for the above labels
+		
+		q1 = res.getMinTempCell();
+		
+	
+		
+		
 		infoPanel.add(minTempLabel1);
-		infoPanel.add(new JLabel("                                                "));
+		infoPanel.add(new JLabel(q1.getTemperature()+""));
+		infoPanel.add(new JLabel("      "));
 		infoPanel.add(readingTimeLabel);
-		infoPanel.add(new JLabel("                 "));
+		infoPanel.add(new JLabel(q1.getSimulatedDate()+""));
+		infoPanel.add(new JLabel(" "));
 		infoPanel.add(locationLabel);
-		infoPanel.add(new JLabel("                                                                     "));
+		infoPanel.add(new JLabel(q1.getLatitude()+"/"+q1.getLongitude()));
+		infoPanel.add(new JLabel("                                            "));
 		infoPanel.add(new JLabel("****************"));
-		infoPanel.add(new JLabel("                                                  "));
-		infoPanel.add(s1);
+		infoPanel.add(new JLabel("                                             "));
+		
 		 
+		q2 = res.getMaxTempCell();
 		maxTempLabel = new javax.swing.JLabel("2. Maximum Temperature for region: ");
 		
 		maxTempLabel1 = new javax.swing.JLabel("Max Temperature: ");
 		
-		infoPanel.add(maxTempLabel);
-		infoPanel.add(new JLabel("                                                 "));
+		//infoPanel.add(maxTempLabel);
+		//infoPanel.add(new JLabel("                                                 "));
 		infoPanel.add(maxTempLabel1);
-		infoPanel.add(new JLabel("                                                "));
+		infoPanel.add(new JLabel(q2.getTemperature()+""));
+		infoPanel.add(new JLabel("       "));
 		infoPanel.add(new JLabel("Reading Time:"));
-		infoPanel.add(new JLabel("                 "));
+		infoPanel.add(new JLabel(q2.getSimulatedDate()+""));
+		infoPanel.add(new JLabel(" "));
 		infoPanel.add(new javax.swing.JLabel("Location(latitude/longitude): "));
-		infoPanel.add(new JLabel("                                                                     "));
+		infoPanel.add(new JLabel(q2.getLatitude()+"/"+q2.getLongitude()));
+		infoPanel.add(new JLabel("                                              "));
 		infoPanel.add(new JLabel("****************"));
-		infoPanel.add(new JLabel("                                                                         "));
+		infoPanel.add(new JLabel("                                               "));
 		regionMeanTempLabel = new javax.swing.JLabel("Mean Temperature over region: ");
 		
 		regionMeanTempLabel2 = new JLabel("Date, Temperature");
@@ -505,11 +528,22 @@ ActionListener, ChangeListener {
 		infoPanel.add(new JLabel("                                                                         "));
 		infoPanel.add(regionMeanTempLabel2);
 		infoPanel.add(new JLabel("                                                                                        "));
-		
+		List<QueryCell> meanQcell1 = res.getMeanTempOverRegion();
+		System.out.println("Mean temp over region query cell is empty?"+ meanQcell1.isEmpty());
+		for(QueryCell qc1 : meanQcell1)
+		{
+			infoPanel.add(new JLabel(qc1.getSimulatedDate()+""));
+			
+			infoPanel.add(new JLabel(","+qc1.getTemperature()));
+			infoPanel.add(new JLabel("                                            "));
+			
+			
+		}
 		infoPanel.add(new JLabel("****************"));
 		infoPanel.add(new JLabel("                                                                         "));
 		timeMeanTempLabel = new javax.swing.JLabel("Mean Temperature during over time:");
 		timeMeanTempLabel2 = new JLabel("Latitude/Longitude, Temperature");
+		
 		
 		
 		
@@ -521,10 +555,30 @@ ActionListener, ChangeListener {
 		infoPanel.add(new JLabel("                                                                         "));
 		infoPanel.add(new JLabel("****************"));
 		infoPanel.add(new JLabel("                                                                         "));
-		Panel.add(infoPanel, BorderLayout.NORTH);
+		
+		
+		List<QueryCell> meanQcell2 = res.getMeanTempOverTime();
+		for(QueryCell qc2 : meanQcell2)
+		{
+			infoPanel.add(new JLabel(qc2.getLatitude()+"/"+qc2.getLongitude()));
+			infoPanel.add(new JLabel(","+qc2.getTemperature()));
+			infoPanel.add(new JLabel("                                            "));
+			
+			
+		}
+		//outputScroller1.setViewportView(infoPanel);
+		Panel.add(outputScroller1, BorderLayout.NORTH);
+		//scrollPane.add(infoPanel);
+		//Panel.add(infoPanel, BorderLayout.NORTH);
 		
 		JPanel gridPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		gridPanel.setPreferredSize(new Dimension(WIDTH_EDITS, HEIGHT));
+		//gridPanel.setPreferredSize(new Dimension(WIDTH_EDITS, 400));
+		
+		JScrollPane outputScroller2 = new JScrollPane(gridPanel,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		outputScroller2.setPreferredSize(new Dimension(520, 400));
+		//outputScroller2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		//outputScroller2.setViewportView(gridPanel);
+
 		
 		tempTimeRegionLabel = new javax.swing.JLabel("Grid Temperatures:");
 		
@@ -535,22 +589,35 @@ ActionListener, ChangeListener {
 		gridPanel.add(new JLabel("                                                                         "));
 		//get dates from each Grid cell and display here.
 		
-		for(int k=0;k<=5;k++)
+		List<QueryGrid> qryGrids = res.getQueryGrids();
+		int gridcount =0;
+		for(QueryGrid qg : qryGrids)
 		{
+			gridcount++;
+			tempTimeRegionLabel1 = new javax.swing.JLabel("== Grid "+ gridcount+ " =="+ qg.getSimulatedDate());
 		
-		tempTimeRegionLabel1 = new javax.swing.JLabel("== Grid 1 - Jan 1, 2014 ==");
+			gridPanel.add(tempTimeRegionLabel1);
+			gridPanel.add(new JLabel("                                         "));
+			gridPanel.add(new JLabel("Lat/Long,               Temperature"));
+			List<QueryCell> qcells = qg.getQueryCells();
+			for (QueryCell qcs : qcells)
+			{
+				gridPanel.add(new JLabel(qcs.getLatitude() + "/" + qcs.getLongitude()));
+				gridPanel.add(new JLabel(qcs.getTemperature()+ " "));
+				
+			}
 		
-		gridPanel.add(tempTimeRegionLabel1);
-		gridPanel.add(s1);
-		gridPanel.add(s1);
 		}
 		
 		System.out.println("Inside createOutputGui method");	
        
 	    
-	     pack();
-	     
-	     Panel.add(gridPanel, BorderLayout.SOUTH);
+	     //pack();
+	   // outputScroller2.setViewportView(gridPanel);
+	    
+	    //scrollPane.add(gridPanel);
+	    Panel.add(outputScroller2, BorderLayout.SOUTH);
+	    // Panel.add(gridPanel, BorderLayout.SOUTH);
 	     return Panel;
     	
     }
@@ -641,10 +708,13 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 			this.setEnableAllUserOptions(false);
 			List<String> lst = new ArrayList<String>();
 			lst = qc.getSimulationList();
+			System.out.println(lst.isEmpty());
 			
-			for(Iterator<String> s = lst.iterator(); s.hasNext();)
+			for(String s : lst)
 			{
+				System.out.println("from database: "+s);
 				nameSpinner.addItem(s);
+				
 				//nameSpinner.addItem("test");
 				
 			}
@@ -655,30 +725,17 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 			
 			
 		}
-		if(command.equals(nameSpinner.getAction()))
+		/*if(command.equals(nameSpinner.getAction()))
 		{
 			 JComboBox cb = (JComboBox)e.getSource();
 		        simulationName = (String)cb.getSelectedItem();
 
-		}
+		}*/
 		else if(command.equals("byPF"))
 		{
 			
-	        
 	        this.setEnableAllUserOptions(true);
-	        tilt = Double.parseDouble(axisTiltField.getText());
-	        eccentricity = Double.parseDouble(orbitalEccentricityField.getText());
 	        
-	        DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-            try
-            {
-	        simStart = df.parse(simulationStartField.getText());
-	        simEnd = df.parse(simulationEndField.getText());
-            }
-            catch(ParseException pe)
-            {
-            	System.out.println("Incorrect date format");
-            }
 		}
 		else if(command.equals("earth"))
 		{
@@ -690,67 +747,131 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 	        latitudeToField.setEnabled(true);
 	        longitudeFromField.setEnabled(true);
 	        longitudeToField.setEnabled(true);
-	        
-	        lat_Start = Double.parseDouble(latitudeFromField.getText());
-	         lat_End = Double.parseDouble(latitudeToField.getText());
-	         long_Start = Double.parseDouble(longitudeFromField.getText());
-	         long_End = Double.parseDouble(longitudeToField.getText());
+	       
 	        
 		}
 		else if (command.equals(ACTION_RUN)) {
 			
 			
 			
-			
+			simulationName=(String)nameSpinner.getSelectedItem();
+			System.out.println("Selected Simulation "+ simulationName);
 			//disable all controls
 			this.setEnableAllUserOptions(false);
 			//disable the run button
 			runQuery.setEnabled(false);
 			
 			//call query controller here
+			//use case 1
 			if(byNameButton.isSelected())
 			{
 				if(!simulationName.isEmpty())
 					res = qc.getQueryResultBySimulationName(simulationName);
 				
 			}
+			//use case 2
+			if(byPFButton.isSelected())
+			{
+				res = qc.computeQueryResults(simulationName,simStart, simEnd, lat_start, lat_end,
+						long_start,long_end);
+			}
 				
 	    	
 			
-			//JPanel newoutput = createOutputGui(res);
-			JPanel newoutput = createOutputGui();
-			JScrollPane outputScroller = new JScrollPane(newoutput);
-			//this.getContentPane().removeAll();
+			
+			JPanel newoutput = new JPanel(new BorderLayout());
+			newoutput = createOutputGui();
+		    //JScrollPane outputScroller = new JScrollPane(newoutput);
 			this.setVisible(true);
 			
 			this.getContentPane().setPreferredSize(
-					new Dimension(800, 1020));
-			System.out.println("Before validating");
+					new Dimension(1320, 1020));
 			
-			//this.getContentPane().invalidate();
-			System.out.println("Before repainting");
-			//this.getContentPane().add(newoutput, BorderLayout.EAST);
-			this.getContentPane().add(outputScroller, BorderLayout.EAST);
+			this.getContentPane().add(newoutput, BorderLayout.EAST);
+			//this.getContentPane().add(outputScroller, BorderLayout.EAST);
 			System.out.println(newoutput.getComponentCount());
 	    	//this.getContentPane().repaint();
 	    	System.out.println("after repainting");
 	    	this.setVisible(true);
 			
 		}
-		else if(command.equals("Reset"))
+		else if(command.equals("reset"))
 		{
 			clear();
 		}
 		else if(command.equals("filter"))
 		{
-			List<String> lst = new ArrayList<String>();
-			//lst = qc.getSimulationListByUserInputs(tilt, eccentricity, simEnd);
+			//if name radio button was selected before and nameSpinner was populated with values, this 
+			//line will clear that list and add simulation names that match filter criteria
 			
-			for(Iterator<String> s = lst.iterator(); s.hasNext();)
+			if(byPFButton.isSelected())
 			{
-				//nameSpinner.addItem(s);
+				
+			nameSpinner.removeAllItems();
+			
+			try
+			{
+				lat_start = Double.parseDouble(latitudeFromField.getText());
+	         	lat_end = Double.parseDouble(latitudeToField.getText());
+	         	long_start = Double.parseDouble(longitudeFromField.getText());
+	         	long_end = Double.parseDouble(longitudeToField.getText());
 				
 			}
+			catch(Exception pe)
+			{
+				System.out.println("Error parsing lat/long");
+				System.out.println(pe);
+				
+			}
+			try
+			{
+				tilt = Double.parseDouble(axisTiltField.getText());
+    	        eccentricity = Double.parseDouble(orbitalEccentricityField.getText());
+			}
+			catch(Exception pe)
+			{
+				System.out.println("Error parsing axis and tilt");
+				System.out.println(pe);
+				
+			}
+			
+	        
+	        //get data from fields
+	        DateFormat df = new SimpleDateFormat("dd/MMM/yyyy HH:mm:ss.SSS"); 
+            try
+            {
+            	System.out.println(simulationEndField.getText());
+    	        simStart = df.parse(simulationStartField.getText());
+    	        simEnd = df.parse(simulationEndField.getText());
+    	        
+            }
+            catch(Exception pe)
+            {
+            	System.out.println("Incorrect date format");
+            	System.out.println(pe.toString());
+            	
+            }
+			
+            
+            //filter simulations in the db based on above values.
+			List<String> lst = new ArrayList<String>();
+			try
+			{
+				
+				System.out.println("Axis, tilt and end date "+ tilt +" " +  eccentricity + " "+ simEnd);
+				lst = qc.getSimulationListByUserInputs(tilt, eccentricity, df.parse("01/04/2015"));
+				for(String s : lst)
+				{
+					nameSpinner.addItem(s);
+					
+				}
+			}
+			catch(Exception pe)
+			{
+				System.out.println("Empty parameter value");
+			}
+			}
+			
 			Border valueBorder = BorderFactory.createTitledBorder("Filtered Results ");
 			namePFvaluePanel.setBorder(valueBorder);
 			
@@ -804,20 +925,21 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
   	
   	public void clear()
   	{
-  		simulationNameField.setText(null);
-        //axisTiltSlider.setValue(0);
-        orbitalEccentricityField.setText(null);
-        latitudeFromField.setText(null);
-        latitudeToField.setText(null);
-        longitudeFromField.setText(null);
-        longitudeToField.setText(null);
-        simulationStartField.setText(null);
-        simulationEndField.setText(null);
+  		//simulationNameField.repaint();
+  		axisTiltField.setText("");
+        orbitalEccentricityField.setText("");
+        latitudeFromField.setText("");
+        latitudeToField.setText("");
+        longitudeFromField.setText("");
+        longitudeToField.setText("");
+        simulationStartField.setText("");
+        simulationEndField.setText("");
         minTempCheckbox.setSelected(false);
         meanTempRegionCheckbox.setSelected(false);
         maxTempRegionCheckbox.setSelected(false);
         meanTempTimeCheckbox.setSelected(false);
         tempsTimeRegionCheckbox.setSelected(false);
+        
   	}
    
     public JPanel runQuery()
@@ -881,11 +1003,11 @@ meanTempTimeCheckbox.isSelected() );
     private javax.swing.JButton filter;
     private javax.swing.JButton reset;
     private javax.swing.JButton animate;
-    private javax.swing.JTextField simulationEndField;
+    private javax.swing.JFormattedTextField simulationEndField;
     private javax.swing.JTextField simulationNameField;
     private javax.swing.JLabel simulationNameLabel;
     private javax.swing.JLabel simulationPeriodLabel;
-    private javax.swing.JTextField simulationStartField;
+    private javax.swing.JFormattedTextField simulationStartField;
     private javax.swing.JLabel tableOptionsLabel;
     private javax.swing.JLabel tempTimeRegionLabel;
     private javax.swing.JCheckBox tempsTimeRegionCheckbox;
@@ -896,7 +1018,7 @@ meanTempTimeCheckbox.isSelected() );
     private ButtonGroup regionbuttonGroup;
     private JRadioButton earthButton;
     private JRadioButton parametersButton;
-   private JComboBox nameSpinner;
+    private JComboBox nameSpinner;
     private JTable outputTable;
     private JLabel spacer, latStart, latEnd, longStart, longEnd;
     private JLabel minTempLabel1,readingTimeLabel,locationLabel,maxTempLabel1,timeMeanTempLabel2,regionMeanTempLabel2,tempTimeRegionLabel1;
