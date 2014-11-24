@@ -162,8 +162,7 @@ public class PersistenceService {
 		q = q.where(cb.equal(s.get("orbital_eccentricity"),
 				eccentricityParameter));
 
-		// TODO: Calculate the number of months to use in this search.
-		int simulationLengthInMonths = 12;
+		int simulationLengthInMonths = SimulationService.getInstance().calculateSimulationMonths(endingDate);
 
 		ParameterExpression<Date> dateParameter = cb.parameter(Date.class);
 		typedQuery.setParameter(dateParameter, endingDate);
