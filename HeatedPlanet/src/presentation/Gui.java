@@ -14,6 +14,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
@@ -550,9 +551,10 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		Border PFBorder = BorderFactory.createTitledBorder("Physical factors ");
 		JPanel PFPanel = new JPanel(new BorderLayout());
 		JPanel option2Labels = new JPanel(new FlowLayout(FlowLayout.LEFT)); 
-		JPanel option2Edits = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		JPanel option2Edits = new JPanel();
+		option2Edits.setLayout(new BoxLayout(option2Edits, BoxLayout.Y_AXIS));
 		option2Labels.setPreferredSize(new Dimension( WIDTH_LABELS, HEIGHT));
-		option2Edits.setPreferredSize(new Dimension(WIDTH_EDITS,HEIGHT));
+		option2Edits.setPreferredSize(new Dimension(100,HEIGHT));
 		PFPanel.setPreferredSize(new Dimension(290, 97));	
 		
 		PFPanel.setBorder(simBorder);
