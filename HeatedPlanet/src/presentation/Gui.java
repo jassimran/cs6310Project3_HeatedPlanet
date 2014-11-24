@@ -27,6 +27,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpringLayout;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -130,6 +131,11 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	
 	private JLabel simTime = null;
 	private Calendar simTimeCal = DATE_FORMAT.getCalendar();
+	
+	private JLabel orbitalPos = null;
+	private JLabel orbitalPosResult = null;
+	private JLabel rotationalPos = null;
+	private JLabel rotationalPosResult = null;
 
 	private EarthPanel EarthPanel = new EarthPanel(new Dimension(800, 420), new Dimension(800, 420), new Dimension(800, 420));
 
@@ -526,17 +532,35 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		runOpts.setBorder(runBorder);
 				
 		// Time Panel
-		JPanel simTimePanel = new JPanel();
-		simTimePanel.setBorder(BorderFactory.createTitledBorder("Simulation Time"));
+		SpringLayout layout = (new SpringLayout());
+		JPanel simTimePanel = new JPanel(layout);
+		simTimePanel.setPreferredSize(new Dimension(310, 98));
+		simTimePanel.setBorder(BorderFactory.createTitledBorder("Time & Position"));
 		simTime = new JLabel(START_TIME);
-		simTime.setPreferredSize(new Dimension(310, 30));
-		simTime.setFont(new Font("Arial Black",Font.BOLD, 12));
-		simTimePanel.add(simTime);
-	
+		layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, simTime, 0, SpringLayout.HORIZONTAL_CENTER, simTimePanel);
+		layout.putConstraint(SpringLayout.NORTH, simTime, 5, SpringLayout.NORTH, simTimePanel);
+		simTimePanel.add(simTime);		
+		
+		orbitalPos = new JLabel(" Orbital Position: ");
+		layout.putConstraint(SpringLayout.WEST, orbitalPos, 5, SpringLayout.WEST, simTimePanel);
+		layout.putConstraint(SpringLayout.NORTH, orbitalPos, 8, SpringLayout.SOUTH, simTime);
+		simTimePanel.add(orbitalPos);
+		orbitalPosResult = new JLabel(" x= y = ");
+		layout.putConstraint(SpringLayout.WEST, orbitalPosResult, 25, SpringLayout.EAST, orbitalPos);
+		layout.putConstraint(SpringLayout.NORTH, orbitalPosResult, 8, SpringLayout.SOUTH, simTime);
+		simTimePanel.add(orbitalPosResult);
+		
+		rotationalPos = new JLabel(" Rotational Position: ");
+		layout.putConstraint(SpringLayout.WEST, rotationalPos, 5, SpringLayout.WEST, simTimePanel);
+		layout.putConstraint(SpringLayout.NORTH, rotationalPos, 8, SpringLayout.SOUTH, orbitalPos);
+		simTimePanel.add(rotationalPos);
+		rotationalPosResult = new JLabel("Latitude= 23, longitude = 0");	
+		layout.putConstraint(SpringLayout.WEST, rotationalPosResult, 5, SpringLayout.EAST, rotationalPos);
+		layout.putConstraint(SpringLayout.NORTH, rotationalPosResult, 8, SpringLayout.SOUTH, orbitalPos);
+		simTimePanel.add(rotationalPosResult);
+		
 		runOpts.add(simTimePanel, BorderLayout.SOUTH);
 		runAndTimePanel.add(runOpts, BorderLayout.CENTER);
-				
-		
 		//Query Panel
 		JPanel initQueryPanel = new JPanel(new BorderLayout());
 		Border initQueryBorder = BorderFactory.createTitledBorder("Launch ");		
@@ -559,7 +583,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		option2Edits.setLayout(new BoxLayout(option2Edits, BoxLayout.Y_AXIS));
 		option2Labels.setPreferredSize(new Dimension( WIDTH_LABELS, HEIGHT));
 		option2Edits.setPreferredSize(new Dimension(100,HEIGHT));
-		PFPanel.setPreferredSize(new Dimension(290, 97));	
+		PFPanel.setPreferredSize(new Dimension(290, 60));	
 		
 		PFPanel.setBorder(simBorder);
 	    
@@ -589,27 +613,11 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	    axisTilt.setInputVerifier(new AxialTiltInputVerifier());
 	    axisTilt.setToolTipText("In degrees");
 	    axisTiltLabel.setToolTipText("In degrees");
-        //axisTiltSlider = new JSlider();
-        //axisTiltSlider = new JSlider(JSlider.HORIZONTAL, -180.0, 180.0, DEFAULT_AXIAL_TILT);        
-        //axisTiltSlider.setMajorTickSpacing(60);
-        //axisTiltSlider.setMaximum(180);
-        //axisTiltSlider.setMinimum(-180);
-        //axisTiltSlider.setMinorTickSpacing(30);
-        //axisTiltSlider.setPaintLabels(true);
-        //axisTiltSlider.setPaintTicks(true);
-        //axisTiltSlider.setPaintTrack(true);
-        //axisTiltEdit = new EventTextField(EDIT_BOX_WIDTH, 1); 
-        //axisTiltEdit.setEditable(false);
-        //axisTiltSlider.addChangeListener(axisTiltEdit);
-        //option2Labels.add(axisTiltLabel);
-        //option2Edits.add(axisTiltSlider);
-        //option2Edits.add(axisTiltEdit);
         
         
         PFPanel.add(option2Labels,BorderLayout.WEST);
 		PFPanel.add(option2Edits, BorderLayout.EAST);
 		PFPanel.setBorder(PFBorder);
-		
 		
 		
 		runAndTimePanel.add(PFPanel, BorderLayout.NORTH );
