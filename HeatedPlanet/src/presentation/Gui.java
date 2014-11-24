@@ -285,8 +285,12 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	        		JOptionPane.showMessageDialog(null, "Please enter Simulation name!");
 	        		return false;
 	        	}
-	        	else
-	        		return true;
+	        	else if(new QueryControl().simulationNameExists(text)){
+	    			// notify user
+	    			JOptionPane.showMessageDialog(null, "The simulation name already exists!");
+	    			return false;
+	        	}
+	        	return true;
 	        		
 	        } catch (NumberFormatException e) {
 	        	JOptionPane.showMessageDialog(null, "Please enter Simulation name");
@@ -633,6 +637,10 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	        	if (text.length() <1){
 	        		JOptionPane.showMessageDialog(null, "Please enter Simulation name!");
 	        	}
+	        	else if(new QueryControl().simulationNameExists(text)){
+	    			// notify user
+	    			JOptionPane.showMessageDialog(null, "The simulation name already exists!");
+	        	}
 	        	else{
 	        		//disable all controls
 	    			this.setEnableAllUserOptions(false);
@@ -731,10 +739,6 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		simulationSettings.setAxialTilt(Double.parseDouble(axisTilt.getText()));
 		simulationSettings.setEccentricity(Double.parseDouble(eccentricity.getText().toString()));
 		simulationSettings.setName(simName.getText());
-		if(new QueryControl().simulationNameExists(simName.getText())){
-			// TODO: display a message to the user if the simulation name exists
-			return;
-		}	
 		simulationSettings.setSimulationLength(simLengthEdit.getValue()); // default 12
 		simulationSettings.setTemporalAccuracy(tempAccuracyEdit.getValue());
 		simulationSettings.setGeoAccuracy(geoAccuracyEdit.getValue());
