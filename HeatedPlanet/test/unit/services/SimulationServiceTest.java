@@ -2,6 +2,8 @@ package services;
 
 import static org.junit.Assert.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.junit.After;
@@ -49,9 +51,10 @@ public class SimulationServiceTest {
 	}
 
 	@Test
-	public void testCalculateSimulationMonths1() {
+	public void testCalculateSimulationMonths1() throws ParseException {
 		// given:		
-		Date endingDate = new Date(2014, 1, 15);
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		Date endingDate = sdf.parse("01/15/2014");
 		
 		// when:
 		int simulationMonths = simulationService.calculateSimulationMonths(endingDate);
@@ -61,9 +64,10 @@ public class SimulationServiceTest {
 	}
 	
 	@Test
-	public void testCalculateSimulationMonths2() {
+	public void testCalculateSimulationMonths2() throws ParseException {
 		// given:
-		Date endingDate = new Date(2014, 2, 15);
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		Date endingDate = sdf.parse("02/15/2014");
 		
 		// when:
 		int simulationMonths = simulationService.calculateSimulationMonths(endingDate);
