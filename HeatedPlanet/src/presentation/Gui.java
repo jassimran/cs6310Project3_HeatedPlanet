@@ -357,6 +357,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		tmpLabel = new JLabel("Pres Display Rate:");
 		lblSecs = new JLabel("seconds");
 		tmpLabel.setPreferredSize(new Dimension(WIDTH_LABELS,LABEL_HEIGHT));
+		tmpLabel.setToolTipText("Set presentation display rate");
 		displayEdit = new EventTextField(EDIT_BOX_WIDTH, 1); 
 		displayEdit.setEditable(false);
 		displaySlider = new JSlider(JSlider.HORIZONTAL, 1, 60, 1);
@@ -412,6 +413,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
         simLengthLabel = new JLabel();
         simLengthLabel.setPreferredSize(new Dimension(WIDTH_LABELS,	LABEL_HEIGHT));
         simLengthLabel.setText("Simulation Length:");
+        simLengthLabel.setToolTipText("Set simulation duration");
         lblmonths = new JLabel("months");
         simLengthSlider.setMajorTickSpacing(200);
         simLengthSlider.setMaximum(1200);        
@@ -433,6 +435,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		tempAccuracyLabel = new JLabel();
 		tempAccuracyLabel.setPreferredSize(new Dimension(WIDTH_LABELS,LABEL_HEIGHT));
 		tempAccuracyLabel.setText("Temp Accuracy:");
+		tempAccuracyLabel.setToolTipText("Set Temporal Accuracy");
 		tempAccuracySlider = new JSlider(JSlider.HORIZONTAL, 1, 100, DEFAULT_TEMP_ACCURACY);
 		tempAccuracySlider.setMajorTickSpacing(10);
 		tempAccuracySlider.setMaximum(100);
@@ -455,6 +458,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		geoAccuracyLabel = new JLabel();
 		geoAccuracyLabel.setPreferredSize(new Dimension(WIDTH_LABELS,LABEL_HEIGHT));
 		geoAccuracyLabel.setText("Geo Accuracy: ");
+		geoAccuracyLabel.setToolTipText("Set geographic Accuracy");
 		geoAccuracySlider = new JSlider(JSlider.HORIZONTAL, 1, 100, DEFAULT_GEO_ACCURACY);
 		geoAccuracySlider.setMajorTickSpacing(10);
 		geoAccuracySlider.setMaximum(100);
@@ -479,6 +483,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	    optionLabels.add(precisionLabel);
 	    optionEdits.add(precision);	 
 	    precision.setInputVerifier(new PrecisionInputVerifier());
+	    precisionLabel.setToolTipText("Set Data precision");
 	    
 	    
 	    //Added simulation Label and Text box
@@ -490,6 +495,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		//optionEdits.add(new JLabel(" "));
 		optionEdits.add(simName);
 		simName.setInputVerifier(new SimulationNameInputVerifier());
+		simName.setToolTipText("Enter unique name");
 		
 		configOpts.add(optionLabels, BorderLayout.WEST);
 		configOpts.add(optionEdits, BorderLayout.EAST);
@@ -546,8 +552,6 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		initQueryPanel.add(queryOpts, BorderLayout.CENTER);
 		runAndTimePanel.add(initQueryPanel, BorderLayout.SOUTH);
 		
-		
-		
 		Border PFBorder = BorderFactory.createTitledBorder("Physical factors ");
 		JPanel PFPanel = new JPanel(new BorderLayout());
 		JPanel option2Labels = new JPanel(new FlowLayout(FlowLayout.LEFT)); 
@@ -565,6 +569,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	    eccentricityLabel.setText("Orbital eccentricity:");
 	    eccentricity = new JTextField(String.valueOf(DEFAULT_ECCENTRICITY),6);
 	    option2Labels.add(eccentricityLabel);
+	    eccentricity.setToolTipText("Between 0 and 1");
 	    
 	    option2Edits.add(eccentricity);
 	    lblDegrees = new JLabel("   ");
@@ -582,8 +587,8 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	    option2Labels.add(axisTiltLabel);
 	    option2Edits.add(axisTilt);
 	    axisTilt.setInputVerifier(new AxialTiltInputVerifier());
-	    //lblDegrees = new JLabel("degrees");
-	    //option2Edits.add(lblDegrees);
+	    axisTilt.setToolTipText("In degrees");
+	    axisTiltLabel.setToolTipText("In degrees");
         //axisTiltSlider = new JSlider();
         //axisTiltSlider = new JSlider(JSlider.HORIZONTAL, -180.0, 180.0, DEFAULT_AXIAL_TILT);        
         //axisTiltSlider.setMajorTickSpacing(60);
