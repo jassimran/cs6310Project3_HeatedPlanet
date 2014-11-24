@@ -147,24 +147,16 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 				// Attenuating temperature based on distance from the sun.
 				originalTemp = eccentricityAttenuation * originalTemp;
 				
-				simpleCell.t = round(originalTemp, settings.getPrecision());
+				simpleCell.t = SimulationUtils.round(originalTemp, settings.getPrecision());
 				temperatureGrid.setTemperature(x, y, simpleCell);
 			}
 		}
+		
+		temperatureGrid = SimulationUtils.dissipateExcessHeat(inputGrid, temperatureGrid, settings.getPrecision());
 		
 		// set simulation time
 		temperatureGrid.setSimulationTime(simulationTime);
 		
 		return temperatureGrid;
 	}
-
-	/**
-	 * Rounds a double to the specified number of digits of precision.
-	 * @param originalTemp
-	 * @param precision
-	 * @return The rounded value.
-	 */
-	protected double round(double originalTemp, int precision) {
-		return new Double(String.format("%." + precision +"f", originalTemp));
-	}	
 }
