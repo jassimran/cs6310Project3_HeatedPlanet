@@ -93,18 +93,13 @@ public class QueryControl {
 			int precision = 7; // the number of digits storable in a float
 			
 			SimulationSettings settings = new SimulationSettings();
-			
-			// TODO: Determine what these values should be
-//			settings.setSOption(concurrency_Sim.isSelected());
-//			settings.setPOption(concurrency_Pres.isSelected());
-//			settings.setROption(initiative_R.isSelected());
-//			settings.setTOption(initiative_T.isSelected());
-//
-//			
-//			settings.numCellsX = EarthPanel.getNumCellsX();
-//			settings.numCellsY = EarthPanel.getNumCellsY();
-//			settings.setBufferSize((Integer) spinner.getValue());
-			// End TODO
+			settings.setSOption(true);
+			settings.setPOption(false);
+			settings.setROption(false);
+			settings.setTOption(false);
+			settings.numCellsX = 360 / gridSpacing;
+			settings.numCellsY = 180 / gridSpacing;
+			settings.setBufferSize(1);
 			
 			settings.setTemporalAccuracy(temporalAccuracy);
 			settings.setGeoAccuracy(geographicAccuracy);
@@ -121,7 +116,8 @@ public class QueryControl {
 					simulationLength, gridSpacing, timeStep, 
 					temporalAccuracy, geographicAccuracy));
 			
-			new SimulationControl().runSimulation(settings);
+			// TODO: Uncomment this after Jaime's branch is merged
+			//this.runSimulation(settings);
 		}
 		
 		// TODO Do we need to do something to force the system to wait until the simulation is completed?
