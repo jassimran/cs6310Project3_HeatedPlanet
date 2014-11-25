@@ -105,6 +105,8 @@ public abstract class AbstractControl implements Listener {
 		simulation.setGridSpacing(simulationSettings.getGridSpacing());
 		simulation.setPrecision(simulationSettings.getPrecision());
 		simulation.setTimeStep(simulationSettings.getSimulationTimeStep());
+		simulation.setNumberOfColumns(simulationSettings.getNumCellsX());
+		simulation.setNumberOfRows(simulationSettings.getNumCellsY());
 		
 		return simulation;
 	}
