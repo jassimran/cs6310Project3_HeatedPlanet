@@ -179,7 +179,10 @@ public class QueryControl extends AbstractControl implements Runnable {
 			}
 		}
 		
-		// TODO notify listeners simulation is finished
+		// notify listeners simulation is finished
+		for(Listener listener : listeners) {
+			listener.notify(EventType.SimulationFinishedEvent);
+		}
 	}
 
 	@Override
