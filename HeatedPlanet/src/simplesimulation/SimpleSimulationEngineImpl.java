@@ -13,7 +13,6 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 	private int rows;
 	private int cols;
 	private int columnUnderTheSun;
-	private int rowAtTheEquator;
 	private int rowUnderTheSun;
 	private double gcptz;
 	private int daylightLeftLimit;
@@ -31,10 +30,6 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 			|| (cols + daylightLeftLimit <= column) 
 			|| (column <= (daylightRightLimit - cols)));
 	}
-	
-	/**
-	 * @return the attenuation of the given column
-	 */
 	
 	/**
 	 * Calculates the attenuation of the given column, which is proportional
@@ -55,7 +50,6 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 	 * @return the attenuation of the given row
 	 */
 	private double getAttenuationRow(int row) {
-		//double distance = Math.abs(row - rowAtTheEquator);
 		double distance = Math.abs(row - rowUnderTheSun);
 		distance = distance * earthPanel.getDegreeSeparation();
 		return Math.cos(distance * Math.PI / 180);
@@ -79,11 +73,8 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 		columnUnderTheSun = SimpleCell.columnUnderTheSun(simulationTime, cols); // westward from primary meridian
 		columnUnderTheSun = (cols - columnUnderTheSun); // adjusted to map GRID coordinates
 		
-		rowAtTheEquator = (int) ((double) rows / (double) 2);
-		
 		gcptz = ((double) cols / (double) 24);
 		
-			
 		//TODO::Need to fix when columnUnderTheSun is < 0 and > cols
 		daylightLeftLimit = (int) (columnUnderTheSun - (6 * gcptz));
 		daylightRightLimit = (int) (columnUnderTheSun + (5 * gcptz));
@@ -112,14 +103,10 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 		double Fcooling = 239.4 * 1.1; // W/m2  //NOTE::Added *1.5 as a cooling fake to assist with gaps in calculation
 		double Fs = 1368; // W/m2
 		
-		System.out.println("Eccentricity: " + settings.getEccentricity() + " - Obliquity: "+ settings.getAxialTilt() + " - Eccentricity Attenuation: " + eccentricityAttenuation);
-		
 		double latitudeUnderSun = SimulationUtils.latitudeNoonSun(timeSinceLastPerihelion, settings.getEccentricity(), SimulationUtils.EARTH_PERIAPSIS, SimulationUtils.ORBITAL_PERIOD, settings.getAxialTilt());
 		
 		// Calculating grid row index corresponding to latitude where sun is hitting directly
 		rowUnderTheSun = (int) (latitudeUnderSun / earthPanel.getDegreeSeparation() + rows / 2);
-		
-		System.out.println("Row directly at sun: " + rowUnderTheSun + " [" + latitudeUnderSun + "] R.Equator: "+ rowAtTheEquator+ " - Time: " + simulationTime);
 		
 		// TODO execute simple simulation
 		for(int y=0; y<rows; y++) {
@@ -145,7 +132,7 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 				double originalTemp = inputGrid.getTemperature(x, y) + deltaT;
 				
 				// Attenuating temperature based on distance from the sun.
-				originalTemp = eccentricityAttenuation * originalTemp;
+				originalTemp *= eccentricityAttenuation;
 				
 				simpleCell.t = round(originalTemp, settings.getPrecision());
 				temperatureGrid.setTemperature(x, y, simpleCell);
