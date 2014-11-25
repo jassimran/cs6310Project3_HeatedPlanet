@@ -73,7 +73,7 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 		columnUnderTheSun = SimpleCell.columnUnderTheSun(simulationTime, cols); // westward from primary meridian
 		columnUnderTheSun = (cols - columnUnderTheSun); // adjusted to map GRID coordinates
 		
-		gcptz = ((double) cols / (double) 24);
+		gcptz = (cols / 24d);
 		
 		//TODO::Need to fix when columnUnderTheSun is < 0 and > cols
 		daylightLeftLimit = (int) (columnUnderTheSun - (6 * gcptz));
