@@ -239,16 +239,26 @@ ActionListener, ChangeListener {
         
         namePFPanel.add(namePFRadioPanel);
         namePFvaluePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        namePFvaluePanel.setPreferredSize(new Dimension(150, HEIGHT-100));
+        namePFvaluePanel.setPreferredSize(new Dimension(300, HEIGHT-100));
         
        
         Border valueBorder = BorderFactory.createTitledBorder("Matching Simulations ");
         namePFvaluePanel.setBorder(valueBorder);
         
+        //nameSpinner.setMaximumSize(new Dimension(EDIT_BOX_WIDTH, 2));
+        nameSpinner.setPreferredSize(new Dimension(250,25));
+        nameSpinner.setLightWeightPopupEnabled(true);
+		//nameSpinner.setPopupVisible(true);
+		//nameSpinner.showPopup();
         
-       
+
         namePFvaluePanel.add(simulationNameLabel);
         namePFvaluePanel.add(nameSpinner);
+       
+
+        //nameSpinner.setMaximumSize(new Dimension(10, 1));
+        System.out.println("Combobox dimension: "+ nameSpinner.getSize());
+      
        
      
         //namePFvaluePanel.setBorder(valueBorder);
@@ -417,6 +427,7 @@ ActionListener, ChangeListener {
         runQuery.addActionListener(this);
 		runQuery.setEnabled(true); 
         runQuery.setActionCommand(ACTION_RUN);
+        runresetPanel.add(new JLabel("                  "));
         runresetPanel.add(runQuery);
         reset.setText("Reset");
         reset.addActionListener(this);
@@ -646,8 +657,11 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
     
     @Override
 	public void actionPerformed(ActionEvent e) {
-		//get the command
+		
 		String command = e.getActionCommand();
+		String sname = (String)nameSpinner.getSelectedItem();
+		nameSpinner.setToolTipText(sname);
+		
 		
 		if (command.equals("byName"))
 		{
@@ -660,9 +674,10 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 			for(String s : lst)
 			{
 				System.out.println("from database: "+s);
-				nameSpinner.addItem(s);				
+				nameSpinner.addItem(s);
 				
 			}
+			
      	}
 		else if(command.equals("byPF"))
 		{
@@ -725,19 +740,18 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 		    System.out.println(outputScroller.getViewport().getExtentSize());
 		    
 		    this.getContentPane().setPreferredSize(new Dimension(1320, 620));
-			
 			this.getContentPane().add(outputScroller, BorderLayout.EAST);
 			this.pack();
 			this.setVisible(true);
 			
-	    	System.out.println("after repainting");
+	
 	    
 		}
 		else if(command.equals("reset"))
 		{
 		
 			
-			//remove items from comboBox, unselect Radio Buttons.
+			//remove items from comboBox, clear Radio Buttons.
 			nameSpinner.removeAllItems();
 			if(byNameButton.isSelected())
 			{
@@ -849,6 +863,11 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 		{
 			
 		}
+		else if(command.equals(nameSpinner.getAction()))
+		{
+			
+			
+		}
     }
     
     public void stateChanged(ChangeEvent e) {
@@ -865,8 +884,6 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
   	
   		
   		
-         //runQuery.setEnabled(bEnable);
-         //simulationNameField.setEnabled(bEnable);
   		 axisTiltField.setEnabled(bEnable);
          orbitalEccentricityField.setEnabled(bEnable);
          latitudeFromField.setEnabled(bEnable);
@@ -877,11 +894,6 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
          simulationEndField.setEnabled(bEnable);
          earthButton.setEnabled(bEnable);
          parametersButton.setEnabled(bEnable);
-         //minTempCheckbox.setEnabled(bEnable);
-         //meanTempRegionCheckbox.setEnabled(bEnable);
-         //maxTempRegionCheckbox.setEnabled(bEnable);
-         //meanTempTimeCheckbox.setEnabled(bEnable);
-         //tempsTimeRegionCheckbox.setEnabled(bEnable);
          filter.setEnabled(bEnable);
 
   	}
