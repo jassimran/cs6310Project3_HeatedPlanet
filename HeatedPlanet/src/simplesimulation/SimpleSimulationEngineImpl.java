@@ -1,13 +1,10 @@
 package simplesimulation;
 
-import presentation.earth.EarthPanel;
 import presentation.earth.TemperatureGrid;
 import simulation.SimulationEngine;
 import simulation.SimulationSettings;
 
 public class SimpleSimulationEngineImpl implements SimulationEngine {
-
-	private EarthPanel earthPanel;
 	
 	// daylight variables
 	private int rows;
@@ -18,8 +15,15 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 	private int daylightLeftLimit;
 	private int daylightRightLimit;
 	
-	public SimpleSimulationEngineImpl(EarthPanel earthPanel) {
-		this.earthPanel = earthPanel;
+	// earth panel information
+	private int numCellsY;
+	private int numCellsX;
+	private int degreeSeparation;
+	
+	public SimpleSimulationEngineImpl(int numCellsY, int numCellsX, int degreeSeparation) {
+		this.numCellsY = numCellsY;
+		this.numCellsX = numCellsX;
+		this.degreeSeparation = degreeSeparation;
 	}
 	
 	/**
@@ -43,7 +47,7 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 	 */
 	private double getAttenuationColumn(int column) {
 		double distance = Math.abs(column - columnUnderTheSun);
-		distance = distance * earthPanel.getDegreeSeparation();
+		distance = distance * degreeSeparation;
 		return Math.abs(Math.cos(distance * Math.PI / 180));
 	}
 	
@@ -55,24 +59,24 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 	 */
 	private double getAttenuationRow(int row) {
 		double distance = Math.abs(row - rowAtTheEquator);
-		distance = distance * earthPanel.getDegreeSeparation();
+		distance = distance * degreeSeparation;
 		return Math.cos(distance * Math.PI / 180);
 	}
 	
 	@Override
 	public synchronized TemperatureGrid executeSimulationStep(SimulationSettings settings, int simulationTime, TemperatureGrid inputGrid) {
 		if(inputGrid==null) {
-			SimpleTemperatureGridImpl simpleTemperatureGridImpl = new SimpleTemperatureGridImpl(earthPanel);
+			SimpleTemperatureGridImpl simpleTemperatureGridImpl = new SimpleTemperatureGridImpl(numCellsY, numCellsX, degreeSeparation);
 			simpleTemperatureGridImpl.initGrid();
 			inputGrid = simpleTemperatureGridImpl;
 		}
 		
 		// create grid for new simulation
-		SimpleTemperatureGridImpl temperatureGrid = new SimpleTemperatureGridImpl(earthPanel);
+		SimpleTemperatureGridImpl temperatureGrid = new SimpleTemperatureGridImpl(numCellsY, numCellsX, degreeSeparation);
 		
 		// calculate variables
-		rows = earthPanel.getNumCellsY();
-		cols = earthPanel.getNumCellsX();
+		rows = numCellsY;
+		cols = numCellsX;
 		
 		columnUnderTheSun = SimpleCell.columnUnderTheSun(simulationTime, cols); // westward from primary meridian
 		columnUnderTheSun = (cols - columnUnderTheSun); // adjusted to map GRID coordinates

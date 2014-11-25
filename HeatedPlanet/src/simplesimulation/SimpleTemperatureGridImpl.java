@@ -1,28 +1,33 @@
 package simplesimulation;
 
-import presentation.earth.EarthPanel;
 import presentation.earth.TemperatureGrid;
 
 public class SimpleTemperatureGridImpl implements TemperatureGrid {
 
 	private SimpleCell grid [][];
 	
-	private EarthPanel earthPanel;
-	
 	private int simulationTime;
 	
 	
-	protected SimpleTemperatureGridImpl(EarthPanel earthPanel) {
-		this.earthPanel = earthPanel;
-		grid = new SimpleCell[earthPanel.getNumCellsY()][earthPanel.getNumCellsX()];
+	// earth panel information
+	private int numCellsY;
+	private int numCellsX;
+	private int degreeSeparation;
+	
+	protected SimpleTemperatureGridImpl(int numCellsY, int numCellsX, int degreeSeparation) {
+		this.numCellsY = numCellsY;
+		this.numCellsX = numCellsX;
+		this.degreeSeparation = degreeSeparation;
+		
+		grid = new SimpleCell[numCellsY][numCellsX];
 	}
 	
 	/**
 	 * Sets temperature values to 288' Kelvin
 	 */
 	protected void initGrid() {
-		int rows = earthPanel.getNumCellsY();
-		int cols = earthPanel.getNumCellsX();
+		int rows = numCellsY;
+		int cols = numCellsX;
 		
 		for(int y=0; y<rows; y++) {
 			for(int x=0; x<cols; x++) {
@@ -50,9 +55,9 @@ public class SimpleTemperatureGridImpl implements TemperatureGrid {
 
 	@Override
 	public float getCellHeight(int x, int y) {
-		int rows = earthPanel.getNumCellsY();
-		int cols = earthPanel.getNumCellsX();
-		int gs = earthPanel.getDegreeSeparation();
+		int rows = numCellsY;
+		int cols = numCellsX;
+		int gs = degreeSeparation;
 		int i = rows - (y + 1); int j = cols - (x + 1);	
 		float latTop = (i-(rows/2))*gs;
 		float latBot = latTop + (float) gs;
@@ -79,12 +84,12 @@ public class SimpleTemperatureGridImpl implements TemperatureGrid {
 
 	@Override
 	public int getRows() {
-		return earthPanel.getNumCellsY();
+		return numCellsY;
 	}
 
 	@Override
 	public int getCols() {
-		return earthPanel.getNumCellsX();
+		return numCellsX;
 	}
 
 }

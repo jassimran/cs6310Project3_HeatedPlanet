@@ -693,13 +693,10 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	private void runSimulation() {
 		// create settings object
 		SimulationSettings simulationSettings = new SimulationSettings();
-		//Set simulation Settings according to Gui Selections
 		simulationSettings.setSOption(concurrency_Sim.isSelected());
 		simulationSettings.setPOption(concurrency_Pres.isSelected());
 		simulationSettings.setROption(initiative_R.isSelected());
 		simulationSettings.setTOption(initiative_T.isSelected());
-
-		
 		simulationSettings.numCellsX = EarthPanel.getNumCellsX();
 		simulationSettings.numCellsY = EarthPanel.getNumCellsY();
 		simulationSettings.setBufferSize((Integer) spinner.getValue());
