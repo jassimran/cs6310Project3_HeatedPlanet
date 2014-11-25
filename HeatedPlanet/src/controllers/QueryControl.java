@@ -135,16 +135,7 @@ public class QueryControl extends AbstractControl implements Runnable {
 		}
 				
 		// create simulation
-		Simulation simulation = new Simulation();
-		simulation.setName(simulationSettings.getName());
-		simulation.setOrbitalEccentricity(simulationSettings.getEccentricity());
-		simulation.setAxialTilt(simulationSettings.getAxialTilt());
-		simulation.setTemporalAccuracy(simulationSettings.getTemporalAccuracy());
-		simulation.setGeoAccuracy(simulationSettings.getGeoAccuracy());
-		simulation.setLength(simulationSettings.getSimulationLength());
-		simulation.setGridSpacing(simulationSettings.getGridSpacing());
-		simulation.setPrecision(simulationSettings.getPrecision());
-		simulation.setTimeStep(simulationSettings.getSimulationTimeStep());
+		Simulation simulation = createSimulation(simulationSettings);
 		
 		// get total grids to produce
 		int totalGrids;

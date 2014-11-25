@@ -1,5 +1,6 @@
 package controllers;
 
+import domain.Simulation;
 import presentation.PresentationEngine;
 import services.PersistenceService;
 import simulation.SimulationEngine;
@@ -86,6 +87,26 @@ public abstract class AbstractControl implements Listener {
 	 */
 	public boolean simulationExists(String simulationName) {
 		return (PersistenceService.getInstance().findBySimulationName(simulationName) != null)? true : false;
+	}
+	
+	/**
+	 * @return a Simulation based on the given SimulationSettings
+	 */
+	protected Simulation createSimulation(SimulationSettings simulationSettings) {
+		
+		// create simulation
+		Simulation simulation = new Simulation();
+		simulation.setName(simulationSettings.getName());
+		simulation.setOrbitalEccentricity(simulationSettings.getEccentricity());
+		simulation.setAxialTilt(simulationSettings.getAxialTilt());
+		simulation.setTemporalAccuracy(simulationSettings.getTemporalAccuracy());
+		simulation.setGeoAccuracy(simulationSettings.getGeoAccuracy());
+		simulation.setLength(simulationSettings.getSimulationLength());
+		simulation.setGridSpacing(simulationSettings.getGridSpacing());
+		simulation.setPrecision(simulationSettings.getPrecision());
+		simulation.setTimeStep(simulationSettings.getSimulationTimeStep());
+		
+		return simulation;
 	}
 	
 	/**
