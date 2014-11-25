@@ -50,18 +50,15 @@ public class SimpleTemperatureGridImpl implements TemperatureGrid {
 	@Override
 	public float getCellHeight(int x, int y) {
 		int rows = earthPanel.getNumCellsY();
-		//int cols = earthPanel.getNumCellsX();
 		int gs = earthPanel.getDegreeSeparation();
 		int i = rows - (y + 1); 
-		//int j = cols - (x + 1);	
 		float latTop = (i-(rows/2))*gs;
-		float latBot = latTop + (float) gs;
+		float latBot = latTop + gs;
 		float height = (float) (Math.sin(Math.toRadians(latTop)) - Math
 				.sin(Math.toRadians(latBot))) / 2;
 		height = (float) Math.abs(height);
+
 		return height;
-		
-		//return SimpleCell.getCellHeight(i, j, rows, cols, gs);
 	}
 	
 	/**
