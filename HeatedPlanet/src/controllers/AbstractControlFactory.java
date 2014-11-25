@@ -16,6 +16,9 @@ public class AbstractControlFactory {
 	public static final int AB 	= 1; // producer-consumer initiative
 	public static final int BA 	= 2; // consumer-producer initiative
 	
+	// query control type/id
+	public static final int Q 	= 3;
+	
 		
 	private AbstractControlFactory() {
 		// TODO Auto-generated constructor stub
@@ -46,6 +49,10 @@ public class AbstractControlFactory {
 		
 		if(controlId == BA) {
 			control = new PresentationControl();
+		}
+		
+		if(controlId == Q) {
+			control = new QueryControl();
 		}
 		
 		return control;

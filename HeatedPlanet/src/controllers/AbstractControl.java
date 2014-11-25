@@ -78,7 +78,7 @@ public abstract class AbstractControl implements Listener {
 		return simulationTime;
 	}
 
-	public static void setBuffer(Buffer buffer) {
+	protected static void setBuffer(Buffer buffer) {
 		AbstractControl.buffer = buffer;
 	}
 	
