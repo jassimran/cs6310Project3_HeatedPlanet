@@ -10,7 +10,7 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 	private int rows;
 	private int cols;
 	private int columnUnderTheSun;
-	private int rowAtTheEquator;
+	private int rowUnderTheSun;
 	private double gcptz;
 	private int daylightLeftLimit;
 	private int daylightRightLimit;
@@ -32,10 +32,6 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 	}
 	
 	/**
-	 * @return the attenuation of the given column
-	 */
-	
-	/**
 	 * Calculates the attenuation of the given column, which is proportional
 	 * to the absolute distance from the given column and the column under the sun.
 	 * @param column the given column
@@ -54,7 +50,7 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 	 * @return the attenuation of the given row
 	 */
 	private double getAttenuationRow(int row) {
-		double distance = Math.abs(row - rowAtTheEquator);
+		double distance = Math.abs(row - rowUnderTheSun);
 		distance = distance * simulationSettings.getDegreeSeparation();
 		return Math.cos(distance * Math.PI / 180);
 	}
@@ -77,18 +73,28 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 		columnUnderTheSun = SimpleCell.columnUnderTheSun(simulationTime, cols); // westward from primary meridian
 		columnUnderTheSun = (cols - columnUnderTheSun); // adjusted to map GRID coordinates
 		
-		rowAtTheEquator = (int) ((double) rows / (double) 2);
+		gcptz = (cols / 24d);
 		
-		gcptz = ((double) cols / (double) 24);
-		
-			
 		//TODO::Need to fix when columnUnderTheSun is < 0 and > cols
 		daylightLeftLimit = (int) (columnUnderTheSun - (6 * gcptz));
 		daylightRightLimit = (int) (columnUnderTheSun + (5 * gcptz));
 
+		// Decimal Precision for anomalies calculation
+		int anomalyDecimalPrecision = 5;
 				
-		// calcualte delta time
+		// calculate delta time
 		int deltaTime = settings.getSimulationTimeStep() * 60; // s
+		
+		// TODO: Verify if we need to check that the orbital period can be changed.
+		int timeSinceLastPerihelion = simulationTime % SimulationUtils.ORBITAL_PERIOD;
+		
+		double radiusAtPerihelion = SimulationUtils.radiusTau(SimulationUtils.A, settings.getEccentricity(), SimulationUtils.trueAnomaly(0, SimulationUtils.ORBITAL_PERIOD,
+				settings.getEccentricity(), anomalyDecimalPrecision));
+		
+		double radiusTau = SimulationUtils.radiusTau(SimulationUtils.A, settings.getEccentricity(), SimulationUtils.trueAnomaly(timeSinceLastPerihelion, SimulationUtils.ORBITAL_PERIOD,
+				settings.getEccentricity(), anomalyDecimalPrecision));
+		
+		double eccentricityAttenuation = SimulationUtils.getEccentricityAttenuation(radiusAtPerihelion, radiusTau);
 		
 		// simulation constants
 		double e = 2700; // kg/m3
@@ -97,10 +103,14 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 		double Fcooling = 239.4 * 1.1; // W/m2  //NOTE::Added *1.5 as a cooling fake to assist with gaps in calculation
 		double Fs = 1368; // W/m2
 		
+		double latitudeUnderSun = SimulationUtils.latitudeNoonSun(timeSinceLastPerihelion, settings.getEccentricity(), SimulationUtils.EARTH_PERIAPSIS, SimulationUtils.ORBITAL_PERIOD, settings.getAxialTilt());
+		
+		// Calculating grid row index corresponding to latitude where sun is hitting directly
+		rowUnderTheSun = (int) (latitudeUnderSun / simulationSettings.getDegreeSeparation() + rows / 2);
+		
 		// TODO execute simple simulation
 		for(int y=0; y<rows; y++) {
 			for(int x=0; x<cols; x++) {
-				
 				// calculate attenuation
 				double attenuation = getAttenuationColumn(x) * getAttenuationRow(y);
 				
@@ -109,6 +119,7 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 								
 				// calculate temperature change
 				double deltaT;
+				
 				if(isUnderDayLight(x)) {
 					deltaT = (Fnet / (e*cb*H)) * deltaTime;
 				} else {
@@ -119,6 +130,10 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 				SimpleCell simpleCell = new SimpleCell();
 				
 				double originalTemp = inputGrid.getTemperature(x, y) + deltaT;
+				
+				// Attenuating temperature based on distance from the sun.
+				originalTemp *= eccentricityAttenuation;
+				
 				simpleCell.t = round(originalTemp, settings.getPrecision());
 				temperatureGrid.setTemperature(x, y, simpleCell);
 			}
