@@ -1,6 +1,7 @@
 package simplesimulation;
 
 import presentation.earth.TemperatureGrid;
+import simulation.SimulationSettings;
 
 public class SimpleTemperatureGridImpl implements TemperatureGrid {
 
@@ -8,26 +9,21 @@ public class SimpleTemperatureGridImpl implements TemperatureGrid {
 	
 	private int simulationTime;
 	
+	// simulation information
+	private SimulationSettings simulationSettings;
 	
-	// earth panel information
-	private int numCellsY;
-	private int numCellsX;
-	private int degreeSeparation;
-	
-	protected SimpleTemperatureGridImpl(int numCellsY, int numCellsX, int degreeSeparation) {
-		this.numCellsY = numCellsY;
-		this.numCellsX = numCellsX;
-		this.degreeSeparation = degreeSeparation;
+	protected SimpleTemperatureGridImpl(SimulationSettings simulationSettings) {
+		this.simulationSettings = simulationSettings;
 		
-		grid = new SimpleCell[numCellsY][numCellsX];
+		grid = new SimpleCell[simulationSettings.getNumCellsY()][simulationSettings.getNumCellsX()];
 	}
 	
 	/**
 	 * Sets temperature values to 288' Kelvin
 	 */
 	protected void initGrid() {
-		int rows = numCellsY;
-		int cols = numCellsX;
+		int rows = simulationSettings.getNumCellsY();
+		int cols = simulationSettings.getNumCellsX();
 		
 		for(int y=0; y<rows; y++) {
 			for(int x=0; x<cols; x++) {
@@ -55,9 +51,9 @@ public class SimpleTemperatureGridImpl implements TemperatureGrid {
 
 	@Override
 	public float getCellHeight(int x, int y) {
-		int rows = numCellsY;
-		int cols = numCellsX;
-		int gs = degreeSeparation;
+		int rows = simulationSettings.getNumCellsY();
+		int cols = simulationSettings.getNumCellsX();
+		int gs = simulationSettings.getDegreeSeparation();
 		int i = rows - (y + 1); int j = cols - (x + 1);	
 		float latTop = (i-(rows/2))*gs;
 		float latBot = latTop + (float) gs;
@@ -84,12 +80,12 @@ public class SimpleTemperatureGridImpl implements TemperatureGrid {
 
 	@Override
 	public int getRows() {
-		return numCellsY;
+		return simulationSettings.getNumCellsY();
 	}
 
 	@Override
 	public int getCols() {
-		return numCellsX;
+		return simulationSettings.getNumCellsX();
 	}
 
 }

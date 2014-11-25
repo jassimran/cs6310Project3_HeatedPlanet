@@ -11,7 +11,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -33,15 +32,10 @@ import javax.swing.event.ChangeListener;
 import presentation.earth.EarthPanel;
 import simplesimulation.SimplePresentationEngineImpl;
 import simplesimulation.SimpleSimulationEngineImpl;
-import simulation.SimulationEngine;
 import simulation.SimulationSettings;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import controllers.AbstractControl;
 import controllers.AbstractControlFactory;
-import controllers.MasterControl;
-import controllers.PresentationControl;
-import controllers.QueryControl;
-import controllers.SimulationControl;
 import edu.gatech.cs6310.project3.team17.GUI.QueryInterfaceUI;
 import events.EventType;
 import events.Listener;
@@ -697,8 +691,9 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		simulationSettings.setPOption(concurrency_Pres.isSelected());
 		simulationSettings.setROption(initiative_R.isSelected());
 		simulationSettings.setTOption(initiative_T.isSelected());
-		simulationSettings.numCellsX = EarthPanel.getNumCellsX();
-		simulationSettings.numCellsY = EarthPanel.getNumCellsY();
+		simulationSettings.setNumCellsX(EarthPanel.getNumCellsX());
+		simulationSettings.setNumCellsY(EarthPanel.getNumCellsY());
+		simulationSettings.setDegreeSeparation(EarthPanel.getDegreeSeparation());
 		simulationSettings.setBufferSize((Integer) spinner.getValue());
 		
 		//TODO: fetch value from interface
@@ -722,7 +717,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		simulationSettings.setGeoAccuracy(geoAccuracyEdit.getValue());
 		
 		// wire simulation engines
-		AbstractControl.setSimulationEngine(new SimpleSimulationEngineImpl(EarthPanel));
+		AbstractControl.setSimulationEngine(new SimpleSimulationEngineImpl(simulationSettings));
 		AbstractControl.setPresentationEngine(new SimplePresentationEngineImpl(EarthPanel));
 		
 		// run simulation
