@@ -105,6 +105,8 @@ public class QueryResultImpl implements QueryResult {
 						newCell.setRow(row);
 						newCell.setColumn(column);
 						newCell.setTemperature(meanTemp);
+						newCell.setLatitude(cell.getLatitude());
+						newCell.setLongitude(cell.getLongitude());
 						resultCells.add(newCell);
 					}
 				}
