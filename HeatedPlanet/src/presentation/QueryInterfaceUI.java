@@ -736,7 +736,7 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 			//disable the run button
 			runQuery.setEnabled(false);
 			
-			JScrollPane outputScroller = new JScrollPane();
+
 			
 			//call query controller here
 			//use case 1
@@ -745,11 +745,16 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 				if(!simulationName.isEmpty())
 					res = ((QueryControl)control).getQueryResultBySimulationName(simulationName);
 				
+				JScrollPane outputScroller = new JScrollPane();
 				JPanel newoutput = new JPanel(new BorderLayout());
 				newoutput = createOutputGui();
 			    
 			    JViewport vw = outputScroller.getViewport();
 			    outputScroller.getViewport().add(newoutput);
+			    this.getContentPane().setPreferredSize(new Dimension(1320, 620));
+				this.getContentPane().add(outputScroller, BorderLayout.EAST);
+				this.pack();
+				this.setVisible(true);
 			    System.out.println(outputScroller.getViewport().getExtentSize());
 			    
 
@@ -777,10 +782,7 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 					
 			}
 				
-		    this.getContentPane().setPreferredSize(new Dimension(1320, 620));
-			this.getContentPane().add(outputScroller, BorderLayout.EAST);
-			this.pack();
-			this.setVisible(true);
+
 			
 			
 
@@ -1031,10 +1033,17 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 							if(res == null)
 								throw new RuntimeException("The query result should not be null at this point.");
 
+							JScrollPane outputScroller = new JScrollPane();
 							JPanel newoutput = new JPanel(new BorderLayout());
 							newoutput = createOutputGui();
-						    JScrollPane outputScroller = new JScrollPane();
+						    
+						    JViewport vw = outputScroller.getViewport();
 						    outputScroller.getViewport().add(newoutput);
+						    getContentPane().setPreferredSize(new Dimension(1320, 620));
+							getContentPane().add(outputScroller, BorderLayout.EAST);
+							pack();
+							setVisible(true);
+						    System.out.println(outputScroller.getViewport().getExtentSize());
 						}
 					});
 		}
