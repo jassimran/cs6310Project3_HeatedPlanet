@@ -31,7 +31,6 @@ import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import PlanetSim.Demo;
 import presentation.earth.EarthPanel;
 import simplesimulation.SimplePresentationEngineImpl;
 import simplesimulation.SimpleSimulationEngineImpl;
@@ -68,6 +67,13 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	static final int DEFAULT_TIME_STEP = 1440;
 	static final int DEFAULT_SIM_LENGTH = 12;
 
+	/*
+	 * These arguments will be set through the command line.
+	 */
+	public static int DEFAULT_TEMP_ACCURACY = 100;
+	public static int DEFAULT_GEO_ACCURACY = 100;
+	public static int DEFAULT_PRECISION = 7;
+	
 	static final String START_TIME = "12:00 PM, Jan 4, 2014";
 	static final DateFormat DATE_FORMAT = new SimpleDateFormat(
 			"hh:mm a, MMM dd, yyyy");
@@ -431,7 +437,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		tempAccuracyLabel = new JLabel();
 		tempAccuracyLabel.setPreferredSize(new Dimension(WIDTH_LABELS,LABEL_HEIGHT));
 		tempAccuracyLabel.setText("Temp Accuracy:");
-		tempAccuracySlider = new JSlider(JSlider.HORIZONTAL, 1, 100, Demo.precision);
+		tempAccuracySlider = new JSlider(JSlider.HORIZONTAL, 1, 100, DEFAULT_TEMP_ACCURACY);
 		tempAccuracySlider.setMajorTickSpacing(10);
 		tempAccuracySlider.setMaximum(100);
 		tempAccuracySlider.setMinimum(1);
@@ -439,7 +445,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	    //axisTiltSlider.setPaintLabels(true);
 		tempAccuracySlider.setPaintTicks(true);
 		tempAccuracySlider.setPaintTrack(true);
-		tempAccuracyEdit = new EventTextField(EDIT_BOX_WIDTH, Demo.temporalPrecision); 
+		tempAccuracyEdit = new EventTextField(EDIT_BOX_WIDTH, DEFAULT_TEMP_ACCURACY); 
 		tempAccuracyEdit.setEditable(false);
 		tempAccuracySlider.addChangeListener(tempAccuracyEdit);
 		optionLabels.add(tempAccuracyLabel);
@@ -453,14 +459,14 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		geoAccuracyLabel = new JLabel();
 		geoAccuracyLabel.setPreferredSize(new Dimension(WIDTH_LABELS,LABEL_HEIGHT));
 		geoAccuracyLabel.setText("Geo Accuracy: ");
-		geoAccuracySlider = new JSlider(JSlider.HORIZONTAL, 1, 100, Demo.geographicPrecision);
+		geoAccuracySlider = new JSlider(JSlider.HORIZONTAL, 1, 100, DEFAULT_GEO_ACCURACY);
 		geoAccuracySlider.setMajorTickSpacing(10);
 		geoAccuracySlider.setMaximum(100);
 		geoAccuracySlider.setMinimum(1);
 		geoAccuracySlider.setMinorTickSpacing(5);
 		geoAccuracySlider.setPaintTicks(true);
 		geoAccuracySlider.setPaintTrack(true);
-		geoAccuracyEdit = new EventTextField(EDIT_BOX_WIDTH, Demo.geographicPrecision); 
+		geoAccuracyEdit = new EventTextField(EDIT_BOX_WIDTH, DEFAULT_GEO_ACCURACY); 
 		geoAccuracyEdit.setEditable(false);
 		geoAccuracySlider.addChangeListener(geoAccuracyEdit);
 		optionLabels.add(geoAccuracyLabel);
@@ -473,7 +479,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	    precisionLabel = new JLabel();
 	    precisionLabel.setPreferredSize(new Dimension(WIDTH_LABELS,LABEL_HEIGHT));
 	    precisionLabel.setText("Precision: ");
-	    precision = new JTextField(String.valueOf(Demo.precision),8);
+	    precision = new JTextField(String.valueOf(DEFAULT_PRECISION),8);
 	    optionLabels.add(precisionLabel);
 	    optionEdits.add(precision);	 
 	    precision.setInputVerifier(new PrecisionInputVerifier());

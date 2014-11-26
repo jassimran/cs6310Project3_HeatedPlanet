@@ -21,33 +21,33 @@ public class Demo {
 	 * If set to false, default values will be considered for the arguments that
 	 * were not provided.
 	 */
-	private static final Boolean FORCE_ALL_ARGUMENTS = false;
+	private static final boolean FORCE_ALL_ARGUMENTS = false;
 
 	/**
 	 * Use default values for the included arguments in case of an error. If set
 	 * to false, an invalid argument value will thrown an exception.
 	 */
-	private static final Boolean USE_DEFAULT_ARGUMENTS = true;
+	private static final boolean USE_DEFAULT_ARGUMENTS = true;
 
 	/**
 	 * Default geographic precision.
 	 */
-	public static final int DEFAULT_GEOGRAPHIC_PRECISION = 100;
+	private static final int DEFAULT_GEOGRAPHIC_PRECISION = 100;
 
 	/**
 	 * Default temporal precision.
 	 */
-	public static final int DEFAULT_TEMPORAL_PRECISION = 100;
+	private static final int DEFAULT_TEMPORAL_PRECISION = 100;
 
 	/**
 	 * Number of decimal digits for a normalized float.
 	 */
-	public static final int FLOAT_PRECISION = 7;
+	private static final int FLOAT_PRECISION = 7;
 
 	/**
 	 * Number of decimal digits for a normalized double.
 	 */
-	public static final int DOUBLE_PRECISION = 16;
+	private static final int DOUBLE_PRECISION = 16;
 
 	/**
 	 * The precision of the data to be stored, in decimal digits after the
@@ -55,7 +55,7 @@ public class Demo {
 	 * normalized float variable. The maximum is the number of digits storable
 	 * in a normalized double variable. The minimum is zero. [-p]
 	 */
-	public static int precision = -1;
+	private static int precision = -1;
 
 	/**
 	 * The geographic precision (sampling rate) of the temperature data to be
@@ -63,7 +63,7 @@ public class Demo {
 	 * the number simulated. The default is 100%; that is, a value is stored for
 	 * each grid cell. [-g]
 	 */
-	public static int geographicPrecision = -1;
+	private static int geographicPrecision = -1;
 
 	/**
 	 * The temporal precision of the temperature data to be stored, as an
@@ -71,7 +71,7 @@ public class Demo {
 	 * computed. The default is 100%; that is, all computed values should be
 	 * stored. [-t]
 	 */
-	public static int temporalPrecision = -1;
+	private static int temporalPrecision = -1;
 
 	public static void main(String[] args) {
 		parseArgs(args);
@@ -92,7 +92,7 @@ public class Demo {
 
 		// bootstrap application
 		BootStrap.init();
-
+		
 		Gui.getInstance(simthread, presthread, simcontrol, prescontrol, buffer);
 		// TODO register UI listener to close H2 web servers
 	}
@@ -254,5 +254,11 @@ public class Demo {
 
 		System.out.println("Executing: PlanetSim.Demo -p " + precision + " -g "
 				+ geographicPrecision + " -t " + temporalPrecision);
+		
+		// Setting the values on the GUI class
+		
+		Gui.DEFAULT_PRECISION = precision;
+		Gui.DEFAULT_GEO_ACCURACY = geographicPrecision;
+		Gui.DEFAULT_TEMP_ACCURACY = temporalPrecision;
 	}
 }
