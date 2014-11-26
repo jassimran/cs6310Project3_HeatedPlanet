@@ -779,6 +779,19 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 					control.runSimulation(settings);
 
 				}
+				else{
+					JScrollPane outputScroller = new JScrollPane();
+					JPanel newoutput = new JPanel(new BorderLayout());
+					newoutput = createOutputGui();
+				    
+				    JViewport vw = outputScroller.getViewport();
+				    outputScroller.getViewport().add(newoutput);
+				    this.getContentPane().setPreferredSize(new Dimension(1320, 620));
+					this.getContentPane().add(outputScroller, BorderLayout.EAST);
+					this.pack();
+					this.setVisible(true);
+				    System.out.println(outputScroller.getViewport().getExtentSize());
+				}
 					
 			}
 				
