@@ -235,7 +235,7 @@ ActionListener, ChangeListener, Listener {
 
         simulationNameLabel.setText("Simulation name: ");
         
-        nameSpinner = new JComboBox<String>();
+        nameSpinner = new JComboBox();
                
        
         nameSpinner.setName("Name");
@@ -1002,7 +1002,7 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
     private ButtonGroup regionbuttonGroup;
     private JRadioButton earthButton;
     private JRadioButton parametersButton;
-    private JComboBox<String> nameSpinner;
+    private JComboBox nameSpinner;
     private JTable outputTable;
     private JLabel spacer, latStart, latEnd, longStart, longEnd;
     private JLabel minTempLabel1,readingTimeLabel,locationLabel,maxTempLabel1,timeMeanTempLabel2,regionMeanTempLabel2,tempTimeRegionLabel1;
@@ -1025,7 +1025,12 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 							res = ((QueryControl)control).computeQueryResults(simulationQuery);
 							if(res == null)
 								throw new RuntimeException("The query result should not be null at this point.");
-							createOutputGui();
+
+							JPanel newoutput = new JPanel(new BorderLayout());
+							newoutput = createOutputGui();
+						    JScrollPane outputScroller = new JScrollPane();
+						    JViewport vw = outputScroller.getViewport();
+						    outputScroller.getViewport().add(newoutput);
 						}
 					});
 		}

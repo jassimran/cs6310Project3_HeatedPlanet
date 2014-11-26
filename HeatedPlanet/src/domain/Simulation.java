@@ -71,7 +71,7 @@ public class Simulation implements Serializable {
     @Basic(optional = false)
     @Column(name = "precision")
     private int precision;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "simulation", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "simulation", fetch = FetchType.EAGER)
     private List<EarthGrid> timeStepList;
     @Basic(optional = true)
     @Column(name = "temporal_accuracy")

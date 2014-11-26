@@ -1,5 +1,6 @@
 package services;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -72,9 +73,16 @@ public class PersistenceService {
 
 		if (temperatureGrid != null) {
 			// get simulated time
-			long simulatedDateInMillis = temperatureGrid.getSimulationTime() * 60 * 1000;
+			int simulatedDateInMillis = temperatureGrid.getSimulationTime() * 60 * 1000;
 			Calendar calendar = Calendar.getInstance();
-			calendar.setTimeInMillis(simulatedDateInMillis);
+			calendar.set(Calendar.HOUR_OF_DAY, 12);
+			calendar.set(Calendar.MINUTE, 00);
+			calendar.set(Calendar.SECOND, 00);
+			calendar.set(Calendar.MILLISECOND, 00);
+			calendar.set(Calendar.MONTH, Calendar.JANUARY);
+			calendar.set(Calendar.DAY_OF_MONTH, 4);
+			calendar.set(Calendar.YEAR, 2014);
+			calendar.add(Calendar.MILLISECOND, simulatedDateInMillis);
 			Date simulatedDate = calendar.getTime();
 
 			// create EarthGrid
@@ -83,6 +91,13 @@ public class PersistenceService {
 			earthGrid.setSimulatedDate(simulatedDate);
 			earthGrid.setSimulation(simulation);
 			em.persist(earthGrid);
+			
+			// add the grid to the simulation so that it will be in memory the hibernate cache
+			List<EarthGrid> earthGrids = simulation.getTimeStepList();
+			if(earthGrids == null)
+				earthGrids = new ArrayList<EarthGrid>();
+			earthGrids.add(earthGrid);
+			simulation.setTimeStepList(earthGrids);
 
 			// calculate accuracy gap
 			int totalCells = temperatureGrid.getRows()
@@ -104,6 +119,14 @@ public class PersistenceService {
 					earthCell.setGrid(earthGrid);
 					if ((++gapControl) == (gapSize + 1)) {
 						em.persist(earthCell);
+						
+						// add the cell to the simulation so that it will be in memory the hibernate cache
+						List<EarthCell> earthCells = earthGrid.getNodeList();
+						if(earthCells == null)
+							earthCells = new ArrayList<EarthCell>();
+						earthCells.add(earthCell);
+						earthGrid.setNodeList(earthCells);;
+						
 						gapControl = 0;
 					}
 				}
