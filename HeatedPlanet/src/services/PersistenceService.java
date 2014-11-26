@@ -133,38 +133,18 @@ public class PersistenceService {
 
 	public List<Simulation> findSimulationsByUserInputs(double axialTilt,
 			double orbitalEccentricity, Date endingDate) {
-		em.getTransaction().begin();
-
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Simulation> q = cb.createQuery(Simulation.class);
-		Root<Simulation> s = q.from(Simulation.class);
-
-		TypedQuery<Simulation> typedQuery = em.createQuery(q);
-
-		// add select
-		q = q.select(s);
-
-		// add where clauses
-		ParameterExpression<Double> tiltParameter = cb.parameter(Double.class);
-		typedQuery.setParameter(tiltParameter, axialTilt);
-		q = q.where(cb.equal(s.get("axial_tilt"), tiltParameter));
-
-		ParameterExpression<Double> eccentricityParameter = cb
-				.parameter(Double.class);
-		typedQuery.setParameter(eccentricityParameter, orbitalEccentricity);
-		q = q.where(cb.equal(s.get("orbital_eccentricity"),
-				eccentricityParameter));
+		
+		String jpql = "SELECT s FROM Simulation s WHERE s.axialTilt = :axialTilt and s.orbitalEccentricity = :orbitalEccentricity and s.length >= :length";
+		
+		TypedQuery<Simulation> typedQuery = em.createQuery(jpql, Simulation.class);
 
 		int simulationLengthInMonths = SimulationService.getInstance().calculateSimulationMonths(endingDate);
 
-		ParameterExpression<Date> dateParameter = cb.parameter(Date.class);
-		typedQuery.setParameter(dateParameter, endingDate);
-		q = q.where(cb.greaterThanOrEqualTo(s.<Integer> get("length"),
-				simulationLengthInMonths));
+		typedQuery.setParameter("axialTilt", axialTilt);
+		typedQuery.setParameter("orbitalEccentricity", orbitalEccentricity);
+		typedQuery.setParameter("length", simulationLengthInMonths);
 
 		List<Simulation> results = typedQuery.getResultList();
-
-		em.getTransaction().commit();
 
 		return results;
 	}
