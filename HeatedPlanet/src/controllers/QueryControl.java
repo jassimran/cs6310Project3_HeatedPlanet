@@ -4,19 +4,39 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import presentation.earth.TemperatureGrid;
 import presentation.query.QueryResult;
 import presentation.query.QueryResultFactory;
+import services.AccuracyService;
 import services.PersistenceService;
+import services.SimulationService;
+import simulation.SimulationSettings;
 import domain.Simulation;
+import events.EventType;
+import events.Listener;
 
-public class QueryControl {
-
-	private static PersistenceService persistenceService;
-	//private static InterpolationService interpolationService;
+public class QueryControl extends AbstractControl implements Runnable {
+	
+	// used services
+	private PersistenceService persistenceService;
+	private AccuracyService accuracyService;
+	private SimulationService simulationService;
+	
+	private List<Listener> listeners;
+	
+	/**
+	 * Result of last simulation or null if none has run yet.
+	 */
+	private TemperatureGrid temperatureGrid;
 
 	public QueryControl() {
+		super();
+		// initialize listeners
+		listeners = new ArrayList<Listener>();
+		// get services reference
 		persistenceService = PersistenceService.getInstance();
-		//interpolationService = InterpolationService.getInstance();
+		accuracyService = AccuracyService.getInstance();
+		simulationService = SimulationService.getInstance();
 	}
 	
 	
@@ -97,5 +117,145 @@ public class QueryControl {
 
 		return QueryResultFactory.buildQueryResult(selectedSimulation, startDate, endDate, startLat, endLat, startLong, endLong);
 
+	}
+	
+	/**
+	 * Executes simulation taking into consideration the chosen concurrency model.
+	 */
+	public void executeSimulation() {
+		
+		// calculate simulation length (in terms of simulation steps to produce)
+		synchronized (abstractLock) {
+			simulationLength = simulationService.calculateSimulaitonLenght(simulationSettings.getSimulationLength(), simulationSettings.getSimulationTimeStep());
+		}
+		
+		// reset simulation progress
+		synchronized (abstractLock) {
+			simulationIndex = 0;
+		}
+				
+		// create simulation
+		Simulation simulation = createSimulation(simulationSettings);
+		
+		// get total grids to produce
+		int totalGrids;
+		synchronized (abstractLock) {
+			totalGrids = simulationLength;
+		}
+		
+		// calculate accuracy gap
+		int gapSize = accuracyService.calculateGapSize(totalGrids, simulation.getTemporalAccuracy());		
+		int gapControl = gapSize; // use to place gaps between samples to persist
+		
+		// reset temperature grid
+		temperatureGrid = null;
+		
+		while(!isTerminateSimulation() && !isSimulationFinished()) {
+			// get current simulation time
+			int simulationTime;
+			synchronized (abstractLock) {
+				simulationTime = AbstractControl.simulationTime;
+			}
+						
+			// execute simulation step
+			temperatureGrid = simulationEngine.executeSimulationStep(simulationSettings, simulationTime, temperatureGrid);
+			
+			// get and increment simulation index
+			int index;
+			synchronized (abstractLock) {
+				simulationIndex++;
+				index = simulationIndex;
+			}
+			
+			// persist simulation based on temporal accuracy
+			if((++gapControl) == (gapSize+1)) {
+				persistenceService.persistSimulation(simulation, temperatureGrid, index);
+				gapControl = 0;					
+			}
+			
+			// update simulation time
+			synchronized (abstractLock) {
+				AbstractControl.simulationTime += simulationSettings.getSimulationTimeStep();
+			}
+		}
+		
+		// notify listeners simulation is finished
+		for(Listener listener : listeners) {
+			listener.notify(EventType.SimulationFinishedEvent);
+		}
+	}
+
+	@Override
+	public void notify(EventType e) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void addListener(Listener l) {
+		synchronized (listeners) {
+			listeners.add(l);
+		}
+	}
+
+	@Override
+	public void removeListener(Listener l) {
+		synchronized (listeners) {
+			listeners.remove(l);
+		}
+	}
+
+	@Override
+	public void run() {
+		executeSimulation();
+	}
+
+	@Override
+	protected boolean waiting() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void runSimulation(SimulationSettings settings) {
+		// set settings 
+		setSettings(settings);
+		
+		// set simulation running
+		setSimulationRunning(true);
+		
+		// define concurrency
+		simulationThread = new Thread(this);
+		
+		// execute simulation
+		simulationThread.start();
+	}
+
+	@Override
+	public void stopSimulation() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void pauseSimulation() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void resumeSimulation() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void handleStopSimulationEvent() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void handlePauseSimulationEvent() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void handleResumeSimulationEvent() {
+		throw new UnsupportedOperationException();
 	}
 }

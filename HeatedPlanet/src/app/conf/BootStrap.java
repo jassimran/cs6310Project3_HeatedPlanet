@@ -1,11 +1,13 @@
 package app.conf;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import org.h2.tools.Server;
 import org.joda.time.DateTime;
 
 import persistence.EntityManagerFactory;
@@ -20,7 +22,20 @@ public class BootStrap {
 	// persistence context
 	static EntityManager em;
 	
+	// h2 server
+	static Server server;
+	static Server webServer;
+	
 	public static void init() {
+		
+		// start h2 server
+		try {
+			server = Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092").start();
+			webServer = Server.createWebServer("-web","-webAllowOthers", "-webPort", "8082").start();
+		} catch (SQLException e) {
+			throw new RuntimeException("Exception starting h2 server: " + e);
+		}
+		
 		// get persistence context
 		em = EntityManagerFactory.createEntityManager();
 		
@@ -90,6 +105,10 @@ public class BootStrap {
 	
 	public static void destroy() {
 		em.close();
+		
+		// stop h2 server
+		webServer.stop();
+		server.stop();
 	}
 	
 }

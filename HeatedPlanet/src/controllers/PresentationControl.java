@@ -12,7 +12,7 @@ import buffers.BufferImplementation;
 import simulation.SimulationSettings;
 import events.*;
 
-public class PresentationControl extends AbstractControl implements Listener, Runnable {
+public class PresentationControl extends AbstractControl implements Runnable {
 
 	private List<Listener> listeners;
 	

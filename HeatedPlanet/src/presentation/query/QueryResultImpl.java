@@ -1,11 +1,9 @@
 package presentation.query;
 
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import domain.EarthCell;
 import domain.EarthGrid;
 import domain.Simulation;
