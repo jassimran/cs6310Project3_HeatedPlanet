@@ -57,14 +57,18 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 
 	static final int DEFAULT_GRID_SPACING = 15;
 	static final int DEFAULT_SIM_DELAY = 200;
-	static final int DEFAULT_TEMP_ACCURACY = 100;
-	static final int DEFAULT_GEO_ACCURACY = 100;
-	static final int DEFAULT_PRECISION = 7;
 	static final double DEFAULT_ECCENTRICITY = .0167;
 	static final double DEFAULT_AXIAL_TILT = 23.44;
 	static final int DEFAULT_TIME_STEP = 1440;
 	static final int DEFAULT_SIM_LENGTH = 12;
 
+	/*
+	 * These arguments will be set through the command line.
+	 */
+	public static int DEFAULT_TEMP_ACCURACY = 100;
+	public static int DEFAULT_GEO_ACCURACY = 100;
+	public static int DEFAULT_PRECISION = 7;
+	
 	static final String START_TIME = "12:00 PM, Jan 4, 2014";
 	static final DateFormat DATE_FORMAT = new SimpleDateFormat(
 			"hh:mm a, MMM dd, yyyy");
