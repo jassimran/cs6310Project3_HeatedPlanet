@@ -58,7 +58,8 @@ public class PresentationControl extends AbstractControl implements Listener, Ru
 			float sunPositionDelta = calculateSunPosition(temperatureGrid.getSimulationTime()-lastSimulationTimeRendered );
 			
 			//update the visual clock
-			Gui.getInstance(false, false, false, false, 10).updateClock();
+			Gui.getInstance(false, false, false, false, 10).updateClock(temperatureGrid.getLatitudeUnderSun(), 
+					temperatureGrid.getLongitudeUnderSun(),temperatureGrid.getDistanceFromSun());
 
 			// move sun
 			presentationEngine.moveSunPosition(sunPositionDelta);

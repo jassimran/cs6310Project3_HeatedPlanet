@@ -7,7 +7,9 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.RoundingMode;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -133,7 +135,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	private Calendar simTimeCal = DATE_FORMAT.getCalendar();
 	
 	private JLabel orbitalPos = null;
-	private JLabel orbitalPosResult = null;
+	private JButton showOrbitalPos = null;
 	private JLabel rotationalPos = null;
 	private JLabel rotationalPosResult = null;
 
@@ -305,10 +307,10 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		panel.setPreferredSize(new Dimension(800, 275));
 		panel.setLayout(new BorderLayout());
 
-		int WIDTH_LABELS = WIDTH * 4 / 7 * 1
-				/ 4;
-		int WIDTH_EDITS = WIDTH * 4 / 7 * 3
-				/ 4;
+		int WIDTH_LABELS = (WIDTH * 4 / 7 * 1
+				/ 4) - 2;
+		int WIDTH_EDITS = (WIDTH * 4 / 7 * 3
+				/ 4) -24;
 
 		JLabel tmpLabel = null;
 		JLabel tmpUnits = null;
@@ -534,29 +536,30 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		// Time Panel
 		SpringLayout layout = (new SpringLayout());
 		JPanel simTimePanel = new JPanel(layout);
-		simTimePanel.setPreferredSize(new Dimension(310, 98));
+		simTimePanel.setPreferredSize(new Dimension(360, 84));
 		simTimePanel.setBorder(BorderFactory.createTitledBorder("Time & Position"));
 		simTime = new JLabel(START_TIME);
 		layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, simTime, 0, SpringLayout.HORIZONTAL_CENTER, simTimePanel);
-		layout.putConstraint(SpringLayout.NORTH, simTime, 5, SpringLayout.NORTH, simTimePanel);
+		layout.putConstraint(SpringLayout.NORTH, simTime, 1, SpringLayout.NORTH, simTimePanel);
 		simTimePanel.add(simTime);		
 		
-		orbitalPos = new JLabel(" Orbital Position: ");
+		orbitalPos = new JLabel("Dist from sun: 147.5 million km");
 		layout.putConstraint(SpringLayout.WEST, orbitalPos, 5, SpringLayout.WEST, simTimePanel);
-		layout.putConstraint(SpringLayout.NORTH, orbitalPos, 8, SpringLayout.SOUTH, simTime);
+		layout.putConstraint(SpringLayout.NORTH, orbitalPos, 4, SpringLayout.SOUTH, simTime);
 		simTimePanel.add(orbitalPos);
-		orbitalPosResult = new JLabel(" x= y = ");
-		layout.putConstraint(SpringLayout.WEST, orbitalPosResult, 25, SpringLayout.EAST, orbitalPos);
-		layout.putConstraint(SpringLayout.NORTH, orbitalPosResult, 8, SpringLayout.SOUTH, simTime);
-		simTimePanel.add(orbitalPosResult);
+		showOrbitalPos = new JButton("Show");
+		showOrbitalPos.setPreferredSize(new Dimension(70,20));
+		layout.putConstraint(SpringLayout.WEST, showOrbitalPos, 35, SpringLayout.EAST, orbitalPos);
+		layout.putConstraint(SpringLayout.NORTH, showOrbitalPos, 4, SpringLayout.SOUTH, simTime);
+		simTimePanel.add(showOrbitalPos);
 		
-		rotationalPos = new JLabel(" Rotational Position: ");
+		rotationalPos = new JLabel("Position: ");
 		layout.putConstraint(SpringLayout.WEST, rotationalPos, 5, SpringLayout.WEST, simTimePanel);
-		layout.putConstraint(SpringLayout.NORTH, rotationalPos, 8, SpringLayout.SOUTH, orbitalPos);
+		layout.putConstraint(SpringLayout.NORTH, rotationalPos, 4, SpringLayout.SOUTH, orbitalPos);
 		simTimePanel.add(rotationalPos);
-		rotationalPosResult = new JLabel("Latitude= 23, longitude = 0");	
+		rotationalPosResult = new JLabel("Latitude : "+DEFAULT_AXIAL_TILT+"  Longitude: 0");	
 		layout.putConstraint(SpringLayout.WEST, rotationalPosResult, 5, SpringLayout.EAST, rotationalPos);
-		layout.putConstraint(SpringLayout.NORTH, rotationalPosResult, 8, SpringLayout.SOUTH, orbitalPos);
+		layout.putConstraint(SpringLayout.NORTH, rotationalPosResult, 4, SpringLayout.SOUTH, orbitalPos);
 		simTimePanel.add(rotationalPosResult);
 		
 		runOpts.add(simTimePanel, BorderLayout.SOUTH);
@@ -583,7 +586,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		option2Edits.setLayout(new BoxLayout(option2Edits, BoxLayout.Y_AXIS));
 		option2Labels.setPreferredSize(new Dimension( WIDTH_LABELS, HEIGHT));
 		option2Edits.setPreferredSize(new Dimension(100,HEIGHT));
-		PFPanel.setPreferredSize(new Dimension(290, 60));	
+		PFPanel.setPreferredSize(new Dimension(320, 78));	
 		
 		PFPanel.setBorder(simBorder);
 	    
@@ -618,8 +621,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
         PFPanel.add(option2Labels,BorderLayout.WEST);
 		PFPanel.add(option2Edits, BorderLayout.EAST);
 		PFPanel.setBorder(PFBorder);
-		
-		
+	
 		runAndTimePanel.add(PFPanel, BorderLayout.NORTH );
 		panel.add(runAndTimePanel, BorderLayout.CENTER);
 		runAndTimePanel.add(initQueryPanel, BorderLayout.SOUTH);
@@ -825,13 +827,18 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		eccentricity.setEnabled(bEnable);		
 	}
 
-	public void updateClock() {
+	public void updateClock( double laitude, double longitude, double distFromSun) {
 		try {
 			//set the time
 			simTimeCal.add(Calendar.MINUTE, stepEdit.getValue());
 			simTime.setText(DATE_FORMAT.format(simTimeCal
 					.getTime()));
+			
+			orbitalPos.setText("Dist from Sun = "+String.valueOf(distFromSun)+ " million km");
+			rotationalPosResult.setText("Lat: "+ String.valueOf(laitude) + " Long: "+ String.valueOf(longitude));
+			
 		} catch (Exception e2) {
+			System.out.print("Updation failed!!!");
 		}			
 	}
 	

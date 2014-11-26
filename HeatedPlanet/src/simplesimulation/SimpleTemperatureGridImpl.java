@@ -10,6 +10,9 @@ public class SimpleTemperatureGridImpl implements TemperatureGrid {
 	private EarthPanel earthPanel;
 	
 	private int simulationTime;
+	private double latitudeUnderSun;
+	private double longitudeUnderSun;
+	private double distanceFromSun;
 	
 	
 	protected SimpleTemperatureGridImpl(EarthPanel earthPanel) {
@@ -86,5 +89,35 @@ public class SimpleTemperatureGridImpl implements TemperatureGrid {
 	public int getCols() {
 		return earthPanel.getNumCellsX();
 	}
+
+	@Override
+	public double getLatitudeUnderSun() {
+		return latitudeUnderSun;
+	}
+
+	public void setLatitudeUnderSun(double latitudeUnderSun) {
+		this.latitudeUnderSun = latitudeUnderSun;
+	}
+
+	@Override
+	public double getLongitudeUnderSun() {
+		return longitudeUnderSun;
+	}
+
+	public void setLongitudeUnderSun(double longitudeUnderSun) {
+		this.longitudeUnderSun = longitudeUnderSun;
+	}
+	
+	@Override
+	public double getDistanceFromSun(){
+		return distanceFromSun;
+	}
+	
+	public void setDistanceFromSun(double distanceFromSun) {
+		this.distanceFromSun = distanceFromSun;
+	}
+
+	
+	
 
 }
