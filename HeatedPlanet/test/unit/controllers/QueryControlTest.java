@@ -18,6 +18,8 @@ import persistence.EntityManagerFactory;
 import app.conf.BootStrap;
 import domain.Simulation;
 import services.PersistenceService;
+import simulation.SimulationSettings;
+import simulation.SimulationSettingsFactory;
 
 public class QueryControlTest {
 
@@ -59,18 +61,10 @@ public class QueryControlTest {
 	@Test
 	public void testGenerateSimulationName(){
 		// given:
-		Double tilt = 23.44; // The tilt of the Earth
-		int geographicAccuracy = 100; // 100 percent
-		Double eccentricity = 0.0167; // The eccentricity of the Earth
-		int gridSpacing = 15; // 15 degrees; the size of a time zone
-		int temporalAccuracy = 100; // 100 percent 
-		int timeStep = 1440; // 1 solar day in minutes
-		int simulationLength = 12; // 12 months
+		SimulationSettings settings = SimulationSettingsFactory.createSimulationSettingsWithDefaults();
 		
 		// when:
-		String generatedName = new QueryControl().generateSimulationName(tilt, 
-				eccentricity, simulationLength, gridSpacing, timeStep, 
-				temporalAccuracy, geographicAccuracy);
+		String generatedName = new QueryControl().generateSimulationName(settings);
 		
 		// then:
 		final String expected = "Tilt: 23.44 Ecc: 0.0167 Len: 12 GS: 15 TS: 1440 TA: 100 GA: 100 Run: 1";
@@ -80,18 +74,10 @@ public class QueryControlTest {
 	@Test
 	public void testGenerateSimulationName1(){
 		// given:
-		Double tilt = 25.0; // The tilt of the Earth
-		int geographicAccuracy = 25; // 100 percent
-		Double eccentricity = 25.0; // The eccentricity of the Earth
-		int gridSpacing = 25; // 15 degrees; the size of a time zone
-		int temporalAccuracy = 25; // 100 percent 
-		int timeStep = 25; // 1 solar day in minutes
-		int simulationLength = 25; // 12 months
+		SimulationSettings settings = SimulationSettingsFactory.createSimulationSettingsWithDefaults();
 		
 		// when:
-		String firstGeneratedName = new QueryControl().generateSimulationName(tilt, 
-				eccentricity, simulationLength, gridSpacing, timeStep, 
-				temporalAccuracy, geographicAccuracy);
+		String firstGeneratedName = new QueryControl().generateSimulationName(settings);
 		
 		Simulation sim = new Simulation();
 		sim.setName(firstGeneratedName);
@@ -104,12 +90,10 @@ public class QueryControlTest {
 		
 		PersistenceService.getInstance().persistSimulation(sim, null, 0);
 		
-		String generatedName = new QueryControl().generateSimulationName(tilt, 
-				eccentricity, simulationLength, gridSpacing, timeStep, 
-				temporalAccuracy, geographicAccuracy);
+		String generatedName = new QueryControl().generateSimulationName(settings);			
 		
 		// then:
-		final String expected = "Tilt: 25.0 Ecc: 25.0 Len: 25 GS: 25 TS: 25 TA: 25 GA: 25 Run: 2";
+		final String expected = "Tilt: 23.44 Ecc: 0.0167 Len: 12 GS: 15 TS: 1440 TA: 100 GA: 100 Run: 2";
 		assertEquals(expected, generatedName);
 	}
 	

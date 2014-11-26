@@ -11,9 +11,9 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
@@ -33,14 +33,10 @@ import javax.swing.event.ChangeListener;
 import presentation.earth.EarthPanel;
 import simplesimulation.SimplePresentationEngineImpl;
 import simplesimulation.SimpleSimulationEngineImpl;
-import simulation.SimulationEngine;
 import simulation.SimulationSettings;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import controllers.AbstractControl;
-import controllers.MasterControl;
-import controllers.PresentationControl;
-import controllers.QueryControl;
-import controllers.SimulationControl;
+import controllers.AbstractControlFactory;
 import edu.gatech.cs6310.project3.team17.GUI.QueryInterfaceUI;
 import events.EventType;
 import events.Listener;
@@ -61,14 +57,18 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 
 	static final int DEFAULT_GRID_SPACING = 15;
 	static final int DEFAULT_SIM_DELAY = 200;
-	static final int DEFAULT_TEMP_ACCURACY = 100;
-	static final int DEFAULT_GEO_ACCURACY = 100;
-	static final int DEFAULT_PRECISION = 7;
 	static final double DEFAULT_ECCENTRICITY = .0167;
 	static final double DEFAULT_AXIAL_TILT = 23.44;
-	static final int DEFAULT_TIME_STEP = 1;
+	static final int DEFAULT_TIME_STEP = 1440;
 	static final int DEFAULT_SIM_LENGTH = 12;
 
+	/*
+	 * These arguments will be set through the command line.
+	 */
+	public static int DEFAULT_TEMP_ACCURACY = 100;
+	public static int DEFAULT_GEO_ACCURACY = 100;
+	public static int DEFAULT_PRECISION = 7;
+	
 	static final String START_TIME = "12:00 PM, Jan 4, 2014";
 	static final DateFormat DATE_FORMAT = new SimpleDateFormat(
 			"hh:mm a, MMM dd, yyyy");
@@ -125,8 +125,6 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
     
 	JSpinner spinner = new JSpinner();
 	
-	private long millisToPuse = 0;
-	
 	private JLabel simTime = null;
 	private Calendar simTimeCal = DATE_FORMAT.getCalendar();
 
@@ -151,6 +149,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		setResizable(false);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		createGui();
+		createControl();
 		this.setVisible(true);
 	}
 
@@ -275,24 +274,22 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	    }
 	}
 	
-	public class SimulationNameInputVerifier extends InputVerifier{
+	public class SimulationNameInputVerifier extends InputVerifier {
 		@Override
 	    public boolean verify(JComponent input) {
-	        String text = ((JTextField) input).getText();
-	        try {
-	        	if (text.length() <1){
-	        		JOptionPane.showMessageDialog(null, "Please enter Simulation name!");
-	        		return false;
-	        	}
-	        	else
-	        		return true;
-	        		
-	        } catch (NumberFormatException e) {
-	        	JOptionPane.showMessageDialog(null, "Please enter Simulation name");
+	        String simulationName = ((JTextField) input).getText();
+        	if (simulationName.length() <1) { // verify not empty
+        		showMessage("Please enter simulation name!");
         		return false;
-	        }
+        	}
+        	if(control.simulationExists(simulationName)) { // verify unique
+        		showMessage("Simulation name already exists!");
+        		return false;
+        	}
+        	return true;
 	    }
 	}
+	
 	private JPanel createPanel() {
 		JPanel panel = new JPanel();
 		panel.setPreferredSize(new Dimension(800, 275));
@@ -341,9 +338,9 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		tmpLabel.setPreferredSize(new Dimension(WIDTH_LABELS,LABEL_HEIGHT));
 		stepEdit = new EventTextField(EDIT_BOX_WIDTH, DEFAULT_TIME_STEP);
 		stepEdit.setEditable(false);
-		stepSlider = new JSlider(JSlider.HORIZONTAL, 1, 1440, DEFAULT_TIME_STEP);
-		stepSlider.setMajorTickSpacing(100);
-		stepSlider.setMinorTickSpacing(50);
+		stepSlider = new JSlider(JSlider.HORIZONTAL, 1, 525600, DEFAULT_TIME_STEP);
+		stepSlider.setMajorTickSpacing(72000);
+		stepSlider.setMinorTickSpacing(14400);
 		stepSlider.setPaintTicks(true);
 		stepSlider.setPaintTrack(true);
 		stepSlider.addChangeListener(stepEdit);
@@ -550,9 +547,10 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		Border PFBorder = BorderFactory.createTitledBorder("Physical factors ");
 		JPanel PFPanel = new JPanel(new BorderLayout());
 		JPanel option2Labels = new JPanel(new FlowLayout(FlowLayout.LEFT)); 
-		JPanel option2Edits = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		JPanel option2Edits = new JPanel();
+		option2Edits.setLayout(new BoxLayout(option2Edits, BoxLayout.Y_AXIS));
 		option2Labels.setPreferredSize(new Dimension( WIDTH_LABELS, HEIGHT));
-		option2Edits.setPreferredSize(new Dimension(WIDTH_EDITS,HEIGHT));
+		option2Edits.setPreferredSize(new Dimension(100,HEIGHT));
 		PFPanel.setPreferredSize(new Dimension(290, 97));	
 		
 		PFPanel.setBorder(simBorder);
@@ -624,30 +622,21 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		String command = e.getActionCommand();
 
 		if (command.equals(ACTION_RUN)) {
-			
-			//Validation check for Simulation Name
-			try {
-				String text = ((JTextField) simName).getText();
-	        	if (text.length() <1){
-	        		JOptionPane.showMessageDialog(null, "Please enter Simulation name!");
-	        	}
-	        	else{
-	        		//disable all controls
-	    			this.setEnableAllUserOptions(false);
-	    			//disable the run button
-	    			runButton.setEnabled(false);
-	    			//enable the stop button
-	    			pauseButton.setEnabled(true);
-	    			//disable the restart button
-	    			stopButton.setEnabled(false);
-	    			// run simulation
-	    			runSimulation();
-	        	}
-	        		
-	        } catch (NumberFormatException ex) {
-	        	JOptionPane.showMessageDialog(null, "Please enter Simulation name");
-	        }	
-			
+			// check simulation name is valid
+			InputVerifier simulaitonVerifier = new SimulationNameInputVerifier();
+        	if (!simulaitonVerifier.verify(simName)) {
+        		return;
+        	}
+    		//disable all controls
+			this.setEnableAllUserOptions(false);
+			//disable the run button
+			runButton.setEnabled(false);
+			//enable the stop button
+			pauseButton.setEnabled(true);
+			//disable the restart button
+			stopButton.setEnabled(false);
+			// run simulation
+			runSimulation();
 		} else if (command.equals(ACTION_PAUSE)) {
 			//enable the restart button
 			stopButton.setEnabled(true);
@@ -699,18 +688,15 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	 * Executes a simulation based on the selected settings.
 	 */
 	private void runSimulation() {
-		
 		// create settings object
 		SimulationSettings simulationSettings = new SimulationSettings();
-		//Set simulation Settings according to Gui Selections
 		simulationSettings.setSOption(concurrency_Sim.isSelected());
 		simulationSettings.setPOption(concurrency_Pres.isSelected());
 		simulationSettings.setROption(initiative_R.isSelected());
 		simulationSettings.setTOption(initiative_T.isSelected());
-
-		
-		simulationSettings.numCellsX = EarthPanel.getNumCellsX();
-		simulationSettings.numCellsY = EarthPanel.getNumCellsY();
+		simulationSettings.setNumCellsX(EarthPanel.getNumCellsX());
+		simulationSettings.setNumCellsY(EarthPanel.getNumCellsY());
+		simulationSettings.setDegreeSeparation(EarthPanel.getDegreeSeparation());
 		simulationSettings.setBufferSize((Integer) spinner.getValue());
 		
 		//TODO: fetch value from interface
@@ -729,36 +715,29 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		simulationSettings.setAxialTilt(Double.parseDouble(axisTilt.getText()));
 		simulationSettings.setEccentricity(Double.parseDouble(eccentricity.getText().toString()));
 		simulationSettings.setName(simName.getText());
-		if(new QueryControl().simulationNameExists(simName.getText())){
-			// TODO: display a message to the user if the simulation name exists
-			return;
-		}	
 		simulationSettings.setSimulationLength(simLengthEdit.getValue()); // default 12
 		simulationSettings.setTemporalAccuracy(tempAccuracyEdit.getValue());
 		simulationSettings.setGeoAccuracy(geoAccuracyEdit.getValue());
 		
-		// create simulation engines
-		SimulationEngine simulationEngine = new SimpleSimulationEngineImpl(EarthPanel);
-		PresentationEngine presentationEngine = new SimplePresentationEngineImpl(EarthPanel);
-		
-		// initialize AbstractControl
-		AbstractControl.setSimulationEngine(simulationEngine);
-		AbstractControl.setPresentationEngine(presentationEngine);
-		
-		// create control based on r|t
-		if(simulationSettings.isROption()) {
-			control = new PresentationControl();
-		} else if (simulationSettings.isTOption()) {
-			control = new SimulationControl();
-		} else {
-			MasterControl masterControl = new MasterControl();
-			masterControl.addListener(this);
-			control = masterControl;
-		}
+		// wire simulation engines
+		AbstractControl.setSimulationEngine(new SimpleSimulationEngineImpl(simulationSettings));
+		AbstractControl.setPresentationEngine(new SimplePresentationEngineImpl(EarthPanel));
 		
 		// run simulation
-		millisToPuse = (new Date()).getTime();
 		control.runSimulation(simulationSettings);
+	}
+
+	private void createControl() {
+		// create control based on r|t
+		if(prescontrol) {
+			control = AbstractControlFactory.getInstance().createControl(AbstractControlFactory.BA);
+		} else if (simcontrol) {
+			control = AbstractControlFactory.getInstance().createControl(AbstractControlFactory.AB);
+		} else { 
+			control = AbstractControlFactory.getInstance().createControl(AbstractControlFactory.MAB);
+		}		
+		// register UI as listener for control events
+		control.addListener(this);
 	}
 	
 	/**
@@ -766,8 +745,6 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	 */
 	private void pauseSimulation() {
 		if(control.isSimulationRunning()) {
-			millisToPuse = (new Date()).getTime() - millisToPuse;
-			System.out.println("Stabiliation time in millis: " + millisToPuse);
 			control.pauseSimulation();
 		} else {
 			control.resumeSimulation();
@@ -841,6 +818,14 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	@Override
 	public void removeListener(Listener l) {
 		throw new NotImplementedException();
+	}
+
+	/**
+	 * Shows the given message in dialog.
+	 * @param message the message to show
+	 */
+	protected void showMessage(String message) {
+		JOptionPane.showMessageDialog(this, message);
 	}
 
 }

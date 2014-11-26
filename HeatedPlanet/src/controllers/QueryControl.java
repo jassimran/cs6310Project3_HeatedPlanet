@@ -4,20 +4,41 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import presentation.earth.TemperatureGrid;
 import presentation.query.QueryResult;
 import presentation.query.QueryResultFactory;
+import presentation.query.SimulationQuery;
+import services.AccuracyService;
 import services.PersistenceService;
+import services.SimulationService;
 import simulation.SimulationSettings;
+import simulation.SimulationSettingsFactory;
 import domain.Simulation;
+import events.EventType;
+import events.Listener;
 
-public class QueryControl {
-
-	private static PersistenceService persistenceService;
-	//private static InterpolationService interpolationService;
+public class QueryControl extends AbstractControl implements Runnable {
+	
+	// used services
+	private PersistenceService persistenceService;
+	private AccuracyService accuracyService;
+	private SimulationService simulationService;
+	
+	private List<Listener> listeners;
+	
+	/**
+	 * Result of last simulation or null if none has run yet.
+	 */
+	private TemperatureGrid temperatureGrid;
 
 	public QueryControl() {
+		super();
+		// initialize listeners
+		listeners = new ArrayList<Listener>();
+		// get services reference
 		persistenceService = PersistenceService.getInstance();
-		//interpolationService = InterpolationService.getInstance();
+		accuracyService = AccuracyService.getInstance();
+		simulationService = SimulationService.getInstance();
 	}
 	
 	
@@ -42,6 +63,14 @@ public class QueryControl {
 		List<Simulation> simulations = persistenceService.findSimulationsByUserInputs(axialTilt, orbitalEccentricity, endingDate);
 		for(Simulation simulation : simulations){
 			simulationNames.add(simulation.getName());
+		}
+		if(simulationNames.isEmpty()){
+			SimulationSettings settings = SimulationSettingsFactory.createSimulationSettingsWithDefaults();
+			settings.setAxialTilt(axialTilt);
+			settings.setEccentricity(orbitalEccentricity);
+			int simulationMonths = simulationService.calculateSimulationMonths(endingDate);
+			settings.setSimulationLength(simulationMonths);
+			simulationNames.add(generateSimulationName(settings));
 		}
 		return simulationNames;		
 	}
@@ -75,54 +104,16 @@ public class QueryControl {
 	 * @param endLong the ending longitude that the user has requested
 	 * @return the query results that need to be displayed to the user
 	 */
-	public QueryResult computeQueryResults(String simulationName,
-			Date startDate, Date endDate, double startLat, double endLat,
-			double startLong, double endLong) {
+	public QueryResult computeQueryResults(SimulationQuery simulationQuery) {
 
-		Simulation selectedSimulation = persistenceService.findBySimulationName(simulationName);
+		Simulation selectedSimulation = persistenceService.findBySimulationName(simulationQuery.getSimulationName());
 		
-		if(selectedSimulation == null){
-			
-			Double tilt = 23.44; // The tilt of the Earth
-			int geographicAccuracy = 100; // 100 percent
-			Double eccentricity = 0.0167; // The eccentricity of the Earth
-			int gridSpacing = 15; // 15 degrees; the size of a time zone
-			int temporalAccuracy = 100; // 100 percent 
-			int timeStep = 1440; // 1 solar day in minutes
-			int simulationLength = 12; // 12 months
-			int precision = 7; // the number of digits storable in a float
-			
-			SimulationSettings settings = new SimulationSettings();
-			settings.setSOption(true);
-			settings.setPOption(false);
-			settings.setROption(false);
-			settings.setTOption(false);
-			settings.numCellsX = 360 / gridSpacing;
-			settings.numCellsY = 180 / gridSpacing;
-			settings.setBufferSize(1);
-			
-			settings.setTemporalAccuracy(temporalAccuracy);
-			settings.setGeoAccuracy(geographicAccuracy);
-			settings.setPresentationDisplayRate(1 * 1000); // milliseconds
-			settings.setSimulationTimeStep(timeStep); 
-			settings.setGridSpacing(gridSpacing); 
-			settings.setPrecision(precision);	
-			settings.setAxialTilt(tilt); 
-			settings.setEccentricity(eccentricity); 						
-			settings.setSimulationLength(simulationLength); 
-			
-			//Generate the simulation name to use
-			settings.setName(generateSimulationName(tilt, eccentricity, 
-					simulationLength, gridSpacing, timeStep, 
-					temporalAccuracy, geographicAccuracy));
-			
-			// TODO: Uncomment this after Jaime's branch is merged
-			//this.runSimulation(settings);
+		if(selectedSimulation == null){			
+			return null;
 		}
 		
 		// TODO Do we need to do something to force the system to wait until the simulation is completed?
 		// I was thinking this might be necessary if it would be running on another thread
-		selectedSimulation = persistenceService.findBySimulationName(simulationName);
 		
 //		// TODO: Perform geographic interpolation
 //		for (EarthGrid currentGrid : selectedSimulation.getTimeStepList()) {
@@ -138,19 +129,19 @@ public class QueryControl {
 //						selectedSimulation.getTimeStepList());
 //		selectedSimulation.setTimeStepList(temporalInterpolatedGrids);
 
-		return QueryResultFactory.buildQueryResult(selectedSimulation, startDate, endDate, startLat, endLat, startLong, endLong);
+		return QueryResultFactory.buildQueryResult(selectedSimulation, simulationQuery);
 
 	}
 	
-	public String generateSimulationName(Double tilt, Double eccentricity,
-			int simulationLength, int gridSpacing, int timeStep, int temporalAccuracy,
-			int geographicAccuracy){
+
+	public String generateSimulationName(SimulationSettings settings){
 		
 		String retVal = null;
 		
 		Object[] args = new Object[]
-				{tilt, eccentricity, simulationLength, gridSpacing, timeStep,
-				temporalAccuracy, geographicAccuracy, 1};
+				{settings.getAxialTilt(), settings.getEccentricity(), settings.getSimulationLength(), 
+				settings.getGridSpacing(), settings.getSimulationTimeStep(),
+				settings.getTemporalAccuracy(), settings.getGeoAccuracy(), 1};
 		
 		final String format = "Tilt: %s Ecc: %s Len: %s GS: %d TS: %s TA: %s GA: %s Run: %s";
 		
@@ -162,5 +153,145 @@ public class QueryControl {
 		}
 		
 		return retVal;
+	}
+	
+	/**
+	 * Executes simulation taking into consideration the chosen concurrency model.
+	 */
+	public void executeSimulation() {
+		
+		// calculate simulation length (in terms of simulation steps to produce)
+		synchronized (abstractLock) {
+			simulationLength = simulationService.calculateSimulationLength(simulationSettings.getSimulationLength(), simulationSettings.getSimulationTimeStep());
+		}
+		
+		// reset simulation progress
+		synchronized (abstractLock) {
+			simulationIndex = 0;
+		}
+				
+		// create simulation
+		Simulation simulation = createSimulation(simulationSettings);
+		
+		// get total grids to produce
+		int totalGrids;
+		synchronized (abstractLock) {
+			totalGrids = simulationLength;
+		}
+		
+		// calculate accuracy gap
+		int gapSize = accuracyService.calculateGapSize(totalGrids, simulation.getTemporalAccuracy());		
+		int gapControl = gapSize; // use to place gaps between samples to persist
+		
+		// reset temperature grid
+		temperatureGrid = null;
+		
+		while(!isTerminateSimulation() && !isSimulationFinished()) {
+			// get current simulation time
+			int simulationTime;
+			synchronized (abstractLock) {
+				simulationTime = AbstractControl.simulationTime;
+			}
+						
+			// execute simulation step
+			temperatureGrid = simulationEngine.executeSimulationStep(simulationSettings, simulationTime, temperatureGrid);
+			
+			// get and increment simulation index
+			int index;
+			synchronized (abstractLock) {
+				simulationIndex++;
+				index = simulationIndex;
+			}
+			
+			// persist simulation based on temporal accuracy
+			if((++gapControl) == (gapSize+1)) {
+				persistenceService.persistSimulation(simulation, temperatureGrid, index);
+				gapControl = 0;					
+			}
+			
+			// update simulation time
+			synchronized (abstractLock) {
+				AbstractControl.simulationTime += simulationSettings.getSimulationTimeStep();
+			}
+		}
+		
+		// notify listeners simulation is finished
+		for(Listener listener : listeners) {
+			listener.notify(EventType.SimulationFinishedEvent);
+		}
+	}
+
+	@Override
+	public void notify(EventType e) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void addListener(Listener l) {
+		synchronized (listeners) {
+			listeners.add(l);
+		}
+	}
+
+	@Override
+	public void removeListener(Listener l) {
+		synchronized (listeners) {
+			listeners.remove(l);
+		}
+	}
+
+	@Override
+	public void run() {
+		executeSimulation();
+	}
+
+	@Override
+	protected boolean waiting() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void runSimulation(SimulationSettings settings) {
+		// set settings 
+		setSettings(settings);
+		
+		// set simulation running
+		setSimulationRunning(true);
+		
+		// define concurrency
+		simulationThread = new Thread(this);
+		
+		// execute simulation
+		simulationThread.start();
+	}
+
+	@Override
+	public void stopSimulation() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void pauseSimulation() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void resumeSimulation() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void handleStopSimulationEvent() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void handlePauseSimulationEvent() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void handleResumeSimulationEvent() {
+		throw new UnsupportedOperationException();
 	}
 }

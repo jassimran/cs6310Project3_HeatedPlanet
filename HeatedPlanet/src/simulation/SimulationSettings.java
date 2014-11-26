@@ -80,8 +80,10 @@ public class SimulationSettings {
 	 */
 	private double eccentricity;
 	
-	public int numCellsX;
-	public int numCellsY;
+	// earth panel state
+	private int numCellsX;
+	private int numCellsY;
+	private int degreeSeparation;
 
 	public synchronized int getGridSpacing() {
 		return this.gridSpacing;
@@ -145,18 +147,21 @@ public class SimulationSettings {
 	public synchronized void setPrecision(int precision) {
 		this.precision = precision;
 	}
-	public double getAxialTilt() {
+	
+	public synchronized double getAxialTilt() {
 		return tilt;
 	}
-	public void setAxialTilt(double axialTilt) {
+	public synchronized void setAxialTilt(double axialTilt) {
 		this.tilt = axialTilt;
 	}
-	public int getTemporalAccuracy() {
+	
+	public synchronized int getTemporalAccuracy() {
 		return temporalAccuracy;
 	}
-	public void setTemporalAccuracy(int temporalAccuracy) {
+	public synchronized void setTemporalAccuracy(int temporalAccuracy) {
 		this.temporalAccuracy = temporalAccuracy;
 	}
+	
 	public synchronized int getGeoAccuracy() {
 		return geoAccuracy;
 	}
@@ -171,17 +176,38 @@ public class SimulationSettings {
 		this.eccentricity = eccentricity;
 	}
 	
-	public String getName() {
+	public synchronized String getName() {
 		return name;
 	}
-	public void setName(String name) {
+	public synchronized void setName(String name) {
 		this.name = name;
 	}
 	
-	public int getSimulationLength() {
+	public synchronized int getSimulationLength() {
 		return simulationLength;
 	}
-	public void setSimulationLength(int simulationLength) {
+	public synchronized void setSimulationLength(int simulationLength) {
 		this.simulationLength = simulationLength;
+	}
+	
+	public synchronized int getNumCellsX() {
+		return numCellsX;
+	}
+	public synchronized void setNumCellsX(int numCellsX) {
+		this.numCellsX = numCellsX;
+	}
+	
+	public synchronized int getNumCellsY() {
+		return numCellsY;
+	}
+	public synchronized void setNumCellsY(int numCellsY) {
+		this.numCellsY = numCellsY;
+	}
+	
+	public synchronized int getDegreeSeparation() {
+		return degreeSeparation;
+	}
+	public synchronized void setDegreeSeparation(int degreeSeparation) {
+		this.degreeSeparation = degreeSeparation;
 	}
 }

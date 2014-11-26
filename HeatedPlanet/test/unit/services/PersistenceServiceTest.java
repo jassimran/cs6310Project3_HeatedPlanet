@@ -1,6 +1,7 @@
 package services;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -11,8 +12,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.sun.org.apache.xalan.internal.xsltc.dom.MatchingIterator;
 
 import persistence.EntityManagerFactory;
 import app.conf.BootStrap;
@@ -73,7 +72,6 @@ public class PersistenceServiceTest {
 
 	@Test
 	public final void testFindAllSimulations() {
-		
 		// when:
 		List<Simulation> simulations = persistenceService.findAllSimulations();
 		

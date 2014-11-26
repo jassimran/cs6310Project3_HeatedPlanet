@@ -121,15 +121,8 @@ public class PersistenceService {
 	}
 
 	public Simulation findBySimulationName(String simulationName) {
-
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Simulation> q = cb.createQuery(Simulation.class);
-		Root<Simulation> s = q.from(Simulation.class);
-		ParameterExpression<String> nameParameter = cb.parameter(String.class);
-		q.select(s).where(cb.equal(s.get("name"), nameParameter));
-
-		TypedQuery<Simulation> typedQuery = em.createQuery(q);
-		typedQuery.setParameter(nameParameter, simulationName);
+		TypedQuery<Simulation> typedQuery = em.createNamedQuery("Simulation.findByName", Simulation.class);
+		typedQuery.setParameter("name", simulationName);
 
 		try {
 			return typedQuery.getSingleResult();

@@ -11,13 +11,13 @@ import buffers.BufferImplementation;
 import events.EventType;
 import events.Listener;
 
-public class MasterControl extends AbstractControl implements Listener {
-	
-	private List<Listener> listeners;
+public class MasterControl extends AbstractControl {
 	
 	// used services
 	private SimulationService simulationService;
 	
+	private List<Listener> listeners;
+		
 	public MasterControl() {
 		super();
 		
@@ -25,7 +25,7 @@ public class MasterControl extends AbstractControl implements Listener {
 		
 		simulationControl = null;
 		presentationControl = null;
-		
+		// get services reference
 		simulationService = SimulationService.getInstance();
 	}
 
