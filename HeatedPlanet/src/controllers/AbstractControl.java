@@ -1,11 +1,14 @@
 package controllers;
 
+import domain.Simulation;
 import presentation.PresentationEngine;
+import services.PersistenceService;
 import simulation.SimulationEngine;
 import simulation.SimulationSettings;
 import buffers.Buffer;
+import events.Listener;
 
-public abstract class AbstractControl {
+public abstract class AbstractControl implements Listener {
 
 	/**
 	 * Amount of simulated time since the start of the execution (in minutes).
@@ -53,6 +56,7 @@ public abstract class AbstractControl {
 	protected static int presentationIndex;
 
 	protected AbstractControl() {
+		// initialize state
 		simulationRunning = false;
 		terminateSimulation = false;
 		simulationTime = 0;
@@ -74,8 +78,37 @@ public abstract class AbstractControl {
 		return simulationTime;
 	}
 
-	public static void setBuffer(Buffer buffer) {
+	protected static void setBuffer(Buffer buffer) {
 		AbstractControl.buffer = buffer;
+	}
+	
+	/**
+	 * @return true if a simulation with the given name exists
+	 */
+	public boolean simulationExists(String simulationName) {
+		return (PersistenceService.getInstance().findBySimulationName(simulationName) != null)? true : false;
+	}
+	
+	/**
+	 * @return a Simulation based on the given SimulationSettings
+	 */
+	protected Simulation createSimulation(SimulationSettings simulationSettings) {
+		
+		// create simulation
+		Simulation simulation = new Simulation();
+		simulation.setName(simulationSettings.getName());
+		simulation.setOrbitalEccentricity(simulationSettings.getEccentricity());
+		simulation.setAxialTilt(simulationSettings.getAxialTilt());
+		simulation.setTemporalAccuracy(simulationSettings.getTemporalAccuracy());
+		simulation.setGeoAccuracy(simulationSettings.getGeoAccuracy());
+		simulation.setLength(simulationSettings.getSimulationLength());
+		simulation.setGridSpacing(simulationSettings.getGridSpacing());
+		simulation.setPrecision(simulationSettings.getPrecision());
+		simulation.setTimeStep(simulationSettings.getSimulationTimeStep());
+		simulation.setNumberOfColumns(simulationSettings.getNumCellsX());
+		simulation.setNumberOfRows(simulationSettings.getNumCellsY());
+		
+		return simulation;
 	}
 	
 	/**
