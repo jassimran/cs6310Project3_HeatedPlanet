@@ -736,12 +736,23 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 			//disable the run button
 			runQuery.setEnabled(false);
 			
+			JScrollPane outputScroller = new JScrollPane();
+			
 			//call query controller here
 			//use case 1
 			if(byNameButton.isSelected())
 			{
 				if(!simulationName.isEmpty())
 					res = ((QueryControl)control).getQueryResultBySimulationName(simulationName);
+				
+				JPanel newoutput = new JPanel(new BorderLayout());
+				newoutput = createOutputGui();
+			    
+			    JViewport vw = outputScroller.getViewport();
+			    outputScroller.getViewport().add(newoutput);
+			    System.out.println(outputScroller.getViewport().getExtentSize());
+			    
+
 				
 			}
 			//use case 2
@@ -761,24 +772,18 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 					settings.setSimulationLength(control.getSimulationMonths(simEnd));
 					AbstractControl.setSimulationEngine(new SimpleSimulationEngineImpl(settings));
 					control.runSimulation(settings);
+
 				}
 					
 			}
 				
-	    	
-			
-			
-			JPanel newoutput = new JPanel(new BorderLayout());
-			newoutput = createOutputGui();
-		    JScrollPane outputScroller = new JScrollPane();
-		    JViewport vw = outputScroller.getViewport();
-		    outputScroller.getViewport().add(newoutput);
-		    System.out.println(outputScroller.getViewport().getExtentSize());
-		    
 		    this.getContentPane().setPreferredSize(new Dimension(1320, 620));
 			this.getContentPane().add(outputScroller, BorderLayout.EAST);
 			this.pack();
 			this.setVisible(true);
+			
+			
+
 			
 	
 	    
@@ -1029,7 +1034,6 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 							JPanel newoutput = new JPanel(new BorderLayout());
 							newoutput = createOutputGui();
 						    JScrollPane outputScroller = new JScrollPane();
-						    JViewport vw = outputScroller.getViewport();
 						    outputScroller.getViewport().add(newoutput);
 						}
 					});
