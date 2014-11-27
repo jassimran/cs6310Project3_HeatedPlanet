@@ -1,6 +1,5 @@
 package services;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -8,10 +7,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.ParameterExpression;
-import javax.persistence.criteria.Root;
 
 import persistence.EntityManagerFactory;
 import presentation.earth.TemperatureGrid;
@@ -164,15 +159,5 @@ public class PersistenceService {
 		List<Simulation> results = typedQuery.getResultList();
 
 		return results;
-	}
-	
-	public Simulation detachSimulation(Simulation simulation){
-		em.detach(simulation);
-		
-		for(EarthGrid grid : simulation.getTimeStepList()){
-			em.detach(grid);
-		}
-		
-		return simulation;
 	}
 }

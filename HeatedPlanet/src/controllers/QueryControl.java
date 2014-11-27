@@ -80,6 +80,20 @@ public class QueryControl extends AbstractControl implements Runnable {
 	}
 	
 	/**
+	 * Performs geographic and temporal interpolation on the given simulation.
+	 */
+	private void interpolate(Simulation simulation) {
+		for (EarthGrid currentGrid : simulation.getTimeStepList()) {
+			interpolationService.performGeographicInterpolation(currentGrid);
+		}
+
+		List<EarthGrid> temporalInterpolatedGrids = interpolationService.
+				performTemporalInterpolation(simulation);
+		simulation.setTimeStepList(temporalInterpolatedGrids);
+		
+	}
+	
+	/**
 	 * Determines if a simulation name has already been used
 	 * @param simulationName the simulation name to test
 	 * @return True, if the simulation name is not unique. Otherwise, false.
@@ -90,13 +104,20 @@ public class QueryControl extends AbstractControl implements Runnable {
 	}
 
 	public QueryResult getQueryResultBySimulationName(String simulationName){
+		// find simulation
 		Simulation selectedSimulation = persistenceService.findBySimulationName(simulationName);
-		persistenceService.detachSimulation(selectedSimulation);
 		
-		// TODO Determine if we need to interpolate
+		// check precondition
+		if(selectedSimulation == null) {
+			throw new RuntimeException("Precondition not met: searched by a non-existent simulation");
+		}
+		
+		// interpolate
+		interpolate(selectedSimulation);
+		
+		// build query result
 		return QueryResultFactory.buildQueryResult(selectedSimulation);
 	}
-	
 	
 	/**
 	 * Computes the query results for the provided simulation based on the limitations provided
@@ -110,28 +131,23 @@ public class QueryControl extends AbstractControl implements Runnable {
 	 * @return the query results that need to be displayed to the user
 	 */
 	public QueryResult computeQueryResults(SimulationQuery simulationQuery) {
-
+		// search for simulation
 		Simulation selectedSimulation = persistenceService.findBySimulationName(simulationQuery.getSimulationName());
-		persistenceService.detachSimulation(selectedSimulation);
 		
+		// if simulation does not exist, notify
 		if(selectedSimulation == null){			
 			return null;
 		}
 		
-		for (EarthGrid currentGrid : selectedSimulation.getTimeStepList()) {
-			interpolationService.performGeographicInterpolation(currentGrid);
-		}
+		// interpolate
+		interpolate(selectedSimulation);
 
-		List<EarthGrid> temporalInterpolatedGrids = interpolationService.
-				performTemporalInterpolation(selectedSimulation);
-		selectedSimulation.setTimeStepList(temporalInterpolatedGrids);
-
+		// build query result
 		return QueryResultFactory.buildQueryResult(selectedSimulation, simulationQuery);
 
 	}
-	
 
-	public String generateSimulationName(SimulationSettings settings){
+	public String generateSimulationName(SimulationSettings settings) {
 		
 		String retVal = null;
 		
