@@ -556,13 +556,20 @@ ActionListener, ChangeListener, Listener {
 		int LABEL_HEIGHT = 26;
 		
     	JPanel Panel = new JPanel();
+    	//calculate number of rows in the output, use this determine preferred size.
+    	ht =0;
         
     	//To make content scroll, these dimension should be set to (520, 100020)
 		Panel.setLayout(new BoxLayout(Panel, BoxLayout.PAGE_AXIS));
-		Panel.setPreferredSize(new Dimension(520, 100020));
+		//Panel.setPreferredSize(new Dimension(520, 100020));
 		
+		jtxtArea = new JTextArea();
+		jtxtArea.setLayout(new BoxLayout(jtxtArea, BoxLayout.PAGE_AXIS));
+		//jtxtArea.setPreferredSize(new Dimension(520, 2147483647));
+		//jtxtArea.setMaximumSize(new Dimension(2147483647, 2147483647));
 		
-		
+		//jtxtArea.setAutoscrolls(true);
+	
 		 if(minTempCheckbox.isSelected())
 		 {
 			 minTempLabel = new javax.swing.JLabel("1.Minimum temperature for region: " );
@@ -574,11 +581,12 @@ ActionListener, ChangeListener, Listener {
 	
 		
 		
-			 Panel.add(minTempLabel);
-			 Panel.add(new JLabel("Min Temperature: "+q1.getTemperature()+""));
-			 Panel.add(new JLabel("Reading Time: "+q1.getSimulatedDate()+""));
-			 Panel.add(new JLabel("Location(latitude/longitude): "+q1.getLatitude()+"/"+q1.getLongitude()));
-			 Panel.add(new JLabel("****************"));
+			 jtxtArea.add(minTempLabel);
+			 jtxtArea.add(new JLabel("Min Temperature: "+q1.getTemperature()+""));
+			 jtxtArea.add(new JLabel("Reading Time: "+q1.getSimulatedDate()+""));
+			 jtxtArea.add(new JLabel("Location(latitude/longitude): "+q1.getLatitude()+"/"+q1.getLongitude()));
+			 jtxtArea.add(new JLabel("****************"));
+			 ht += 6;
 		
 		 }
 		 if(maxTempRegionCheckbox.isSelected())
@@ -588,11 +596,12 @@ ActionListener, ChangeListener, Listener {
 			 maxTempLabel = new javax.swing.JLabel("2. Maximum Temperature for region: ");
 		
 		
-			 Panel.add(maxTempLabel);
-			 Panel.add(new JLabel("Max Temperature: "+ q2.getTemperature()+""));
-			 Panel.add(new JLabel("Reading Time:" + q2.getSimulatedDate()+""));
-			 Panel.add(new javax.swing.JLabel("Location(latitude/longitude): "+ q2.getLatitude()+"/"+q2.getLongitude()));
-			 Panel.add(new JLabel("****************"));
+			 jtxtArea.add(maxTempLabel);
+			 jtxtArea.add(new JLabel("Max Temperature: "+ q2.getTemperature()+""));
+			 jtxtArea.add(new JLabel("Reading Time:" + q2.getSimulatedDate()+""));
+			 jtxtArea.add(new javax.swing.JLabel("Location(latitude/longitude): "+ q2.getLatitude()+"/"+q2.getLongitude()));
+			 jtxtArea.add(new JLabel("****************"));
+			 ht += 6;
 		 }
 		 if(meanTempRegionCheckbox.isSelected())
 		 {
@@ -600,17 +609,18 @@ ActionListener, ChangeListener, Listener {
 		 	 regionMeanTempLabel = new javax.swing.JLabel("Mean Temperature over region: ");
 			 regionMeanTempLabel2 = new JLabel("Date, Temperature");
 		
-			 Panel.add(regionMeanTempLabel);
-			 Panel.add(regionMeanTempLabel2);
+			 jtxtArea.add(regionMeanTempLabel);
+			 jtxtArea.add(regionMeanTempLabel2);
 		
 			 List<QueryCell> meanQcell1 = res.getMeanTempOverRegion();
 			 System.out.println("Mean temp over region query cell is empty?"+ meanQcell1.isEmpty());
 			 for(QueryCell qc1 : meanQcell1)
 			 {
-				 Panel.add(new JLabel(qc1.getSimulatedDate()+"         " +qc1.getTemperature()));
-			
+				 jtxtArea.add(new JLabel(qc1.getSimulatedDate()+"         " +qc1.getTemperature()));
+				 ht += 1;
 			 }
-			 Panel.add(new JLabel("****************"));
+			 jtxtArea.add(new JLabel("****************"));
+			 ht += 6;
 		}
 		if(meanTempTimeCheckbox.isSelected())
 		{
@@ -618,28 +628,27 @@ ActionListener, ChangeListener, Listener {
 			timeMeanTempLabel = new javax.swing.JLabel("Mean Temperature during over time:");
 			timeMeanTempLabel2 = new JLabel("Latitude/Longitude, Temperature");
 		
-			Panel.add(timeMeanTempLabel);
-			Panel.add(timeMeanTempLabel2);
+			jtxtArea.add(timeMeanTempLabel);
+			jtxtArea.add(timeMeanTempLabel2);
 		
 			List<QueryCell> meanQcell2 = res.getMeanTempOverTime();
 			for(QueryCell qc2 : meanQcell2)
 			{
-				Panel.add(new JLabel(qc2.getLatitude()+"/"+qc2.getLongitude() + "    " + qc2.getTemperature()));
-				Panel.add(new JLabel("                                            "));
+				jtxtArea.add(new JLabel(qc2.getLatitude()+"/"+qc2.getLongitude() + "    " + qc2.getTemperature()));
+				//jtxtArea.add(new JLabel("                                            "));
+				ht += 1;
 			}
-			Panel.add(new JLabel("****************"));
-			
+			jtxtArea.add(new JLabel("****************"));
+			ht += 6;
 		}
 		if(tempsTimeRegionCheckbox.isSelected())
 		{
 				
-			JPanel gridPanel = new JPanel(new BorderLayout());
-			gridPanel.setPreferredSize(new Dimension(WIDTH_EDITS, 400));
-		
+			
 		
 			tempTimeRegionLabel = new javax.swing.JLabel("Grid Temperatures:");
-			Panel.add(tempTimeRegionLabel);
-			Panel.add(new JLabel("                                                                         "));
+			jtxtArea.add(tempTimeRegionLabel);
+			jtxtArea.add(new JLabel("                                                                         "));
 			//get data from each Grid
 		
 			List<QueryGrid> qryGrids = res.getQueryGrids();
@@ -649,24 +658,28 @@ ActionListener, ChangeListener, Listener {
 				gridcount++;
 				tempTimeRegionLabel1 = new javax.swing.JLabel("== Grid "+ gridcount+ " =="+ qg.getSimulatedDate());
 		
-				Panel.add(tempTimeRegionLabel1);
-				Panel.add(new JLabel("                                         "));
-				Panel.add(new JLabel("Lat/Long,               Temperature"));
+				jtxtArea.add(tempTimeRegionLabel1);
+				jtxtArea.add(new JLabel("                                         "));
+				jtxtArea.add(new JLabel("Lat/Long,               Temperature"));
 				List<QueryCell> qcells = qg.getQueryCells();
 				for (QueryCell qcs : qcells)
 				{
-					Panel.add(new JLabel(qcs.getLatitude() + "/" + qcs.getLongitude() + "         " +qcs.getTemperature()+ " "));
-				
+					jtxtArea.add(new JLabel(qcs.getLatitude() + "/" + qcs.getLongitude() + "         " +qcs.getTemperature()+ " "));
+					//ht +=1;
 				}
+				ht += qryGrids.size()*qcells.size();
 			}
+			ht += 3;
 		
 		}
 		
-		System.out.println("Inside createOutputGui method");	
-       
-	   
-	     pack();
-	   
+		System.out.println("Inside createOutputGui method, height : " + ht);	
+		if (ht > 2147483647)
+			jtxtArea.setPreferredSize(new Dimension(520, 2147483647));
+		else 
+			jtxtArea.setPreferredSize(new Dimension(520, ht+500));
+		 jtxtArea.setEnabled(false);
+		 Panel.add(jtxtArea);
 	     return Panel;
     	
     }
@@ -823,21 +836,21 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
     }
     //Add output to JFrame
     
-    public void addOutputToFrame()
+    /*public void addOutputToFrame()
     {
     	JScrollPane outputScroller = new JScrollPane();
-    	JPanel newoutput = new JPanel(new BorderLayout());
+    	JTextArea newoutput = new JTextArea();
     	newoutput = createOutputGui();
     				    
     	//JViewport vw = outputScroller.getViewport();
-    	outputScroller.getViewport().add(newoutput);
-        System.out.println(outputScroller.getViewport().getExtentSize());
+    	//outputScroller.getViewport().add(newoutput);
+        //System.out.println(outputScroller.getViewport().getExtentSize());
 
     	this.getContentPane().setPreferredSize(new Dimension(1320, 620));
-    	this.getContentPane().add(outputScroller, BorderLayout.EAST);
+    	this.getContentPane().add(newoutput, BorderLayout.EAST);
     	this.pack();
     	this.setVisible(true);
-    }
+    }*/
     //set simulation start and end time.
     
     public void setSimulationPeriod(String start, String end)
@@ -1097,16 +1110,23 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
     }
 	private void displayQueryResults() {
 		JScrollPane outputScroller = new JScrollPane();
-		JPanel newoutput = new JPanel(new BorderLayout());
-		newoutput = createOutputGui();
-			
+		JPanel newoutput = createOutputGui();
+		newoutput.setEnabled(false);
 		
+		//System.out.println("number of rows: " + newoutput.getText());
+		if (ht > 2147483647)
+			outputScroller.setPreferredSize(new Dimension(520, 2147483647));
+		else 
+			outputScroller.setPreferredSize(new Dimension(520, ht));
 		outputScroller.getViewport().add(newoutput);
-		this.getContentPane().setPreferredSize(new Dimension(1320, 620));
+		/*JPanel oPanel = new JPanel();
+		System.out.println("preferred size is : " + newoutput.getText());
+		oPanel.setPreferredSize(new Dimension(520, newoutput.getRows()));
+		oPanel.add(outputScroller);*/
 		this.getContentPane().add(outputScroller, BorderLayout.EAST);
 		this.pack();
 		this.setVisible(true);
-		System.out.println(outputScroller.getViewport().getExtentSize());
+		//System.out.println(outputScroller.getViewport().getExtentSize());
 	}
     public void stateChanged(ChangeEvent e) {
         SpinnerListModel sModel = (SpinnerListModel) nameSpinner.getModel();
@@ -1165,7 +1185,7 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 
   
    
-   
+    private JTextArea jtxtArea;
     private javax.swing.JPanel firstPanel;
     private javax.swing.JTextField latitudeFromField;
     private javax.swing.JTextField axisTiltField;
@@ -1208,6 +1228,7 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
     private JLabel minTempLabel1,readingTimeLabel,locationLabel,maxTempLabel1,timeMeanTempLabel2,regionMeanTempLabel2,tempTimeRegionLabel1;
     //private JPanel mainPanel = new JPanel();
     private JPanel namePFvaluePanel;
+    private int ht;
     //private JLabel comboxLabel;
 
 
