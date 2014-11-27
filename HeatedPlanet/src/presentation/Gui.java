@@ -695,8 +695,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 			stopButton.setEnabled(false);
 			//QueryInterfaceUI gui = new QueryInterfaceUI();
 			//gui.launchQueryInterface();
-			QueryInterfaceUI gui = QueryInterfaceUI.getInstance();
-			gui.launchNewQueryInterface();
+			QueryInterfaceUI.getInstance();
 			
 		}
 	}
