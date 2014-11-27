@@ -97,8 +97,6 @@ ActionListener, ChangeListener, Listener {
      * Creates new form QueryInterfaceUI  
      */
    private QueryInterfaceUI() {
-        //TODO Remove this line
-    	BootStrap.init();
     	createGui();
     	createControl();
     	this.setVisible(true);
@@ -745,17 +743,7 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 				if(!simulationName.isEmpty())
 					res = ((QueryControl)control).getQueryResultBySimulationName(simulationName);
 				
-				JScrollPane outputScroller = new JScrollPane();
-				JPanel newoutput = new JPanel(new BorderLayout());
-				newoutput = createOutputGui();
-			    
-			    JViewport vw = outputScroller.getViewport();
-			    outputScroller.getViewport().add(newoutput);
-			    this.getContentPane().setPreferredSize(new Dimension(1320, 620));
-				this.getContentPane().add(outputScroller, BorderLayout.EAST);
-				this.pack();
-				this.setVisible(true);
-			    System.out.println(outputScroller.getViewport().getExtentSize());
+				displayQueryResults();
 			    
 
 				
@@ -780,17 +768,7 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 
 				}
 				else{
-					JScrollPane outputScroller = new JScrollPane();
-					JPanel newoutput = new JPanel(new BorderLayout());
-					newoutput = createOutputGui();
-				    
-				    JViewport vw = outputScroller.getViewport();
-				    outputScroller.getViewport().add(newoutput);
-				    this.getContentPane().setPreferredSize(new Dimension(1320, 620));
-					this.getContentPane().add(outputScroller, BorderLayout.EAST);
-					this.pack();
-					this.setVisible(true);
-				    System.out.println(outputScroller.getViewport().getExtentSize());
+					displayQueryResults();
 				}
 					
 			}
@@ -927,6 +905,20 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 			
 		}
     }
+
+	private void displayQueryResults() {
+		JScrollPane outputScroller = new JScrollPane();
+		JPanel newoutput = new JPanel(new BorderLayout());
+		newoutput = createOutputGui();
+		
+		JViewport vw = outputScroller.getViewport();
+		outputScroller.getViewport().add(newoutput);
+		this.getContentPane().setPreferredSize(new Dimension(1320, 620));
+		this.getContentPane().add(outputScroller, BorderLayout.EAST);
+		this.pack();
+		this.setVisible(true);
+		System.out.println(outputScroller.getViewport().getExtentSize());
+	}
     
     public void stateChanged(ChangeEvent e) {
         SpinnerListModel sModel = (SpinnerListModel) nameSpinner.getModel();
@@ -1046,17 +1038,7 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 							if(res == null)
 								throw new RuntimeException("The query result should not be null at this point.");
 
-							JScrollPane outputScroller = new JScrollPane();
-							JPanel newoutput = new JPanel(new BorderLayout());
-							newoutput = createOutputGui();
-						    
-						    JViewport vw = outputScroller.getViewport();
-						    outputScroller.getViewport().add(newoutput);
-						    getContentPane().setPreferredSize(new Dimension(1320, 620));
-							getContentPane().add(outputScroller, BorderLayout.EAST);
-							pack();
-							setVisible(true);
-						    System.out.println(outputScroller.getViewport().getExtentSize());
+							displayQueryResults();
 						}
 					});
 		}

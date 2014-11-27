@@ -112,9 +112,7 @@ public class QueryControl extends AbstractControl implements Runnable {
 			return null;
 		}
 		
-		// TODO Do we need to do something to force the system to wait until the simulation is completed?
-		// I was thinking this might be necessary if it would be running on another thread
-		
+
 //		// TODO: Perform geographic interpolation
 //		for (EarthGrid currentGrid : selectedSimulation.getTimeStepList()) {
 //			EarthGrid geoInterpolatedSimulation = interpolationService

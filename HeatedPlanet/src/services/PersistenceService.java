@@ -92,13 +92,6 @@ public class PersistenceService {
 			earthGrid.setSimulation(simulation);
 			em.persist(earthGrid);
 			
-			// add the grid to the simulation so that it will be in memory the hibernate cache
-			List<EarthGrid> earthGrids = simulation.getTimeStepList();
-			if(earthGrids == null)
-				earthGrids = new ArrayList<EarthGrid>();
-			earthGrids.add(earthGrid);
-			simulation.setTimeStepList(earthGrids);
-
 			// calculate accuracy gap
 			int totalCells = temperatureGrid.getRows()
 					* temperatureGrid.getCols();
@@ -120,21 +113,16 @@ public class PersistenceService {
 					if ((++gapControl) == (gapSize + 1)) {
 						em.persist(earthCell);
 						
-						// add the cell to the simulation so that it will be in memory the hibernate cache
-						List<EarthCell> earthCells = earthGrid.getNodeList();
-						if(earthCells == null)
-							earthCells = new ArrayList<EarthCell>();
-						earthCells.add(earthCell);
-						earthGrid.setNodeList(earthCells);;
-						
 						gapControl = 0;
 					}
 				}
 			}
 		}
+		em.refresh(simulation);
 
 		// commit transaction
 		em.getTransaction().commit();
+		
 	}
 
 	public List<Simulation> findAllSimulations() {
@@ -148,7 +136,10 @@ public class PersistenceService {
 		typedQuery.setParameter("name", simulationName);
 
 		try {
-			return typedQuery.getSingleResult();
+			Simulation sim = typedQuery.getSingleResult();
+			if(sim.getTimeStepList()==null)
+				throw new RuntimeException("The list of timesteps is null.");
+			return sim;
 		} catch (NoResultException e) {
 			return null;
 		}
