@@ -91,6 +91,7 @@ public class QueryControl extends AbstractControl implements Runnable {
 
 	public QueryResult getQueryResultBySimulationName(String simulationName){
 		Simulation selectedSimulation = persistenceService.findBySimulationName(simulationName);
+		persistenceService.detachSimulation(selectedSimulation);
 		
 		// TODO Determine if we need to interpolate
 		return QueryResultFactory.buildQueryResult(selectedSimulation);
@@ -111,6 +112,7 @@ public class QueryControl extends AbstractControl implements Runnable {
 	public QueryResult computeQueryResults(SimulationQuery simulationQuery) {
 
 		Simulation selectedSimulation = persistenceService.findBySimulationName(simulationQuery.getSimulationName());
+		persistenceService.detachSimulation(selectedSimulation);
 		
 		if(selectedSimulation == null){			
 			return null;

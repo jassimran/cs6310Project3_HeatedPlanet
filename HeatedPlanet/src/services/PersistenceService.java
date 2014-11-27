@@ -102,6 +102,7 @@ public class PersistenceService {
 										// persist
 
 			// create EarthCells
+			//List<EarthCell> cells = new ArrayList<EarthCell>();
 			for (int y = 0; y < temperatureGrid.getRows(); y++) {
 				for (int x = 0; x < temperatureGrid.getCols(); x++) {
 					EarthCell earthCell = new EarthCell();
@@ -117,7 +118,9 @@ public class PersistenceService {
 					}
 				}
 			}
+			em.refresh(earthGrid);
 		}
+		
 		em.refresh(simulation);
 
 		// commit transaction
@@ -161,5 +164,15 @@ public class PersistenceService {
 		List<Simulation> results = typedQuery.getResultList();
 
 		return results;
+	}
+	
+	public Simulation detachSimulation(Simulation simulation){
+		em.detach(simulation);
+		
+		for(EarthGrid grid : simulation.getTimeStepList()){
+			em.detach(grid);
+		}
+		
+		return simulation;
 	}
 }

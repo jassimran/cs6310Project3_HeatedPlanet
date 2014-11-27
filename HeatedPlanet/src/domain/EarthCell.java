@@ -7,6 +7,7 @@
 package domain;
 
 import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -98,6 +99,8 @@ public class EarthCell implements Serializable {
     }
 
     public EarthGrid getGrid() {
+    	if(grid == null)
+    		throw new RuntimeException("The grid is null.");
         return grid;
     }
 

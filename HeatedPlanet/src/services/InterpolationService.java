@@ -126,14 +126,14 @@ public class InterpolationService {
 		
 	}
 
-	public EarthGrid performGeographicInterpolation(EarthGrid currentGrid) {
+	public void performGeographicInterpolation(EarthGrid currentGrid) {
 		
 		Simulation simulation = currentGrid.getSimulation();
 		List<EarthCell> nodes = currentGrid.getNodeList();
 		
 		for(int y = 0; y < simulation.getNumberOfRows(); y++){
 			for(int x = 0; x < simulation.getNumberOfColumns(); x++){
-				EarthCell currentCell = currentGrid.getEarthCell(x, y);
+				EarthCell currentCell = getEarthCell(nodes, x, y);
 				if(currentCell == null){
 					EarthCell interpolatedCell = new EarthCell();
 					interpolatedCell.setColumn(x);
@@ -143,7 +143,13 @@ public class InterpolationService {
 				}
 			}
 		}
-		
+	}
+	
+	private EarthCell getEarthCell(List<EarthCell> nodeList, int x, int y) {
+		for(EarthCell cell : nodeList){
+			if(cell.getRow() == y && cell.getColumn() == x)
+				return cell;
+		}
 		return null;
 	}
 }

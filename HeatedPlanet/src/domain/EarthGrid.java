@@ -14,6 +14,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,8 +26,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import presentation.query.QueryCell;
 
 /**
  *
@@ -56,7 +55,7 @@ public class EarthGrid implements Serializable {
     @JoinColumn(name = "simulation", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Simulation simulation;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "grid")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "grid", fetch = FetchType.LAZY)
     private List<EarthCell> nodeList;
 
     public EarthGrid() {
@@ -137,15 +136,9 @@ public class EarthGrid implements Serializable {
         return "domain.TimeStep[ id=" + id + " ]";
     }
 
-	public EarthCell getEarthCell(int x, int y) {
-		if(nodeList != null)
-			System.out.println(nodeList.size());
-		else
-			throw new RuntimeException("The node list is null...  Why?");
-		for(EarthCell cell : nodeList){
-			if(cell.getRow() == y && cell.getColumn() == x)
-				return cell;
-		}
-		return null;
+
+
+	public void setEarthCell(EarthCell interpolatedCell) {
+		nodeList.add(interpolatedCell);		
 	}
 }

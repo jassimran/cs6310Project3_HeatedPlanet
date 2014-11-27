@@ -676,54 +676,48 @@ ActionListener, ChangeListener, Listener {
     /**
      * @param args the command line arguments
      */
+    public static void main(String args[]) {
+    	getInstance();//.launchNewQueryInterface();
+    }
 
-   // public static void main(String args[]) {
-    	public void launchNewQueryInterface() {    /* Set the Nimbus look and feel */
-
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code  (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the 
-
-default look and feel.
-         * For details see 
-
-http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-       try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : 
-
-javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(QueryInterfaceUI.class.getName
-
-()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(QueryInterfaceUI.class.getName
-
-()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(QueryInterfaceUI.class.getName
-
-()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(QueryInterfaceUI.class.getName
-
-()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new QueryInterfaceUI().setVisible(true);
-               
-                
-            }
-        });
+    	public void launchNewQueryInterface() {
+    		getInstance();
+//       try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : 
+//
+//javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(QueryInterfaceUI.class.getName
+//
+//()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(QueryInterfaceUI.class.getName
+//
+//()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(QueryInterfaceUI.class.getName
+//
+//()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(QueryInterfaceUI.class.getName
+//
+//()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new QueryInterfaceUI().setVisible(true);
+//               
+//                
+//            }
+//        });
     }
     
     //check if any of the  display results option checkboxes are selected
@@ -957,8 +951,8 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
             try
             {
             	System.out.println(simulationEndField.getText());
-    	        simStart = df.parse(simulationStartField.getText());
-    	        simEnd = df.parse(simulationEndField.getText());
+//    	        simStart = df.parse(simulationStartField.getText());
+//    	        simEnd = df.parse(simulationEndField.getText());
     	        simStart = new DateTime(2014, 01, 04, 12, 00).toDate();
     	        simEnd = new DateTime(2014, 01, 15, 12, 00).toDate();
     	        
