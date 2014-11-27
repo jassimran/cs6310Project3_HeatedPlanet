@@ -89,7 +89,7 @@ public class InterpolationService {
 		Collections.sort(list, comp);
 		
 		// calculate the number of grids in full resolution
-		int totalGrids = simulationService.calculateSimulaitonLenght(simulation.getLength(), simulation.getTimeStep());
+		int totalGrids = simulationService.calculateSimulationLength(simulation.getLength(), simulation.getTimeStep());
 		
 		// calculate current gap size
 		int gapSize = accuracyService.calculateGapSize(totalGrids, simulation.getTemporalAccuracy());

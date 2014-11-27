@@ -7,10 +7,12 @@ import java.util.List;
 import presentation.earth.TemperatureGrid;
 import presentation.query.QueryResult;
 import presentation.query.QueryResultFactory;
+import presentation.query.SimulationQuery;
 import services.AccuracyService;
 import services.PersistenceService;
 import services.SimulationService;
 import simulation.SimulationSettings;
+import simulation.SimulationSettingsFactory;
 import domain.Simulation;
 import events.EventType;
 import events.Listener;
@@ -62,6 +64,14 @@ public class QueryControl extends AbstractControl implements Runnable {
 		for(Simulation simulation : simulations){
 			simulationNames.add(simulation.getName());
 		}
+		if(simulationNames.isEmpty()){
+			SimulationSettings settings = SimulationSettingsFactory.createSimulationSettingsWithDefaults();
+			settings.setAxialTilt(axialTilt);
+			settings.setEccentricity(orbitalEccentricity);
+			int simulationMonths = simulationService.calculateSimulationMonths(endingDate);
+			settings.setSimulationLength(simulationMonths);
+			simulationNames.add(generateSimulationName(settings));
+		}
 		return simulationNames;		
 	}
 	
@@ -94,11 +104,13 @@ public class QueryControl extends AbstractControl implements Runnable {
 	 * @param endLong the ending longitude that the user has requested
 	 * @return the query results that need to be displayed to the user
 	 */
-	public QueryResult computeQueryResults(String simulationName,
-			Date startDate, Date endDate, double startLat, double endLat,
-			double startLong, double endLong) {
+	public QueryResult computeQueryResults(SimulationQuery simulationQuery) {
 
-		Simulation selectedSimulation = persistenceService.findBySimulationName(simulationName);
+		Simulation selectedSimulation = persistenceService.findBySimulationName(simulationQuery.getSimulationName());
+		
+		if(selectedSimulation == null){			
+			return null;
+		}
 		
 
 //		// TODO: Perform geographic interpolation
@@ -115,8 +127,30 @@ public class QueryControl extends AbstractControl implements Runnable {
 //						selectedSimulation.getTimeStepList());
 //		selectedSimulation.setTimeStepList(temporalInterpolatedGrids);
 
-		return QueryResultFactory.buildQueryResult(selectedSimulation, startDate, endDate, startLat, endLat, startLong, endLong);
+		return QueryResultFactory.buildQueryResult(selectedSimulation, simulationQuery);
 
+	}
+	
+
+	public String generateSimulationName(SimulationSettings settings){
+		
+		String retVal = null;
+		
+		Object[] args = new Object[]
+				{settings.getAxialTilt(), settings.getEccentricity(), settings.getSimulationLength(), 
+				settings.getGridSpacing(), settings.getSimulationTimeStep(),
+				settings.getTemporalAccuracy(), settings.getGeoAccuracy(), 1};
+		
+		final String format = "Tilt: %s Ecc: %s Len: %s GS: %d TS: %s TA: %s GA: %s Run: %s";
+		
+		retVal = String.format(format, args);
+		
+		while(simulationNameExists(retVal)){
+			args[7] = ((Integer)args[7])+1;
+			retVal = String.format(format, args);
+		}
+		
+		return retVal;
 	}
 	
 	/**
@@ -126,7 +160,7 @@ public class QueryControl extends AbstractControl implements Runnable {
 		
 		// calculate simulation length (in terms of simulation steps to produce)
 		synchronized (abstractLock) {
-			simulationLength = simulationService.calculateSimulaitonLenght(simulationSettings.getSimulationLength(), simulationSettings.getSimulationTimeStep());
+			simulationLength = simulationService.calculateSimulationLength(simulationSettings.getSimulationLength(), simulationSettings.getSimulationTimeStep());
 		}
 		
 		// reset simulation progress
