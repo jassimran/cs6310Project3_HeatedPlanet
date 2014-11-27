@@ -26,6 +26,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import presentation.query.QueryCell;
+
 /**
  *
  * @author jsoto
@@ -134,4 +136,16 @@ public class EarthGrid implements Serializable {
     public String toString() {
         return "domain.TimeStep[ id=" + id + " ]";
     }
+
+	public EarthCell getEarthCell(int x, int y) {
+		if(nodeList != null)
+			System.out.println(nodeList.size());
+		else
+			throw new RuntimeException("The node list is null...  Why?");
+		for(EarthCell cell : nodeList){
+			if(cell.getRow() == y && cell.getColumn() == x)
+				return cell;
+		}
+		return null;
+	}
 }

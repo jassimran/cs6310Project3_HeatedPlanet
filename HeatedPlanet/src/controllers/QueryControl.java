@@ -9,10 +9,12 @@ import presentation.query.QueryResult;
 import presentation.query.QueryResultFactory;
 import presentation.query.SimulationQuery;
 import services.AccuracyService;
+import services.InterpolationService;
 import services.PersistenceService;
 import services.SimulationService;
 import simulation.SimulationSettings;
 import simulation.SimulationSettingsFactory;
+import domain.EarthGrid;
 import domain.Simulation;
 import events.EventType;
 import events.Listener;
@@ -23,6 +25,7 @@ public class QueryControl extends AbstractControl implements Runnable {
 	private PersistenceService persistenceService;
 	private AccuracyService accuracyService;
 	private SimulationService simulationService;
+	private InterpolationService interpolationService;
 	
 	private List<Listener> listeners;
 	
@@ -39,6 +42,7 @@ public class QueryControl extends AbstractControl implements Runnable {
 		persistenceService = PersistenceService.getInstance();
 		accuracyService = AccuracyService.getInstance();
 		simulationService = SimulationService.getInstance();
+		interpolationService = InterpolationService.getInstance();
 	}
 	
 	
@@ -112,20 +116,13 @@ public class QueryControl extends AbstractControl implements Runnable {
 			return null;
 		}
 		
+		for (EarthGrid currentGrid : selectedSimulation.getTimeStepList()) {
+			interpolationService.performGeographicInterpolation(currentGrid);
+		}
 
-//		// TODO: Perform geographic interpolation
-//		for (EarthGrid currentGrid : selectedSimulation.getTimeStepList()) {
-//			EarthGrid geoInterpolatedSimulation = interpolationService
-//					.performGeographicInterpolation(selectedSimulation,
-//							currentGrid);
-//			// TODO: replace the grid in the list?
-//		}
-//
-//		// TODO: Perform temporal interpolation
-//		List<EarthGrid> temporalInterpolatedGrids = interpolationService
-//				.performTemporalInterpolation(selectedSimulation,
-//						selectedSimulation.getTimeStepList());
-//		selectedSimulation.setTimeStepList(temporalInterpolatedGrids);
+		List<EarthGrid> temporalInterpolatedGrids = interpolationService.
+				performTemporalInterpolation(selectedSimulation);
+		selectedSimulation.setTimeStepList(temporalInterpolatedGrids);
 
 		return QueryResultFactory.buildQueryResult(selectedSimulation, simulationQuery);
 

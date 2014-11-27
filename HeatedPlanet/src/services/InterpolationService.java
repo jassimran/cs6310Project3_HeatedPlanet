@@ -11,6 +11,8 @@ import domain.EarthGrid;
 import domain.Simulation;
 
 public class InterpolationService {
+	private static final int REGION_OF_INTEREST = 5;
+	
 	// singleton instance
 	private static InterpolationService serviceInstance;
 	
@@ -122,5 +124,26 @@ public class InterpolationService {
 			return index1.compareTo(index2);
 		}
 		
+	}
+
+	public EarthGrid performGeographicInterpolation(EarthGrid currentGrid) {
+		
+		Simulation simulation = currentGrid.getSimulation();
+		List<EarthCell> nodes = currentGrid.getNodeList();
+		
+		for(int y = 0; y < simulation.getNumberOfRows(); y++){
+			for(int x = 0; x < simulation.getNumberOfColumns(); x++){
+				EarthCell currentCell = currentGrid.getEarthCell(x, y);
+				if(currentCell == null){
+					EarthCell interpolatedCell = new EarthCell();
+					interpolatedCell.setColumn(x);
+					interpolatedCell.setRow(y);
+					interpolatedCell.setTemperature(500);
+					nodes.add(interpolatedCell);
+				}
+			}
+		}
+		
+		return null;
 	}
 }
