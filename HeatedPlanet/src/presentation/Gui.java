@@ -7,7 +7,9 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.RoundingMode;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -26,6 +28,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpringLayout;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -37,7 +40,7 @@ import simulation.SimulationSettings;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import controllers.AbstractControl;
 import controllers.AbstractControlFactory;
-import edu.gatech.cs6310.project3.team17.GUI.QueryInterfaceUI;
+import presentation.QueryInterfaceUI;
 import events.EventType;
 import events.Listener;
 
@@ -127,6 +130,11 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	
 	private JLabel simTime = null;
 	private Calendar simTimeCal = DATE_FORMAT.getCalendar();
+	
+	private JLabel orbitalPos = null;
+	private JButton showOrbitalPos = null;
+	private JLabel rotationalPos = null;
+	private JLabel rotationalPosResult = null;
 
 	private EarthPanel EarthPanel = new EarthPanel(new Dimension(800, 420), new Dimension(800, 420), new Dimension(800, 420));
 
@@ -295,10 +303,10 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		panel.setPreferredSize(new Dimension(800, 275));
 		panel.setLayout(new BorderLayout());
 
-		int WIDTH_LABELS = WIDTH * 4 / 7 * 1
-				/ 4;
-		int WIDTH_EDITS = WIDTH * 4 / 7 * 3
-				/ 4;
+		int WIDTH_LABELS = (WIDTH * 4 / 7 * 1
+				/ 4) - 2;
+		int WIDTH_EDITS = (WIDTH * 4 / 7 * 3
+				/ 4) -24;
 
 		JLabel tmpLabel = null;
 		JLabel tmpUnits = null;
@@ -353,6 +361,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		tmpLabel = new JLabel("Pres Display Rate:");
 		lblSecs = new JLabel("seconds");
 		tmpLabel.setPreferredSize(new Dimension(WIDTH_LABELS,LABEL_HEIGHT));
+		tmpLabel.setToolTipText("Set presentation display rate");
 		displayEdit = new EventTextField(EDIT_BOX_WIDTH, 1); 
 		displayEdit.setEditable(false);
 		displaySlider = new JSlider(JSlider.HORIZONTAL, 1, 60, 1);
@@ -408,6 +417,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
         simLengthLabel = new JLabel();
         simLengthLabel.setPreferredSize(new Dimension(WIDTH_LABELS,	LABEL_HEIGHT));
         simLengthLabel.setText("Simulation Length:");
+        simLengthLabel.setToolTipText("Set simulation duration");
         lblmonths = new JLabel("months");
         simLengthSlider.setMajorTickSpacing(200);
         simLengthSlider.setMaximum(1200);        
@@ -429,6 +439,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		tempAccuracyLabel = new JLabel();
 		tempAccuracyLabel.setPreferredSize(new Dimension(WIDTH_LABELS,LABEL_HEIGHT));
 		tempAccuracyLabel.setText("Temp Accuracy:");
+		tempAccuracyLabel.setToolTipText("Set Temporal Accuracy");
 		tempAccuracySlider = new JSlider(JSlider.HORIZONTAL, 1, 100, DEFAULT_TEMP_ACCURACY);
 		tempAccuracySlider.setMajorTickSpacing(10);
 		tempAccuracySlider.setMaximum(100);
@@ -451,6 +462,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		geoAccuracyLabel = new JLabel();
 		geoAccuracyLabel.setPreferredSize(new Dimension(WIDTH_LABELS,LABEL_HEIGHT));
 		geoAccuracyLabel.setText("Geo Accuracy: ");
+		geoAccuracyLabel.setToolTipText("Set geographic Accuracy");
 		geoAccuracySlider = new JSlider(JSlider.HORIZONTAL, 1, 100, DEFAULT_GEO_ACCURACY);
 		geoAccuracySlider.setMajorTickSpacing(10);
 		geoAccuracySlider.setMaximum(100);
@@ -475,6 +487,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	    optionLabels.add(precisionLabel);
 	    optionEdits.add(precision);	 
 	    precision.setInputVerifier(new PrecisionInputVerifier());
+	    precisionLabel.setToolTipText("Set Data precision");
 	    
 	    
 	    //Added simulation Label and Text box
@@ -486,6 +499,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		//optionEdits.add(new JLabel(" "));
 		optionEdits.add(simName);
 		simName.setInputVerifier(new SimulationNameInputVerifier());
+		simName.setToolTipText("Enter unique name");
 		
 		configOpts.add(optionLabels, BorderLayout.WEST);
 		configOpts.add(optionEdits, BorderLayout.EAST);
@@ -516,17 +530,36 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		runOpts.setBorder(runBorder);
 				
 		// Time Panel
-		JPanel simTimePanel = new JPanel();
-		simTimePanel.setBorder(BorderFactory.createTitledBorder("Simulation Time"));
+		SpringLayout layout = (new SpringLayout());
+		JPanel simTimePanel = new JPanel(layout);
+		simTimePanel.setPreferredSize(new Dimension(360, 84));
+		simTimePanel.setBorder(BorderFactory.createTitledBorder("Time & Position"));
 		simTime = new JLabel(START_TIME);
-		simTime.setPreferredSize(new Dimension(310, 30));
-		simTime.setFont(new Font("Arial Black",Font.BOLD, 12));
-		simTimePanel.add(simTime);
-	
+		layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, simTime, 0, SpringLayout.HORIZONTAL_CENTER, simTimePanel);
+		layout.putConstraint(SpringLayout.NORTH, simTime, 1, SpringLayout.NORTH, simTimePanel);
+		simTimePanel.add(simTime);		
+		
+		orbitalPos = new JLabel("Dist from sun: 147.5 million km");
+		layout.putConstraint(SpringLayout.WEST, orbitalPos, 5, SpringLayout.WEST, simTimePanel);
+		layout.putConstraint(SpringLayout.NORTH, orbitalPos, 4, SpringLayout.SOUTH, simTime);
+		simTimePanel.add(orbitalPos);
+		showOrbitalPos = new JButton("Show");
+		showOrbitalPos.setPreferredSize(new Dimension(70,20));
+		layout.putConstraint(SpringLayout.WEST, showOrbitalPos, 35, SpringLayout.EAST, orbitalPos);
+		layout.putConstraint(SpringLayout.NORTH, showOrbitalPos, 4, SpringLayout.SOUTH, simTime);
+		simTimePanel.add(showOrbitalPos);
+		
+		rotationalPos = new JLabel("Position: ");
+		layout.putConstraint(SpringLayout.WEST, rotationalPos, 5, SpringLayout.WEST, simTimePanel);
+		layout.putConstraint(SpringLayout.NORTH, rotationalPos, 4, SpringLayout.SOUTH, orbitalPos);
+		simTimePanel.add(rotationalPos);
+		rotationalPosResult = new JLabel("Latitude : "+DEFAULT_AXIAL_TILT+"  Longitude: 0");	
+		layout.putConstraint(SpringLayout.WEST, rotationalPosResult, 5, SpringLayout.EAST, rotationalPos);
+		layout.putConstraint(SpringLayout.NORTH, rotationalPosResult, 4, SpringLayout.SOUTH, orbitalPos);
+		simTimePanel.add(rotationalPosResult);
+		
 		runOpts.add(simTimePanel, BorderLayout.SOUTH);
 		runAndTimePanel.add(runOpts, BorderLayout.CENTER);
-				
-		
 		//Query Panel
 		JPanel initQueryPanel = new JPanel(new BorderLayout());
 		Border initQueryBorder = BorderFactory.createTitledBorder("Launch ");		
@@ -542,8 +575,6 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		initQueryPanel.add(queryOpts, BorderLayout.CENTER);
 		runAndTimePanel.add(initQueryPanel, BorderLayout.SOUTH);
 		
-		
-		
 		Border PFBorder = BorderFactory.createTitledBorder("Physical factors ");
 		JPanel PFPanel = new JPanel(new BorderLayout());
 		JPanel option2Labels = new JPanel(new FlowLayout(FlowLayout.LEFT)); 
@@ -551,7 +582,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		option2Edits.setLayout(new BoxLayout(option2Edits, BoxLayout.Y_AXIS));
 		option2Labels.setPreferredSize(new Dimension( WIDTH_LABELS, HEIGHT));
 		option2Edits.setPreferredSize(new Dimension(100,HEIGHT));
-		PFPanel.setPreferredSize(new Dimension(290, 97));	
+		PFPanel.setPreferredSize(new Dimension(320, 78));	
 		
 		PFPanel.setBorder(simBorder);
 	    
@@ -561,6 +592,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	    eccentricityLabel.setText("Orbital eccentricity:");
 	    eccentricity = new JTextField(String.valueOf(DEFAULT_ECCENTRICITY),6);
 	    option2Labels.add(eccentricityLabel);
+	    eccentricity.setToolTipText("Between 0 and 1");
 	    
 	    option2Edits.add(eccentricity);
 	    lblDegrees = new JLabel("   ");
@@ -578,31 +610,14 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	    option2Labels.add(axisTiltLabel);
 	    option2Edits.add(axisTilt);
 	    axisTilt.setInputVerifier(new AxialTiltInputVerifier());
-	    //lblDegrees = new JLabel("degrees");
-	    //option2Edits.add(lblDegrees);
-        //axisTiltSlider = new JSlider();
-        //axisTiltSlider = new JSlider(JSlider.HORIZONTAL, -180.0, 180.0, DEFAULT_AXIAL_TILT);        
-        //axisTiltSlider.setMajorTickSpacing(60);
-        //axisTiltSlider.setMaximum(180);
-        //axisTiltSlider.setMinimum(-180);
-        //axisTiltSlider.setMinorTickSpacing(30);
-        //axisTiltSlider.setPaintLabels(true);
-        //axisTiltSlider.setPaintTicks(true);
-        //axisTiltSlider.setPaintTrack(true);
-        //axisTiltEdit = new EventTextField(EDIT_BOX_WIDTH, 1); 
-        //axisTiltEdit.setEditable(false);
-        //axisTiltSlider.addChangeListener(axisTiltEdit);
-        //option2Labels.add(axisTiltLabel);
-        //option2Edits.add(axisTiltSlider);
-        //option2Edits.add(axisTiltEdit);
+	    axisTilt.setToolTipText("In degrees");
+	    axisTiltLabel.setToolTipText("In degrees");
         
         
         PFPanel.add(option2Labels,BorderLayout.WEST);
 		PFPanel.add(option2Edits, BorderLayout.EAST);
 		PFPanel.setBorder(PFBorder);
-		
-		
-		
+	
 		runAndTimePanel.add(PFPanel, BorderLayout.NORTH );
 		panel.add(runAndTimePanel, BorderLayout.CENTER);
 		runAndTimePanel.add(initQueryPanel, BorderLayout.SOUTH);
@@ -678,8 +693,10 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 			pauseButton.setEnabled(false);
 			//disable the restart button
 			stopButton.setEnabled(false);
-			QueryInterfaceUI gui = new QueryInterfaceUI();
-			gui.launchQueryInterface();
+			//QueryInterfaceUI gui = new QueryInterfaceUI();
+			//gui.launchQueryInterface();
+			QueryInterfaceUI gui = QueryInterfaceUI.getInstance();
+			gui.launchNewQueryInterface();
 			
 		}
 	}
@@ -787,13 +804,18 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		eccentricity.setEnabled(bEnable);		
 	}
 
-	public void updateClock() {
+	public void updateClock( double laitude, double longitude, double distFromSun) {
 		try {
 			//set the time
 			simTimeCal.add(Calendar.MINUTE, stepEdit.getValue());
 			simTime.setText(DATE_FORMAT.format(simTimeCal
 					.getTime()));
+			
+			orbitalPos.setText("Dist from Sun = "+String.valueOf(distFromSun)+ " million km");
+			rotationalPosResult.setText("Lat: "+ String.valueOf(laitude) + " Long: "+ String.valueOf(longitude));
+			
 		} catch (Exception e2) {
+			System.out.print("Updation failed!!!");
 		}			
 	}
 	
