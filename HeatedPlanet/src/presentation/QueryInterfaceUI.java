@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -200,11 +201,19 @@ ActionListener, ChangeListener {
         //topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.PAGE_AXIS));
 		topPanel.setLayout(new BorderLayout()); 
 		topPanel.setPreferredSize(new Dimension(200, HEIGHT-100));
+		BevelBorder raisedBevel = (BevelBorder) BorderFactory.createBevelBorder(BevelBorder.RAISED);
+        BevelBorder loweredBevel = (BevelBorder) BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+
+        Border compborder = BorderFactory.createCompoundBorder(raisedBevel, loweredBevel);
+
+		topPanel.setBorder(compborder);
+
 		
     	qrybuttonGroup1.add(byNameButton); 
         byNameButton.setText("Name");
         byNameButton.setActionCommand("byName");
         byNameButton.addActionListener(this);
+       
         qrybuttonGroup1.add(byPFButton);
         byPFButton.setText("Physical Factors");
         byPFButton.setActionCommand("byPF");
@@ -233,6 +242,7 @@ ActionListener, ChangeListener {
        
         Border nameBorder = BorderFactory.createTitledBorder("Search by ");
         namePFRadioPanel.add(byNameButton);
+        namePFRadioPanel.add(new JLabel("   "));
         namePFRadioPanel.add(byPFButton);
         namePFRadioPanel.setBorder(nameBorder);
         
@@ -283,6 +293,7 @@ ActionListener, ChangeListener {
         orbitalEccentricityField.setEnabled(false);
         PFPanel.add(axisTiltLabel);
         PFPanel.add(axisTiltField);
+        PFPanel.add(new JLabel("     "));
       
         PFPanel.add(orbitalEccentricityLabel);
         PFPanel.add(orbitalEccentricityField);
@@ -300,6 +311,7 @@ ActionListener, ChangeListener {
         
         periodPanel.add(new JLabel("Start time:"));
         periodPanel.add(simulationStartField);
+        periodPanel.add(new JLabel("  "));
         periodPanel.add(new JLabel("End time:"));
         periodPanel.add(simulationEndField);
         periodPanel.add(new JLabel("                               "));
@@ -319,7 +331,13 @@ ActionListener, ChangeListener {
         JPanel regionPanel = new JPanel();
         regionPanel.setLayout(new BoxLayout(regionPanel, BoxLayout.PAGE_AXIS));
         Border regionoptionBorder = BorderFactory.createTitledBorder("Physical bounds ");
+       
         regionPanel.setBorder(regionoptionBorder);
+       // Border optborder = BorderFactory.createCompoundBorder(raisedBevel, loweredBevel);
+      
+        regionPanel.setBorder(BorderFactory.createCompoundBorder(raisedBevel, regionPanel.getBorder()));
+
+        
         regionPanel.setPreferredSize(new Dimension(WIDTH_EDITS, HEIGHT-50));
         JPanel regionoptionPanel = new JPanel();
         regionoptionPanel.setLayout(new BoxLayout(regionoptionPanel, BoxLayout.LINE_AXIS));
@@ -335,7 +353,8 @@ ActionListener, ChangeListener {
         parametersButton.addActionListener(this);
        
         
-        regionoptionPanel.add(earthButton);       
+        regionoptionPanel.add(earthButton);   
+        regionoptionPanel.add(new JLabel("  "));
         regionoptionPanel.add(parametersButton);        
         regionPanel.add(regionoptionPanel);
         
@@ -349,17 +368,19 @@ ActionListener, ChangeListener {
         latitudeToField.setEnabled(false);
         longitudeFromField.setEnabled(false);
         longitudeToField.setEnabled(false);
-        latitudeLabel.setText("Latitude");
+        latitudeLabel.setText("Latitude: ");
         locationPanel.add(latitudeLabel);
         locationPanel.add(new JLabel("Start"));
         locationPanel.add(latitudeFromField);
+        locationPanel.add(new JLabel("  "));
         locationPanel.add(new JLabel("End"));
         locationPanel.add(latitudeToField);
-        
-        longitudeLabel.setText("Longitude");
+        locationPanel.add(new JLabel("                    "));
+        longitudeLabel.setText("Longitude: ");
         locationPanel.add(longitudeLabel);
         locationPanel.add(new JLabel("Start"));
         locationPanel.add(longitudeFromField);
+        locationPanel.add(new JLabel("  "));
         locationPanel.add(new JLabel("End"));
         locationPanel.add(longitudeToField);
         
@@ -368,6 +389,7 @@ ActionListener, ChangeListener {
         filter.addActionListener(this);
 		filter.setEnabled(true); 
         filter.setActionCommand("filter");
+        filter.setEnabled(false);
        
         
         
@@ -379,10 +401,22 @@ ActionListener, ChangeListener {
         firstPanel.add(regionPanel, BorderLayout.CENTER);
         
         //Options panel
-        JPanel optionsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        optionsPanel.setPreferredSize(new Dimension(WIDTH_EDITS, HEIGHT+50));
+       // JPanel optionsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(new BorderLayout());
+        bottomPanel.setBorder(compborder);
+        
+        JPanel optionsPanel = new JPanel();
+        optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.LINE_AXIS));
+        optionsPanel.setPreferredSize(new Dimension(WIDTH_EDITS+100, HEIGHT));
+        
         Border optionsBorder = BorderFactory.createTitledBorder("Include results for");
         optionsPanel.setBorder(optionsBorder);
+       // Border optborder = BorderFactory.createCompoundBorder(raisedBevel, loweredBevel);
+      
+        optionsPanel.setBorder(BorderFactory.createCompoundBorder(raisedBevel, optionsPanel.getBorder()));
+
+        
         
         minTempLabel.setText("Minumum temperature");
         regionMeanTempLabel.setText("Mean temperature over region");
@@ -392,7 +426,8 @@ ActionListener, ChangeListener {
         
      
         
-        
+        //optionsPanel.add(new JLabel("Include results for"));
+        optionsPanel.add(new JLabel(" "));
         JPanel optionlabelsPanel = new JPanel();
         optionlabelsPanel.setLayout(new BoxLayout(optionlabelsPanel, BoxLayout.PAGE_AXIS));
         //optionlabelsPanel.setPreferredSize(new Dimension(WIDTH_EDITS, HEIGHT));
@@ -409,7 +444,18 @@ ActionListener, ChangeListener {
         optionlabelsPanel.add(timeMeanTempLabel);
         optionlabelsPanel.add(new JLabel("     "));
         optionlabelsPanel.add(tempTimeRegionLabel);
+        //add listener to each checkbox. If at least one of them is selected "run query " button will be enabled.
         
+        minTempCheckbox.addActionListener(this);
+        minTempCheckbox.setActionCommand(getName());
+        meanTempRegionCheckbox.addActionListener(this);
+        meanTempRegionCheckbox.setActionCommand(getName());
+        maxTempRegionCheckbox.addActionListener(this);
+        maxTempRegionCheckbox.setActionCommand(getName());
+        meanTempTimeCheckbox.addActionListener(this);
+        meanTempTimeCheckbox.setActionCommand(getName());
+        tempsTimeRegionCheckbox.addActionListener(this);
+        tempsTimeRegionCheckbox.setActionCommand(getName());
         
         optionchkboxPanel.add(minTempCheckbox);
         optionchkboxPanel.add(new JLabel("     "));
@@ -420,15 +466,26 @@ ActionListener, ChangeListener {
         optionchkboxPanel.add(meanTempTimeCheckbox);
         optionchkboxPanel.add(new JLabel("     "));
         optionchkboxPanel.add(tempsTimeRegionCheckbox);
+        
+        enableOptions(false);
+        
+        JPanel runresetPanel = new JPanel();
+        runresetPanel.setLayout(new BoxLayout(runresetPanel, BoxLayout.LINE_AXIS));
+        runresetPanel.setPreferredSize(new Dimension(WIDTH_EDITS+50, 150));
+        //optionsPanel.setPreferredSize(new Dimension(WIDTH_EDITS+50, HEIGHT));
+        runresetPanel.setBorder(compborder);
+       
 
-        JPanel runresetPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        runresetPanel.setPreferredSize(new Dimension(WIDTH_EDITS, 250));
+        //Border runPanelborder = BorderFactory.createCompoundBorder(raisedBevel, loweredBevel);
+        //runresetPanel.setBorder(runPanelborder);
+
         runQuery.setText("Run Query");
         runQuery.addActionListener(this);
 		runQuery.setEnabled(true); 
         runQuery.setActionCommand(ACTION_RUN);
-        runresetPanel.add(new JLabel("                  "));
+        runresetPanel.add(new JLabel("            "));
         runresetPanel.add(runQuery);
+       
         reset.setText("Reset");
         reset.addActionListener(this);
         reset.setEnabled(true); 
@@ -436,24 +493,31 @@ ActionListener, ChangeListener {
         animate.setText("Animate");
         animate.addActionListener(this);
 		animate.setEnabled(true); 
+		runresetPanel.add(new JLabel("            "));
         animate.setActionCommand("animate");
         
-        
-        
         runresetPanel.add(reset);
+        
+       
+        runresetPanel.add(new JLabel("            "));
         runresetPanel.add(animate);
         
+        runQuery.setEnabled(false);
+        animate.setEnabled(false);
         optionsPanel.add(optionlabelsPanel);
+        optionsPanel.add(new JLabel("                 "));
         optionsPanel.add(optionchkboxPanel);
-        optionsPanel.add(runresetPanel);
-       
-        firstPanel.add(optionsPanel, BorderLayout.SOUTH);
-
+        //optionsPanel.add(new JLabel("                 "));
+        //optionsPanel.add(runresetPanel);
+        
+        
         
         simulationEndField.addActionListener(this);
         
-         
-        mainPanel.add(firstPanel, BorderLayout.WEST);
+        bottomPanel.add(optionsPanel, BorderLayout.WEST);
+        bottomPanel.add(runresetPanel, BorderLayout.CENTER);
+        firstPanel.add(bottomPanel, BorderLayout.SOUTH);
+        //mainPanel.add(firstPanel, BorderLayout.WEST);
         this.getContentPane().add(firstPanel);
         pack();
     }
@@ -583,6 +647,18 @@ ActionListener, ChangeListener {
     	
     }
 
+    
+    //Enable/disable checkbox
+    
+    public void enableOptions(boolean bEnable)
+    {
+    	minTempCheckbox.setEnabled(bEnable);
+        meanTempRegionCheckbox.setEnabled(bEnable);
+        maxTempRegionCheckbox.setEnabled(bEnable);
+        meanTempTimeCheckbox.setEnabled(bEnable);
+        tempsTimeRegionCheckbox.setEnabled(bEnable);
+        
+    }
     /**
      * @param args the command line arguments
      */
@@ -633,8 +709,34 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
             }
         });
     }
-
     
+    //check if any of the  display results option checkboxes are selected
+    public boolean optionsSelected()
+    {
+    	boolean selected = false;
+    	if(minTempCheckbox.isSelected() || meanTempRegionCheckbox.isSelected() || maxTempRegionCheckbox.isSelected() || meanTempTimeCheckbox.isSelected() || tempsTimeRegionCheckbox.isSelected())
+    	{
+    		selected = true;
+    	}
+    	return selected;
+    }
+    //Add output to JFrame
+    
+    public void addOutputToFrame()
+    {
+    	JScrollPane outputScroller = new JScrollPane();
+    	JPanel newoutput = new JPanel(new BorderLayout());
+    	newoutput = createOutputGui();
+    				    
+    	//JViewport vw = outputScroller.getViewport();
+    	outputScroller.getViewport().add(newoutput);
+        System.out.println(outputScroller.getViewport().getExtentSize());
+
+    	this.getContentPane().setPreferredSize(new Dimension(1320, 620));
+    	this.getContentPane().add(outputScroller, BorderLayout.EAST);
+    	this.pack();
+    	this.setVisible(true);
+    }
     //set simulation start and end time.
     
     public void setSimulationPeriod(String start, String end)
@@ -663,6 +765,7 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 		nameSpinner.setToolTipText(sname);
 		
 		
+		
 		if (command.equals("byName"))
 		{
 			
@@ -677,13 +780,17 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 				nameSpinner.addItem(s);
 				
 			}
+			enableOptions(true);
+			
+			runQuery.setEnabled(true);
 			
      	}
 		else if(command.equals("byPF"))
 		{
 			
 	        this.setEnableAllUserOptions(true);
-	        
+	        enableOptions(false);
+	        runQuery.setEnabled(false);
 		}
 		else if(command.equals("earth"))
 		{
@@ -705,7 +812,12 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 		}
 		else if (command.equals(ACTION_RUN)) {
 			
-			
+			if(!optionsSelected())
+			{
+				JOptionPane.showMessageDialog(this, "Please select at least one option to display!");
+			}
+			else 
+			{
 			
 			simulationName=(String)nameSpinner.getSelectedItem();
 			System.out.println("Selected Simulation "+ simulationName);
@@ -720,6 +832,7 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 			{
 				if(!simulationName.isEmpty())
 					res = qc.getQueryResultBySimulationName(simulationName);
+				runQuery.setEnabled(true);
 				
 			}
 			//use case 2
@@ -744,8 +857,8 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 			this.pack();
 			this.setVisible(true);
 			
-	
-	    
+			}
+			animate.setEnabled(false);
 		}
 		else if(command.equals("reset"))
 		{
@@ -753,6 +866,8 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 			
 			//remove items from comboBox, clear Radio Buttons.
 			nameSpinner.removeAllItems();
+			enableOptions(false);
+			runQuery.setEnabled(false);
 			if(byNameButton.isSelected())
 			{
 				byNameButton.setSelected(false);
@@ -785,6 +900,9 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 			{
 				
 			nameSpinner.removeAllItems();
+			enableOptions(true);
+			runQuery.setEnabled(true);
+			
 			
 			try
 			{
@@ -895,6 +1013,7 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
          earthButton.setEnabled(bEnable);
          parametersButton.setEnabled(bEnable);
          filter.setEnabled(bEnable);
+         
 
   	}
 
