@@ -70,7 +70,7 @@ public class QueryResultImplTest {
 	public final void testGetQueryGrids() {
 		// given:
 		Simulation simulation = getBootstrapSimulation();
-		int simulationLength = SimulationService.getInstance().calculateSimulaitonLenght(simulation.getLength(), simulation.getTimeStep());
+		int simulationLength = SimulationService.getInstance().calculateSimulationLength(simulation.getLength(), simulation.getTimeStep());
 		
 		// when:
 		QueryResultImpl qr = new QueryResultImpl(simulation);

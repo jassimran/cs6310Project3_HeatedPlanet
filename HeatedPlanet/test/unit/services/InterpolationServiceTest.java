@@ -110,7 +110,7 @@ public class InterpolationServiceTest {
 		TypedQuery<Simulation> simulationQuery = em.createNamedQuery("Simulation.findByName", Simulation.class);
 		simulationQuery.setParameter("name", "BootStrap Simulation");		
 		Simulation simulation = simulationQuery.getSingleResult();
-		int totalGrids = SimulationService.getInstance().calculateSimulaitonLenght(simulation.getLength(), simulation.getTimeStep());
+		int totalGrids = SimulationService.getInstance().calculateSimulationLength(simulation.getLength(), simulation.getTimeStep());
 		int gapSize = AccuracyService.getInstance().calculateGapSize(totalGrids, simulation.getTemporalAccuracy()); 
 		
 		// when:

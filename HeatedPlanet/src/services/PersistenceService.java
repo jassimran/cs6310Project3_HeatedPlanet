@@ -1,5 +1,6 @@
 package services;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -72,9 +73,16 @@ public class PersistenceService {
 
 		if (temperatureGrid != null) {
 			// get simulated time
-			long simulatedDateInMillis = temperatureGrid.getSimulationTime() * 60 * 1000;
+			int simulatedDateInMillis = temperatureGrid.getSimulationTime() * 60 * 1000;
 			Calendar calendar = Calendar.getInstance();
-			calendar.setTimeInMillis(simulatedDateInMillis);
+			calendar.set(Calendar.HOUR_OF_DAY, 12);
+			calendar.set(Calendar.MINUTE, 00);
+			calendar.set(Calendar.SECOND, 00);
+			calendar.set(Calendar.MILLISECOND, 00);
+			calendar.set(Calendar.MONTH, Calendar.JANUARY);
+			calendar.set(Calendar.DAY_OF_MONTH, 4);
+			calendar.set(Calendar.YEAR, 2014);
+			calendar.add(Calendar.MILLISECOND, simulatedDateInMillis);
 			Date simulatedDate = calendar.getTime();
 
 			// create EarthGrid
@@ -83,7 +91,7 @@ public class PersistenceService {
 			earthGrid.setSimulatedDate(simulatedDate);
 			earthGrid.setSimulation(simulation);
 			em.persist(earthGrid);
-
+			
 			// calculate accuracy gap
 			int totalCells = temperatureGrid.getRows()
 					* temperatureGrid.getCols();
@@ -104,14 +112,17 @@ public class PersistenceService {
 					earthCell.setGrid(earthGrid);
 					if ((++gapControl) == (gapSize + 1)) {
 						em.persist(earthCell);
+						
 						gapControl = 0;
 					}
 				}
 			}
 		}
+		em.refresh(simulation);
 
 		// commit transaction
 		em.getTransaction().commit();
+		
 	}
 
 	public List<Simulation> findAllSimulations() {
@@ -125,7 +136,10 @@ public class PersistenceService {
 		typedQuery.setParameter("name", simulationName);
 
 		try {
-			return typedQuery.getSingleResult();
+			Simulation sim = typedQuery.getSingleResult();
+			if(sim.getTimeStepList()==null)
+				throw new RuntimeException("The list of timesteps is null.");
+			return sim;
 		} catch (NoResultException e) {
 			return null;
 		}
@@ -133,39 +147,18 @@ public class PersistenceService {
 
 	public List<Simulation> findSimulationsByUserInputs(double axialTilt,
 			double orbitalEccentricity, Date endingDate) {
-		em.getTransaction().begin();
+		
+		String jpql = "SELECT s FROM Simulation s WHERE s.axialTilt = :axialTilt and s.orbitalEccentricity = :orbitalEccentricity and s.length >= :length";
+		
+		TypedQuery<Simulation> typedQuery = em.createQuery(jpql, Simulation.class);
 
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Simulation> q = cb.createQuery(Simulation.class);
-		Root<Simulation> s = q.from(Simulation.class);
+		int simulationLengthInMonths = SimulationService.getInstance().calculateSimulationMonths(endingDate);
 
-		TypedQuery<Simulation> typedQuery = em.createQuery(q);
-
-		// add select
-		q = q.select(s);
-
-		// add where clauses
-		ParameterExpression<Double> tiltParameter = cb.parameter(Double.class);
-		typedQuery.setParameter(tiltParameter, axialTilt);
-		q = q.where(cb.equal(s.get("axial_tilt"), tiltParameter));
-
-		ParameterExpression<Double> eccentricityParameter = cb
-				.parameter(Double.class);
-		typedQuery.setParameter(eccentricityParameter, orbitalEccentricity);
-		q = q.where(cb.equal(s.get("orbital_eccentricity"),
-				eccentricityParameter));
-
-		// TODO: Calculate the number of months to use in this search.
-		int simulationLengthInMonths = 12;
-
-		ParameterExpression<Date> dateParameter = cb.parameter(Date.class);
-		typedQuery.setParameter(dateParameter, endingDate);
-		q = q.where(cb.greaterThanOrEqualTo(s.<Integer> get("length"),
-				simulationLengthInMonths));
+		typedQuery.setParameter("axialTilt", axialTilt);
+		typedQuery.setParameter("orbitalEccentricity", orbitalEccentricity);
+		typedQuery.setParameter("length", simulationLengthInMonths);
 
 		List<Simulation> results = typedQuery.getResultList();
-
-		em.getTransaction().commit();
 
 		return results;
 	}

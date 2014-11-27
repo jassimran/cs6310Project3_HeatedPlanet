@@ -1,8 +1,11 @@
 package controllers;
 
+import java.util.Date;
+
 import domain.Simulation;
 import presentation.PresentationEngine;
 import services.PersistenceService;
+import services.SimulationService;
 import simulation.SimulationEngine;
 import simulation.SimulationSettings;
 import buffers.Buffer;
@@ -87,6 +90,13 @@ public abstract class AbstractControl implements Listener {
 	 */
 	public boolean simulationExists(String simulationName) {
 		return (PersistenceService.getInstance().findBySimulationName(simulationName) != null)? true : false;
+	}
+	
+	/**
+	 * @return the number of months from the base date to the given ending date
+	 */
+	public int getSimulationMonths(Date endDate){
+		return SimulationService.getInstance().calculateSimulationMonths(endDate);
 	}
 	
 	/**

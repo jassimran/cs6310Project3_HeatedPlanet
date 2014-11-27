@@ -58,7 +58,7 @@ public class BootStrap {
 			simulation.setNumberOfRows(12);
 			
 			// get total number of grids
-			int totalGrids = SimulationService.getInstance().calculateSimulaitonLenght(simulation.getLength(), simulation.getTimeStep()); // 744
+			int totalGrids = SimulationService.getInstance().calculateSimulationLength(simulation.getLength(), simulation.getTimeStep()); // 744
 			
 			// get temporal gap size
 			int gapSize = AccuracyService.getInstance().calculateGapSize(totalGrids, simulation.getTemporalAccuracy());
