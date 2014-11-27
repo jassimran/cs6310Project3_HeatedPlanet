@@ -35,4 +35,10 @@ public interface TemperatureGrid {
    */
   public int getSimulationTime();
   
+  public double getLatitudeUnderSun();
+  
+  public double getLongitudeUnderSun();
+  
+  public double getDistanceFromSun();
+  
 }
