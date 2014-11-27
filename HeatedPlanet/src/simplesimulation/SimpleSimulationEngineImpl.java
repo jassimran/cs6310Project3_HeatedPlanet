@@ -141,6 +141,10 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 		
 		// set simulation time
 		temperatureGrid.setSimulationTime(simulationTime);
+		temperatureGrid.setLatitudeUnderSun(round(latitudeUnderSun,4));
+		//TODO: Get LongitudeUnderSun
+		temperatureGrid.setLongitudeUnderSun(12.0);
+		temperatureGrid.setDistanceFromSun(round(radiusTau/1000000,4));
 		
 		return temperatureGrid;
 	}
