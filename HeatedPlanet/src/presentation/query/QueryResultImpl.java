@@ -176,6 +176,8 @@ public class QueryResultImpl implements QueryResult {
 	}
 
 	private QueryCell convertEarthCellToQueryCell(EarthCell currentCell) {
+		if(currentCell == null)
+			throw new RuntimeException("The current cell is null");
 		Simulation simulation = currentCell.getGrid().getSimulation();
 		double cellLat = calculateLatitude(simulation.getGridSpacing(),
 				simulation.getNumberOfRows(), currentCell.getRow());

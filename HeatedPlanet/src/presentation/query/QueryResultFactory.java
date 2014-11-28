@@ -1,7 +1,5 @@
 package presentation.query;
 
-import java.util.Date;
-
 import domain.Simulation;
 
 public class QueryResultFactory {

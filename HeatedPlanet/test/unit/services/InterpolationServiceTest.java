@@ -114,9 +114,9 @@ public class InterpolationServiceTest {
 		int gapSize = AccuracyService.getInstance().calculateGapSize(totalGrids, simulation.getTemporalAccuracy()); 
 		
 		// when:
-		List<EarthGrid> grids = interpolationService.performTemporalInterpolation(simulation);
+		interpolationService.performTemporalInterpolation(simulation);
 		
 		// then:
-		assertEquals(totalGrids - gapSize, grids.size()); // interpolation, not extrapolation
+		assertEquals(totalGrids - gapSize, simulation.getTimeStepList().size()); // interpolation, not extrapolation
 	}
 }
