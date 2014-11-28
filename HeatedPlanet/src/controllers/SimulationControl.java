@@ -128,6 +128,9 @@ public class SimulationControl extends AbstractControl implements Runnable {
 			}
 		}
 		
+		if(isTerminateSimulation())
+			persistenceService.deleteSimulation(simulationSettings.getName());
+		
 		// get simulation index
 		int index;
 		synchronized (abstractLock) {
