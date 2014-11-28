@@ -236,7 +236,7 @@ ActionListener, ChangeListener, Listener {
 
         simulationNameLabel.setText("Simulation name: ");
         
-        nameSpinner = new JComboBox<String>();
+        nameSpinner = new JComboBox();
                
        
         nameSpinner.setName("Name");
@@ -1117,7 +1117,7 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
     private ButtonGroup regionbuttonGroup;
     private JRadioButton earthButton;
     private JRadioButton parametersButton;
-    private JComboBox<String> nameSpinner;
+    private JComboBox nameSpinner;
     private JTable outputTable;
     private JLabel spacer, latStart, latEnd, longStart, longEnd;
     private JLabel minTempLabel1,readingTimeLabel,locationLabel,maxTempLabel1,timeMeanTempLabel2,regionMeanTempLabel2,tempTimeRegionLabel1;
