@@ -39,6 +39,10 @@ import org.joda.time.DateTime;
 
 
 
+
+
+
+
 import events.EventType;
 import events.Listener;
 public class QueryInterfaceUI extends javax.swing.JFrame implements 
@@ -46,6 +50,8 @@ public class QueryInterfaceUI extends javax.swing.JFrame implements
 ActionListener, ChangeListener, Listener {
 
    
+
+
 	static final String INPUT_DATE_FORMAT = "MM/dd/yyyy HH:mm:ss";
 	
 	static final int WIDTH = 750;
@@ -162,24 +168,26 @@ ActionListener, ChangeListener, Listener {
        
         axisTiltLabel = new javax.swing.JLabel();
         axisTiltField = new javax.swing.JTextField(EDIT_BOX_WIDTH);
-        axisTiltField.setInputVerifier(new AxialTiltInputVerifier());
+        axisTiltField.setInputVerifier(new InputVerifier180());
         orbitalEccentricityLabel = new javax.swing.JLabel();
         orbitalEccentricityField = new javax.swing.JTextField(EDIT_BOX_WIDTH);
         orbitalEccentricityField.setInputVerifier(new EccentricityInputVerifier());
         latitudeLabel = new javax.swing.JLabel();
         latitudeFromField = new javax.swing.JTextField(EDIT_BOX_WIDTH);
-        
+        latitudeFromField.setInputVerifier(new LatitudeInputVerifier());
         latitudeToField = new javax.swing.JTextField(EDIT_BOX_WIDTH);
+        latitudeToField.setInputVerifier(new LatitudeInputVerifier());
         longitudeLabel = new javax.swing.JLabel();
         longitudeFromField = new javax.swing.JTextField(EDIT_BOX_WIDTH);
-    
+        longitudeFromField.setInputVerifier(new InputVerifier180());
         longitudeToField = new javax.swing.JTextField(EDIT_BOX_WIDTH);
+        longitudeToField.setInputVerifier(new InputVerifier180());
         simulationPeriodLabel = new javax.swing.JLabel();
         simulationStartField = new javax.swing.JFormattedTextField(new SimpleDateFormat(INPUT_DATE_FORMAT));
-        simulationStartField.setColumns(5);
+        simulationStartField.setColumns(20);
         simulationStartField.setActionCommand(getName());
         simulationStartField.setEnabled(false);
-
+        simulationStartField.setInputVerifier(new DateInputVerifier());
         
         latitudeFromField.setEnabled(false);
         latitudeToField.setEnabled(false);
@@ -188,8 +196,9 @@ ActionListener, ChangeListener, Listener {
         
        
         simulationEndField = new javax.swing.JFormattedTextField(new SimpleDateFormat(INPUT_DATE_FORMAT));
-        simulationEndField.setColumns(5);
+        simulationEndField.setColumns(20);
         simulationEndField.setEnabled(false);
+        simulationEndField.setInputVerifier(new DateInputVerifier());
         
         simulationEndField.setActionCommand(getName());
        
@@ -792,7 +801,7 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 	    }
 	}
 	
-	public class AxialTiltInputVerifier extends InputVerifier{
+	public class InputVerifier180 extends InputVerifier{
 		@Override
 	    public boolean verify(JComponent input) {
 	        String text = ((JTextField) input).getText();
@@ -808,6 +817,58 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
         		return false;
 	        }
 	    }
+	}
+	
+	public class LatitudeInputVerifier extends InputVerifier{
+		@Override
+	    public boolean verify(JComponent input) {
+	        String text = ((JTextField) input).getText();
+	        try {
+	        	if (Double.parseDouble(text) >= -90 && Double.parseDouble(text) <= 90)
+	        		return true;
+	        	else {
+	        		JOptionPane.showMessageDialog(null, "Value must be between -90 and +90");
+	        		return false;
+	        	}
+	        } catch (NumberFormatException e) {
+	        	JOptionPane.showMessageDialog(null, "Value should be numeric value between -90 and +90");
+        		return false;
+	        }
+	    }
+	}
+	
+	public class DateInputVerifier extends InputVerifier {
+
+		@Override
+		public boolean verify(JComponent input) {
+	        String text = ((JTextField) input).getText();
+	        SimpleDateFormat dtf = new SimpleDateFormat(INPUT_DATE_FORMAT);
+	    	 try{
+	    		Date testDate = dtf.parse(text);
+	    	 
+				Calendar calendar = Calendar.getInstance();
+				calendar.set(Calendar.HOUR_OF_DAY, 12);
+				calendar.set(Calendar.MINUTE, 00);
+				calendar.set(Calendar.SECOND, 00);
+				calendar.set(Calendar.MILLISECOND, 00);
+				calendar.set(Calendar.MONTH, Calendar.JANUARY);
+				calendar.set(Calendar.DAY_OF_MONTH, 4);
+				calendar.set(Calendar.YEAR, 2014);
+				Date minDate = calendar.getTime();
+				
+		    	 if(testDate.before(minDate)){
+	        		JOptionPane.showMessageDialog(null, "The start date must be greater than Jan 4, 2014 12:00");
+	        		return false;
+		    	 }
+	    	 return true;
+	    	 }
+	    	 catch(Exception e)
+	    	 {
+	        	JOptionPane.showMessageDialog(null, "The date must be in the format " + INPUT_DATE_FORMAT);
+        		return false;
+	    	 }
+		}
+
 	}
 	
     @Override
