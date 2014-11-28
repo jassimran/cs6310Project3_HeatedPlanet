@@ -26,19 +26,16 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import presentation.query.*;
-
 import controllers.AbstractControl;
 import controllers.AbstractControlFactory;
 import controllers.QueryControl;
-
-
 import simplesimulation.SimpleSimulationEngineImpl;
 import simulation.SimulationSettings;
 import simulation.SimulationSettingsFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-
 import org.joda.time.DateTime;
+
 
 
 
@@ -49,7 +46,7 @@ public class QueryInterfaceUI extends javax.swing.JFrame implements
 ActionListener, ChangeListener, Listener {
 
    
-	
+	static final String INPUT_DATE_FORMAT = "MM/dd/yyyy HH:mm:ss";
 	
 	static final int WIDTH = 750;
 	static final int HEIGHT = 220;
@@ -165,8 +162,10 @@ ActionListener, ChangeListener, Listener {
        
         axisTiltLabel = new javax.swing.JLabel();
         axisTiltField = new javax.swing.JTextField(EDIT_BOX_WIDTH);
+        axisTiltField.setInputVerifier(new AxialTiltInputVerifier());
         orbitalEccentricityLabel = new javax.swing.JLabel();
         orbitalEccentricityField = new javax.swing.JTextField(EDIT_BOX_WIDTH);
+        orbitalEccentricityField.setInputVerifier(new EccentricityInputVerifier());
         latitudeLabel = new javax.swing.JLabel();
         latitudeFromField = new javax.swing.JTextField(EDIT_BOX_WIDTH);
         
@@ -176,10 +175,11 @@ ActionListener, ChangeListener, Listener {
     
         longitudeToField = new javax.swing.JTextField(EDIT_BOX_WIDTH);
         simulationPeriodLabel = new javax.swing.JLabel();
-        simulationStartField = new javax.swing.JFormattedTextField(new SimpleDateFormat("mm/dd/yy"));
+        simulationStartField = new javax.swing.JFormattedTextField(new SimpleDateFormat(INPUT_DATE_FORMAT));
         simulationStartField.setColumns(5);
         simulationStartField.setActionCommand(getName());
         simulationStartField.setEnabled(false);
+
         
         latitudeFromField.setEnabled(false);
         latitudeToField.setEnabled(false);
@@ -187,7 +187,7 @@ ActionListener, ChangeListener, Listener {
         longitudeToField.setEnabled(false);
         
        
-        simulationEndField = new javax.swing.JFormattedTextField(new SimpleDateFormat("mm/dd/yy"));
+        simulationEndField = new javax.swing.JFormattedTextField(new SimpleDateFormat(INPUT_DATE_FORMAT));
         simulationEndField.setColumns(5);
         simulationEndField.setEnabled(false);
         
@@ -757,7 +757,7 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
     
     public void setSimulationPeriod(String start, String end)
     {
-    	 SimpleDateFormat dtf = new SimpleDateFormat("dd/MMM/yyyy HH:mm:ss.SSS");
+    	 SimpleDateFormat dtf = new SimpleDateFormat(INPUT_DATE_FORMAT);
     	 try{
     		 
     		 System.out.println("Sim start: " + simulationStartField.getText());
@@ -770,9 +770,46 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
     	 catch(Exception e)
     	 {
     		 System.out.println("Error parsing date time");
+    		 
     	 }
     }
     
+	public class EccentricityInputVerifier extends InputVerifier{
+		@Override
+	    public boolean verify(JComponent input) {
+	        String text = ((JTextField) input).getText();
+	        try {
+	        	if (Double.parseDouble(text) >= 0 && Double.parseDouble(text) <= 1)
+	        		return true;
+	        	else {
+	        		JOptionPane.showMessageDialog(null, "Eccentricity must be between 0 and 1");
+	        		return false;
+	        	}
+	        } catch (NumberFormatException e) {
+	        	JOptionPane.showMessageDialog(null, "Eccentricity must be numeric value between 0 and 1");
+        		return false;
+	        }
+	    }
+	}
+	
+	public class AxialTiltInputVerifier extends InputVerifier{
+		@Override
+	    public boolean verify(JComponent input) {
+	        String text = ((JTextField) input).getText();
+	        try {
+	        	if (Double.parseDouble(text) >= -180 && Double.parseDouble(text) <= 180)
+	        		return true;
+	        	else {
+	        		JOptionPane.showMessageDialog(null, "Tilt must be between -180 and +180");
+	        		return false;
+	        	}
+	        } catch (NumberFormatException e) {
+	        	JOptionPane.showMessageDialog(null, "Tilt should be numeric value between -180 and +180");
+        		return false;
+	        }
+	    }
+	}
+	
     @Override
 	public void actionPerformed(ActionEvent e) {
 		
@@ -953,14 +990,12 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 			
 	        
 	        //get data from fields
-	        DateFormat df = new SimpleDateFormat("dd/MMM/yyyy HH:mm:ss.SSS"); 
+	        DateFormat df = new SimpleDateFormat(INPUT_DATE_FORMAT); 
             try
             {
             	System.out.println(simulationEndField.getText());
     	        simStart = df.parse(simulationStartField.getText());
     	        simEnd = df.parse(simulationEndField.getText());
-    	        simStart = new DateTime(2014, 01, 04, 12, 00).toDate();
-    	        simEnd = new DateTime(2014, 01, 15, 12, 00).toDate();
     	        
             }
             catch(Exception pe)
