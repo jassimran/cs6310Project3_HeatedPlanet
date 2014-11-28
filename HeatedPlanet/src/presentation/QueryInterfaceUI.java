@@ -53,6 +53,7 @@ ActionListener, ChangeListener, Listener {
 
 
 	static final String INPUT_DATE_FORMAT = "MM/dd/yyyy HH:mm:ss";
+	static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(INPUT_DATE_FORMAT);
 	
 	static final int WIDTH = 750;
 	static final int HEIGHT = 220;
@@ -183,7 +184,7 @@ ActionListener, ChangeListener, Listener {
         longitudeToField = new javax.swing.JTextField(EDIT_BOX_WIDTH);
         longitudeToField.setInputVerifier(new InputVerifier180());
         simulationPeriodLabel = new javax.swing.JLabel();
-        simulationStartField = new javax.swing.JFormattedTextField(new SimpleDateFormat(INPUT_DATE_FORMAT));
+        simulationStartField = new javax.swing.JFormattedTextField(DATE_FORMAT);
         simulationStartField.setColumns(20);
         simulationStartField.setActionCommand(getName());
         simulationStartField.setEnabled(false);
@@ -195,7 +196,7 @@ ActionListener, ChangeListener, Listener {
         longitudeToField.setEnabled(false);
         
        
-        simulationEndField = new javax.swing.JFormattedTextField(new SimpleDateFormat(INPUT_DATE_FORMAT));
+        simulationEndField = new javax.swing.JFormattedTextField(DATE_FORMAT);
         simulationEndField.setColumns(20);
         simulationEndField.setEnabled(false);
         simulationEndField.setInputVerifier(new DateInputVerifier());
@@ -766,13 +767,12 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
     
     public void setSimulationPeriod(String start, String end)
     {
-    	 SimpleDateFormat dtf = new SimpleDateFormat(INPUT_DATE_FORMAT);
     	 try{
     		 
     		 System.out.println("Sim start: " + simulationStartField.getText());
         	 System.out.println("Sim end: "+ simulationEndField.getText());
-    	 simStart = dtf.parse(simulationStartField.getText());
-    	 simEnd = dtf.parse(simulationEndField.getText());
+    	 simStart = DATE_FORMAT.parse(simulationStartField.getText());
+    	 simEnd = DATE_FORMAT.parse(simulationEndField.getText());
     	 System.out.println("Sim start: " + simStart);
     	 System.out.println("Sim end: "+ simEnd);
     	 }
@@ -842,9 +842,8 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 		@Override
 		public boolean verify(JComponent input) {
 	        String text = ((JTextField) input).getText();
-	        SimpleDateFormat dtf = new SimpleDateFormat(INPUT_DATE_FORMAT);
 	    	 try{
-	    		Date testDate = dtf.parse(text);
+	    		Date testDate = DATE_FORMAT.parse(text);
 	    	 
 				Calendar calendar = Calendar.getInstance();
 				calendar.set(Calendar.HOUR_OF_DAY, 12);
@@ -1051,12 +1050,11 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 			
 	        
 	        //get data from fields
-	        DateFormat df = new SimpleDateFormat(INPUT_DATE_FORMAT); 
             try
             {
             	System.out.println(simulationEndField.getText());
-    	        simStart = df.parse(simulationStartField.getText());
-    	        simEnd = df.parse(simulationEndField.getText());
+    	        simStart = DATE_FORMAT.parse(simulationStartField.getText());
+    	        simEnd = DATE_FORMAT.parse(simulationEndField.getText());
     	        
             }
             catch(Exception pe)
