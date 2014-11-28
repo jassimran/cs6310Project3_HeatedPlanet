@@ -89,4 +89,26 @@ public class PersistenceServiceTest {
 		assertTrue(simulation.getName().equals("BootStrap Simulation"));
 	}
 
+
+	@Test
+	public final void testDeleteSimulation(){
+		final String simulationName = "Test Simulation Name";
+		
+		Simulation sim = new Simulation();
+		sim.setName(simulationName);
+		sim.setAxialTilt(0);
+		sim.setOrbitalEccentricity(0);
+		sim.setTimeStep(0);
+		sim.setLength(0);
+		sim.setGridSpacing(0);
+		sim.setPrecision(0);
+		
+		persistenceService.persistSimulation(sim, null, 0);
+		
+		Simulation matchingSimulation = persistenceService.findBySimulationName(simulationName);
+		persistenceService.deleteSimulation(matchingSimulation.getName());
+		matchingSimulation = persistenceService.findBySimulationName(simulationName);
+		
+		assertEquals(null, matchingSimulation);
+	}
 }

@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -161,5 +162,17 @@ public class PersistenceService {
 		List<Simulation> results = typedQuery.getResultList();
 
 		return results;
+	}
+
+	public void deleteSimulation(String simulationName){
+		em.getTransaction().begin();
+		final String jpql = "DELETE FROM Simulation s WHERE s.name = :name";
+		
+		Query query = em.createQuery(jpql);
+
+		query.setParameter("name", simulationName);
+
+		query.executeUpdate();
+		em.getTransaction().commit();
 	}
 }

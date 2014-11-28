@@ -321,6 +321,7 @@ public class SimulationControl extends AbstractControl implements Runnable {
 	@Override
 	public void handleStopSimulationEvent() {
 		simulationThread.notify();		
+		persistenceService.deleteSimulation(simulationSettings.getName());
 	}
 
 	@Override
