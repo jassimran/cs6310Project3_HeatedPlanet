@@ -1,7 +1,6 @@
 package presentation.query;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import domain.EarthCell;
