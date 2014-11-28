@@ -757,15 +757,13 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
     
     public void setSimulationPeriod(String start, String end)
     {
-    	 SimpleDateFormat dtf = new SimpleDateFormat("dd/MM/yyyy");
+    	 SimpleDateFormat dtf = new SimpleDateFormat("dd/MMM/yyyy HH:mm:ss.SSS");
     	 try{
     		 
     		 System.out.println("Sim start: " + simulationStartField.getText());
         	 System.out.println("Sim end: "+ simulationEndField.getText());
-//    	 simStart = dtf.parse(simulationStartField.getText());
-//    	 simEnd = dtf.parse(simulationEndField.getText());
- 	        simStart = new DateTime(2014, 01, 04, 12, 00).toDate();
- 	        simEnd = new DateTime(2014, 01, 15, 12, 00).toDate();
+        	 simStart = dtf.parse(simulationStartField.getText());
+		 simEnd = dtf.parse(simulationEndField.getText());
     	 System.out.println("Sim start: " + simStart);
     	 System.out.println("Sim end: "+ simEnd);
     	 }
@@ -959,10 +957,8 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
             try
             {
             	System.out.println(simulationEndField.getText());
-//    	        simStart = df.parse(simulationStartField.getText());
-//    	        simEnd = df.parse(simulationEndField.getText());
-    	        simStart = new DateTime(2014, 01, 04, 12, 00).toDate();
-    	        simEnd = new DateTime(2014, 01, 15, 12, 00).toDate();
+		simStart = df.parse(simulationStartField.getText());
+		simEnd = df.parse(simulationEndField.getText());
     	        
             }
             catch(Exception pe)
