@@ -1,8 +1,11 @@
 package services;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.List;
+
+import domain.EarthCell;
 
 public class SimulationService {
 
@@ -76,5 +79,68 @@ public class SimulationService {
 		int diffMonth = diffYear * 12 + endCalendar.get(Calendar.MONTH) - startCalendar.get(Calendar.MONTH);
 		
 		return diffMonth + 1;
+	}
+	
+	/**
+	 * Returns the EarthCell in the given row and column.
+	 * @param earthCells the list of EarthCells
+	 * @param col the column
+	 * @param row the row
+	 * @return the EarthCell in the given row and column, or null if not found
+	 */
+	public EarthCell getEarthCell(List<EarthCell> earthCells ,int col, int row) {
+		EarthCell earthCell = null;
+
+		for(EarthCell e : earthCells) {
+			if(e.getColumn() == col && e.getRow() == row) {
+				earthCell = e;
+				break;
+			}
+		}
+		
+		return earthCell;
+	}
+
+	/**
+	 * @return a list of EarthCells within the given radius of the given earth cell
+	 */
+	public List<EarthCell> getNeighbors(EarthCell earthCell, int radius) {
+		// get cells in the same grid
+		List<EarthCell> earthCells = earthCell.getGrid().getNodeList();
+		
+		// get row and column
+		int row = earthCell.getRow();
+		int col = earthCell.getColumn();
+		
+		// get neighbors
+		List<EarthCell> neighbors = new ArrayList<EarthCell>();
+		for(int y = row - radius; y <= row + radius; y ++) {
+			for(int x = col - radius; x <= col + radius; x ++) {
+				if(x == col && y == row) {
+					continue;
+				}
+				
+				EarthCell neighbor = getEarthCell(earthCells, x, y);
+				if(neighbor != null) {
+					neighbors.add(neighbor);
+				}
+			}
+		}
+		
+		// return results
+		return neighbors;
+	}
+
+	/**
+	 * @return the average temperature of the given list of EarthCells
+	 */
+	public double calculateAverageTemperature(List<EarthCell> earthCells) {
+		double totalTemp = 0;
+		
+		for(EarthCell earthCell : earthCells) {
+			totalTemp += earthCell.getTemperature();
+		}
+		
+		return totalTemp / earthCells.size();
 	}
 }

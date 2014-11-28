@@ -135,10 +135,4 @@ public class EarthGrid implements Serializable {
     public String toString() {
         return "domain.TimeStep[ id=" + id + " ]";
     }
-
-
-
-	public void setEarthCell(EarthCell interpolatedCell) {
-		nodeList.add(interpolatedCell);		
-	}
 }

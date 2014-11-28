@@ -86,11 +86,7 @@ public class QueryControl extends AbstractControl implements Runnable {
 		for (EarthGrid currentGrid : simulation.getTimeStepList()) {
 			interpolationService.performGeographicInterpolation(currentGrid);
 		}
-
-		List<EarthGrid> temporalInterpolatedGrids = interpolationService.
-				performTemporalInterpolation(simulation);
-		simulation.setTimeStepList(temporalInterpolatedGrids);
-		
+		interpolationService.performTemporalInterpolation(simulation);		
 	}
 	
 	/**

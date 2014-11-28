@@ -34,7 +34,7 @@ public class PersistenceService {
 	private PersistenceService() {
 		// TODO Auto-generated constructor stub
 	}
-
+	
 	public static synchronized PersistenceService getInstance() {
 		if (serviceInstance == null) {
 			serviceInstance = new PersistenceService();
