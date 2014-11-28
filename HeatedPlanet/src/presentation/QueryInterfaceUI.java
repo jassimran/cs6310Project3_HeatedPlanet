@@ -14,6 +14,8 @@ import java.awt.FlowLayout;
 //import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.text.DateFormat;
 //import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,6 +37,8 @@ import simulation.SimulationSettingsFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import org.joda.time.DateTime;
+
+
 
 
 
@@ -85,7 +89,13 @@ ActionListener, ChangeListener, Listener {
 	private QueryResult res;
 	private QueryCell q1, q2;
 	
-	
+	public void onExit(){
+		int confirm = JOptionPane.showOptionDialog(null, "Are You Sure you want to close Query Interface?", "Exit Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+	    if (confirm == 0) {
+	    	Gui.getInstance(true, false, false, false, 10).setEnableAllUserOptions(true);
+	    	setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+	    }
+	}
 	
 	
 
@@ -101,6 +111,11 @@ ActionListener, ChangeListener, Listener {
     	createControl();
     	this.setVisible(true);
     	setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+    	this.addWindowListener(new WindowAdapter() {
+ 		   public void windowClosing(WindowEvent evt) {
+ 		     onExit();
+ 		   }
+ 		  });
         setTitle("Query Interface");
         setName("QInterfaceFrame"); 
         //lat = 33.7784626;

@@ -801,7 +801,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	}
 
 	//enable/disable all controls
-	private void setEnableAllUserOptions(boolean bEnable) {
+	public void setEnableAllUserOptions(boolean bEnable) {
 		gridEdit.setEnabled(bEnable);
 		gridSlider.setEnabled(bEnable);
 		stepEdit.setEnabled(bEnable);
