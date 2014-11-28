@@ -26,19 +26,20 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import presentation.query.*;
-
 import controllers.AbstractControl;
 import controllers.AbstractControlFactory;
 import controllers.QueryControl;
-
-
 import simplesimulation.SimpleSimulationEngineImpl;
 import simulation.SimulationSettings;
 import simulation.SimulationSettingsFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-
 import org.joda.time.DateTime;
+
+
+
+
+
 
 
 
@@ -49,7 +50,10 @@ public class QueryInterfaceUI extends javax.swing.JFrame implements
 ActionListener, ChangeListener, Listener {
 
    
-	
+
+
+	static final String INPUT_DATE_FORMAT = "MM/dd/yyyy HH:mm:ss";
+	static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(INPUT_DATE_FORMAT);
 	
 	static final int WIDTH = 750;
 	static final int HEIGHT = 220;
@@ -165,21 +169,26 @@ ActionListener, ChangeListener, Listener {
        
         axisTiltLabel = new javax.swing.JLabel();
         axisTiltField = new javax.swing.JTextField(EDIT_BOX_WIDTH);
+        axisTiltField.setInputVerifier(new InputVerifier180());
         orbitalEccentricityLabel = new javax.swing.JLabel();
         orbitalEccentricityField = new javax.swing.JTextField(EDIT_BOX_WIDTH);
+        orbitalEccentricityField.setInputVerifier(new EccentricityInputVerifier());
         latitudeLabel = new javax.swing.JLabel();
         latitudeFromField = new javax.swing.JTextField(EDIT_BOX_WIDTH);
-        
+        latitudeFromField.setInputVerifier(new LatitudeInputVerifier());
         latitudeToField = new javax.swing.JTextField(EDIT_BOX_WIDTH);
+        latitudeToField.setInputVerifier(new LatitudeInputVerifier());
         longitudeLabel = new javax.swing.JLabel();
         longitudeFromField = new javax.swing.JTextField(EDIT_BOX_WIDTH);
-    
+        longitudeFromField.setInputVerifier(new InputVerifier180());
         longitudeToField = new javax.swing.JTextField(EDIT_BOX_WIDTH);
+        longitudeToField.setInputVerifier(new InputVerifier180());
         simulationPeriodLabel = new javax.swing.JLabel();
-        simulationStartField = new javax.swing.JFormattedTextField(new SimpleDateFormat("mm/dd/yy"));
-        simulationStartField.setColumns(5);
+        simulationStartField = new javax.swing.JFormattedTextField(DATE_FORMAT);
+        simulationStartField.setColumns(20);
         simulationStartField.setActionCommand(getName());
         simulationStartField.setEnabled(false);
+        simulationStartField.setInputVerifier(new DateInputVerifier());
         
         latitudeFromField.setEnabled(false);
         latitudeToField.setEnabled(false);
@@ -187,9 +196,10 @@ ActionListener, ChangeListener, Listener {
         longitudeToField.setEnabled(false);
         
        
-        simulationEndField = new javax.swing.JFormattedTextField(new SimpleDateFormat("mm/dd/yy"));
-        simulationEndField.setColumns(5);
+        simulationEndField = new javax.swing.JFormattedTextField(DATE_FORMAT);
+        simulationEndField.setColumns(20);
         simulationEndField.setEnabled(false);
+        simulationEndField.setInputVerifier(new DateInputVerifier());
         
         simulationEndField.setActionCommand(getName());
        
@@ -236,7 +246,7 @@ ActionListener, ChangeListener, Listener {
 
         simulationNameLabel.setText("Simulation name: ");
         
-        nameSpinner = new JComboBox<String>();
+        nameSpinner = new JComboBox();
                
        
         nameSpinner.setName("Name");
@@ -751,22 +761,108 @@ ActionListener, ChangeListener, Listener {
     
     public void setSimulationPeriod(String start, String end)
     {
-    	 SimpleDateFormat dtf = new SimpleDateFormat("dd/MMM/yyyy HH:mm:ss.SSS");
     	 try{
-    		 
     		 System.out.println("Sim start: " + simulationStartField.getText());
         	 System.out.println("Sim end: "+ simulationEndField.getText());
-    	 simStart = dtf.parse(simulationStartField.getText());
-    	 simEnd = dtf.parse(simulationEndField.getText());
-    	 System.out.println("Sim start: " + simStart);
-    	 System.out.println("Sim end: "+ simEnd);
+	    	 simStart = DATE_FORMAT.parse(simulationStartField.getText());
+	    	 simEnd = DATE_FORMAT.parse(simulationEndField.getText());
+	    	 System.out.println("Sim start: " + simStart);
+	    	 System.out.println("Sim end: "+ simEnd);
     	 }
     	 catch(Exception e)
     	 {
     		 System.out.println("Error parsing date time");
+    		 
     	 }
     }
     
+	public class EccentricityInputVerifier extends InputVerifier{
+		@Override
+	    public boolean verify(JComponent input) {
+	        String text = ((JTextField) input).getText();
+	        try {
+	        	if (Double.parseDouble(text) >= 0 && Double.parseDouble(text) <= 1)
+	        		return true;
+	        	else {
+	        		JOptionPane.showMessageDialog(null, "Eccentricity must be between 0 and 1");
+	        		return false;
+	        	}
+	        } catch (NumberFormatException e) {
+	        	JOptionPane.showMessageDialog(null, "Eccentricity must be numeric value between 0 and 1");
+        		return false;
+	        }
+	    }
+	}
+	
+	public class InputVerifier180 extends InputVerifier{
+		@Override
+	    public boolean verify(JComponent input) {
+	        String text = ((JTextField) input).getText();
+	        try {
+	        	if (Double.parseDouble(text) >= -180 && Double.parseDouble(text) <= 180)
+	        		return true;
+	        	else {
+	        		JOptionPane.showMessageDialog(null, "Tilt must be between -180 and +180");
+	        		return false;
+	        	}
+	        } catch (NumberFormatException e) {
+	        	JOptionPane.showMessageDialog(null, "Tilt should be numeric value between -180 and +180");
+        		return false;
+	        }
+	    }
+	}
+	
+	public class LatitudeInputVerifier extends InputVerifier{
+		@Override
+	    public boolean verify(JComponent input) {
+	        String text = ((JTextField) input).getText();
+	        try {
+	        	if (Double.parseDouble(text) >= -90 && Double.parseDouble(text) <= 90)
+	        		return true;
+	        	else {
+	        		JOptionPane.showMessageDialog(null, "Value must be between -90 and +90");
+	        		return false;
+	        	}
+	        } catch (NumberFormatException e) {
+	        	JOptionPane.showMessageDialog(null, "Value should be numeric value between -90 and +90");
+        		return false;
+	        }
+	    }
+	}
+	
+	public class DateInputVerifier extends InputVerifier {
+
+		@Override
+		public boolean verify(JComponent input) {
+	        String text = ((JTextField) input).getText();
+	    	 try{
+	    		Date testDate = DATE_FORMAT.parse(text);
+	    	 
+				Calendar calendar = Calendar.getInstance();
+				calendar.set(Calendar.HOUR_OF_DAY, 12);
+				calendar.set(Calendar.MINUTE, 00);
+				calendar.set(Calendar.SECOND, 00);
+				calendar.set(Calendar.MILLISECOND, 00);
+				calendar.set(Calendar.MONTH, Calendar.JANUARY);
+				calendar.set(Calendar.DAY_OF_MONTH, 4);
+				calendar.set(Calendar.YEAR, 2014);
+				Date minDate = calendar.getTime();
+				
+		    	 if(testDate.before(minDate)){
+	        		JOptionPane.showMessageDialog(null, "The start date must be greater than Jan 4, 2014 12:00");
+	        		return false;
+		    	 }
+	    	 return true;
+	    	 }
+	    	 catch(Exception e)
+	    	 {
+	        	JOptionPane.showMessageDialog(null, "The date must be in the format " + INPUT_DATE_FORMAT);
+        		return false;
+	    	 }
+		}
+
+	}
+	
     @Override
 	public void actionPerformed(ActionEvent e) {
 		
@@ -947,15 +1043,11 @@ ActionListener, ChangeListener, Listener {
 			
 	        
 	        //get data from fields
-	        DateFormat df = new SimpleDateFormat("dd/MMM/yyyy HH:mm:ss.SSS"); 
             try
             {
             	System.out.println(simulationEndField.getText());
-//    	        simStart = df.parse(simulationStartField.getText());
-//    	        simEnd = df.parse(simulationEndField.getText());
-    	        simStart = new DateTime(2014, 01, 04, 12, 00).toDate();
-    	        simEnd = new DateTime(2014, 01, 15, 12, 00).toDate();
-    	        
+    	        simStart = DATE_FORMAT.parse(simulationStartField.getText());
+    	        simEnd = DATE_FORMAT.parse(simulationEndField.getText());    	        
             }
             catch(Exception pe)
             {
@@ -1111,7 +1203,7 @@ ActionListener, ChangeListener, Listener {
     private ButtonGroup regionbuttonGroup;
     private JRadioButton earthButton;
     private JRadioButton parametersButton;
-    private JComboBox<String> nameSpinner;
+    private JComboBox nameSpinner;
     private JTable outputTable;
     private JLabel spacer, latStart, latEnd, longStart, longEnd;
     private JLabel minTempLabel1,readingTimeLabel,locationLabel,maxTempLabel1,timeMeanTempLabel2,regionMeanTempLabel2,tempTimeRegionLabel1;

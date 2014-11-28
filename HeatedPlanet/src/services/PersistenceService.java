@@ -68,7 +68,7 @@ public class PersistenceService {
 
 		if (temperatureGrid != null) {
 			// get simulated time
-			int simulatedDateInMillis = temperatureGrid.getSimulationTime() * 60 * 1000;
+			int simulatedDateInMins = temperatureGrid.getSimulationTime();
 			Calendar calendar = Calendar.getInstance();
 			calendar.set(Calendar.HOUR_OF_DAY, 12);
 			calendar.set(Calendar.MINUTE, 00);
@@ -77,7 +77,7 @@ public class PersistenceService {
 			calendar.set(Calendar.MONTH, Calendar.JANUARY);
 			calendar.set(Calendar.DAY_OF_MONTH, 4);
 			calendar.set(Calendar.YEAR, 2014);
-			calendar.add(Calendar.MILLISECOND, simulatedDateInMillis);
+			calendar.add(Calendar.MINUTE, simulatedDateInMins);
 			Date simulatedDate = calendar.getTime();
 
 			// create EarthGrid
