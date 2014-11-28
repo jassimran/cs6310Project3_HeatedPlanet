@@ -246,7 +246,7 @@ ActionListener, ChangeListener, Listener {
 
         simulationNameLabel.setText("Simulation name: ");
         
-        nameSpinner = new JComboBox<String>();
+        nameSpinner = new JComboBox();
                
        
         nameSpinner.setName("Name");
@@ -768,13 +768,12 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
     public void setSimulationPeriod(String start, String end)
     {
     	 try{
-    		 
     		 System.out.println("Sim start: " + simulationStartField.getText());
         	 System.out.println("Sim end: "+ simulationEndField.getText());
-    	 simStart = DATE_FORMAT.parse(simulationStartField.getText());
-    	 simEnd = DATE_FORMAT.parse(simulationEndField.getText());
-    	 System.out.println("Sim start: " + simStart);
-    	 System.out.println("Sim end: "+ simEnd);
+	    	 simStart = DATE_FORMAT.parse(simulationStartField.getText());
+	    	 simEnd = DATE_FORMAT.parse(simulationEndField.getText());
+	    	 System.out.println("Sim start: " + simStart);
+	    	 System.out.println("Sim end: "+ simEnd);
     	 }
     	 catch(Exception e)
     	 {
@@ -1054,8 +1053,7 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
             {
             	System.out.println(simulationEndField.getText());
     	        simStart = DATE_FORMAT.parse(simulationStartField.getText());
-    	        simEnd = DATE_FORMAT.parse(simulationEndField.getText());
-    	        
+    	        simEnd = DATE_FORMAT.parse(simulationEndField.getText());    	        
             }
             catch(Exception pe)
             {
@@ -1211,7 +1209,7 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
     private ButtonGroup regionbuttonGroup;
     private JRadioButton earthButton;
     private JRadioButton parametersButton;
-    private JComboBox<String> nameSpinner;
+    private JComboBox nameSpinner;
     private JTable outputTable;
     private JLabel spacer, latStart, latEnd, longStart, longEnd;
     private JLabel minTempLabel1,readingTimeLabel,locationLabel,maxTempLabel1,timeMeanTempLabel2,regionMeanTempLabel2,tempTimeRegionLabel1;
