@@ -36,6 +36,7 @@ import javax.swing.event.ChangeListener;
 import presentation.earth.EarthPanel;
 import simplesimulation.SimplePresentationEngineImpl;
 import simplesimulation.SimpleSimulationEngineImpl;
+import simplesimulation.SimulationUtils;
 import simulation.SimulationSettings;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import controllers.AbstractControl;
@@ -704,15 +705,17 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 			QueryInterfaceUI.getInstance();
 		} else if (ACTION_SHOW_ORBIT.equals(command)) {
 			// Showing orbit pop up
+			OrbitUI.getInstance(SimulationUtils.A, simulationSettings.getEccentricity());
 		}
 	}
 
+	private volatile SimulationSettings simulationSettings = new SimulationSettings();
+	
 	/**
 	 * Executes a simulation based on the selected settings.
 	 */
 	private void runSimulation() {
 		// create settings object
-		SimulationSettings simulationSettings = new SimulationSettings();
 		simulationSettings.setSOption(concurrency_Sim.isSelected());
 		simulationSettings.setPOption(concurrency_Pres.isSelected());
 		simulationSettings.setROption(initiative_R.isSelected());

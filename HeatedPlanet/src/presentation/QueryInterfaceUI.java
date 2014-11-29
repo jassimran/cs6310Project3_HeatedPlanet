@@ -107,7 +107,7 @@ ActionListener, ChangeListener, Listener {
     	
     	createGui();
     	createControl();
-    	this.setVisible(true);
+    	//this.setVisible(true);
     	setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Query Interface");
         setName("QInterfaceFrame"); 
@@ -125,6 +125,9 @@ ActionListener, ChangeListener, Listener {
   		if (instance == null) {
   			instance = new QueryInterfaceUI();
   		}
+  		
+  		instance.setVisible(true);
+  		
   		return instance;
   	}
 
