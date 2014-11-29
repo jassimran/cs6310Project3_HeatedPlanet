@@ -31,54 +31,35 @@ public class TemperatureColorPicker {
          * @return the temperature color
          */
         Color getColor(int temperature) {
-            int b = 0;
-                int g = 0;
-                int r = 0;
-                float temp = (float)temperature;
-                
-                final float TEMP_BLUE_MIN = (float)276; // 0 degrees celsius
-                final float TEMP_BLUE_MAX = (float)279; 	// 38F  min registered temperature 185.372 K
-                //final float TEMP_GREEN_MIN = (float)284.5;
-                final float TEMP_RED_MIN = (float)293;
-                final float TEMP_RED_MAX = (float)299; 	// max registered temperature 330.928 K
-                
-                
-                if(temp <= TEMP_BLUE_MIN) { 
-                	// Pure Blue
-                    b = 255;
-                }
-                else if(temp >= TEMP_RED_MAX) { 
-                	// Pure Red
-                    r = 255;
-                }  
-                else if (temp < TEMP_BLUE_MAX){ 
-                	// Shade of BLUE
-                	double proportion = (temp - TEMP_BLUE_MIN) / (TEMP_BLUE_MAX - TEMP_BLUE_MIN);
-                	b = (int) (35 + (220 * proportion));
-                }
-                else if (temp > TEMP_RED_MIN){ 
-                	//Shade of RED
-                	double proportion = (temp - TEMP_RED_MIN) / (TEMP_RED_MAX - TEMP_RED_MIN);
-                	r = (int) (35 + (220 * proportion));
-                }
-                else { 
-                	// Shade of Green
-                    double proportion = (temp - TEMP_BLUE_MAX) / (TEMP_RED_MIN - TEMP_BLUE_MAX);
-                    g = (int) (35 + (220 * proportion));
-                }
-                if(r > 255)
-                	r = 255;
-                if(r < 0)
-                	r = 0;
-                if(g > 255)
-                	g = 255;
-            	if(g < 0)
-            		g = 0;
-            	if(b > 255)
-            		b = 255;
-            	if(b < 0)
-            		b = 0;
-                return new Color(r, g, b);
+        	int b = 0;
+        	int g = 0;
+        	int r = 0;
+        	
+        	float temp = (float) temperature;
+
+        	final float HIGH_MAX = 342.0f; // max registered temperature 330.928 K
+        	final float HIGH_MIN = 312.0f;
+
+        	final float LOW_MAX = 260.0f;
+        	final float LOW_MIN = 200.0f; // min registered temperature 185.372 K
+
+        	if (temp > HIGH_MAX) {
+        		temp = HIGH_MAX;
+        	}
+
+        	if (temp < LOW_MIN) {
+        		temp = LOW_MIN;
+        	}
+
+        	if (temp <= LOW_MAX) {
+        		b = Math.round((LOW_MAX - temp) / (LOW_MAX - LOW_MIN) * 255);
+        	} else if (temp >= HIGH_MIN) {
+        		r = Math.round((temp - HIGH_MIN) / (HIGH_MAX - HIGH_MIN) * 255);
+        	} else {
+        		g = Math.round((temp - LOW_MAX) / (HIGH_MIN - LOW_MAX) * 255);
+        	}
+
+        	return new Color(r, g, b);
         }
 
         
