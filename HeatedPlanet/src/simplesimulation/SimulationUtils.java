@@ -1,9 +1,14 @@
 package simplesimulation;
 
+
+import presentation.earth.TemperatureGrid;
+
+
 /**
  * Class that includes the Physics model to adapt eccentricity and orbit tilt
  * (obliquity).
  */
+
 public class SimulationUtils {
 
 	/**
@@ -391,4 +396,51 @@ public class SimulationUtils {
 			double radiusTau) {
 		return radiusAtPerihelion / radiusTau;
 	}
+
+	public static SimpleTemperatureGridImpl dissipateExcessHeat(TemperatureGrid inputGrid,
+			SimpleTemperatureGridImpl temperatureGrid, 
+			int precision) {
+		// calculate variables
+		int rows = inputGrid.getRows();
+		int cols = inputGrid.getCols();
+		
+		double totalOriginalTemp = 0.0;
+		
+		for(int y=0; y<rows; y++) {
+			for(int x=0; x<cols; x++) {
+				
+				double originalTemp = inputGrid.getTemperature(x, y);
+				
+				totalOriginalTemp += originalTemp;
+
+			}
+		}
+		
+		double totalHeatToDissipate = (totalOriginalTemp / (rows*cols)) - 288.0;
+		double cellHeatToDissipate = totalHeatToDissipate / (rows*cols);
+		
+		if(cellHeatToDissipate != 0)
+			for(int y=0; y<rows; y++) {
+				for(int x=0; x<cols; x++) {
+					
+					double originalTemp = temperatureGrid.getTemperature(x, y);
+					double tempToUse = originalTemp - cellHeatToDissipate;
+					
+					SimpleCell simpleCell = new SimpleCell();
+					simpleCell.t = round(tempToUse, precision);
+					temperatureGrid.setTemperature(x, y, simpleCell);
+				}
+			}
+		return temperatureGrid;
+	}
+	
+	/**
+	 * Rounds a double to the specified number of digits of precision.
+	 * @param originalTemp
+	 * @param precision
+	 * @return The rounded value.
+	 */
+	protected static double round(double originalTemp, int precision) {
+		return new Double(String.format("%." + precision +"f", originalTemp));
+	}	
 }
