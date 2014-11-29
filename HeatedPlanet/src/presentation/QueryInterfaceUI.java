@@ -90,11 +90,9 @@ ActionListener, ChangeListener, Listener {
 	private QueryCell q1, q2;
 	
 	public void onExit(){
-		int confirm = JOptionPane.showOptionDialog(null, "Are You Sure you want to close Query Interface?", "Exit Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-	    if (confirm == 0) {
 	    	Gui.getInstance(true, false, false, false, 10).setEnableAllUserOptions(true);
+	    	
 	    	setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-	    }
 	}
 	
 	
@@ -110,7 +108,7 @@ ActionListener, ChangeListener, Listener {
     	createGui();
     	createControl();
     	this.setVisible(true);
-    	setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+    	setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     	this.addWindowListener(new WindowAdapter() {
  		   public void windowClosing(WindowEvent evt) {
  		     onExit();
@@ -701,9 +699,9 @@ ActionListener, ChangeListener, Listener {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-    	getInstance();//.launchNewQueryInterface();
-    }
+   // public void launchNewQueryInterface() {
+   // 	getInstance();//.launchNewQueryInterface();
+    //}
 
     	public void launchNewQueryInterface() {
     		getInstance();
