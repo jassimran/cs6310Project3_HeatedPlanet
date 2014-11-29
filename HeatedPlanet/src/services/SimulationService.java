@@ -88,9 +88,13 @@ public class SimulationService {
 	 * @param row the row
 	 * @return the EarthCell in the given row and column, or null if not found
 	 */
-	public EarthCell getEarthCell(List<EarthCell> earthCells ,int col, int row) {
+	public EarthCell getEarthCell(List<EarthCell> earthCells, int col, int row, int numCols) {
 		EarthCell earthCell = null;
 
+		int colToUse = col;
+		if(numCols > 0 && colToUse < 0)
+			colToUse = numCols + col - 1;
+		
 		for(EarthCell e : earthCells) {
 			if(e.getColumn() == col && e.getRow() == row) {
 				earthCell = e;
@@ -104,7 +108,7 @@ public class SimulationService {
 	/**
 	 * @return a list of EarthCells within the given radius of the given earth cell
 	 */
-	public List<EarthCell> getNeighbors(EarthCell earthCell, int radius) {
+	public List<EarthCell> getNeighbors(EarthCell earthCell, int radius, int numCols) {
 		// get cells in the same grid
 		List<EarthCell> earthCells = earthCell.getGrid().getNodeList();
 		
@@ -120,7 +124,7 @@ public class SimulationService {
 					continue;
 				}
 				
-				EarthCell neighbor = getEarthCell(earthCells, x, y);
+				EarthCell neighbor = getEarthCell(earthCells, x, y, numCols);
 				if(neighbor != null) {
 					neighbors.add(neighbor);
 				}
