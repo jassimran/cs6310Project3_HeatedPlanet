@@ -662,33 +662,46 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 			// run simulation
 			runSimulation();
 		} else if (ACTION_PAUSE.equals(command)) {
-			//enable the restart button
-			stopButton.setEnabled(true);
-			// change pause button legend
-			pauseButton.setText((control.isSimulationRunning())? ACTION_RESUME : ACTION_PAUSE);
-			// pause simulation
-			pauseSimulation();
-		} else if (ACTION_STOP.equals(command)) {
-			//enable all controls
-			this.setEnableAllUserOptions(true);
-			// disable pause button
-			pauseButton.setEnabled(false);
-			//disable the stop button
-			stopButton.setEnabled(false);
-			//enable the run button
-			runButton.setEnabled(true);
-			// terminate simulation
-			stopSimulation();
-			//reset the EarthPanel
-			EarthPanel.reset();
-			try {
-				//set the time
-				simTimeCal.setTime(DATE_FORMAT
-						.parse(START_TIME));
-				simTime.setText(DATE_FORMAT.format(simTimeCal
-						.getTime()));
-			} catch (ParseException e2) {
-			}				
+            //enable the restart button
+            stopButton.setEnabled(true);
+            // change pause button legend
+            pauseButton.setText(ACTION_RESUME);
+            // change pause button action
+            pauseButton.setActionCommand(ACTION_RESUME);
+            // pause simulation
+            pauseSimulation();
+        } else if (ACTION_RESUME.equals(command)) {
+            //enable the restart button
+            stopButton.setEnabled(false);
+            // change pause button legend
+            pauseButton.setText(ACTION_PAUSE);
+            // change pause button action
+            pauseButton.setActionCommand(ACTION_PAUSE);
+            // resume simulation
+            resumeSimulation();
+        } else if (ACTION_STOP.equals(command)) {
+            //enable all controls
+            this.setEnableAllUserOptions(true);
+            pauseButton.setText(ACTION_PAUSE);
+            pauseButton.setActionCommand(ACTION_PAUSE);
+            // reset pause button
+            pauseButton.setEnabled(false);
+            //disable the stop button
+            stopButton.setEnabled(false);
+            //enable the run button
+            runButton.setEnabled(true);
+            // terminate simulation
+            stopSimulation();
+            //reset the EarthPanel
+            EarthPanel.reset();
+            try {
+                //set the time
+                simTimeCal.setTime(DATE_FORMAT
+                        .parse(START_TIME));
+                simTime.setText(DATE_FORMAT.format(simTimeCal
+                        .getTime()));
+            } catch (ParseException e2) {
+            }               
 		} else if (ACTION_GRID_EDIT.equals(command)) {
 			//update the visual grid with new value
 			EarthPanel.drawGrid(gridEdit.getValue());
@@ -793,6 +806,17 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 			control.pauseSimulation();
 		} else {
 			control.resumeSimulation();
+		}
+	}
+	
+	/**
+	 * Resumes a paused simulation.
+	 */
+	private void resumeSimulation() {
+		if(!control.isSimulationRunning()) {
+			control.resumeSimulation();
+		} else {
+			throw new RuntimeException("Resume a running simulation");
 		}
 	}
 	
