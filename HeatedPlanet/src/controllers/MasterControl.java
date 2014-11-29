@@ -1,10 +1,13 @@
 package controllers;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.SwingUtilities;
 
+import presentation.query.QueryResult;
+import presentation.query.SimulationQuery;
 import services.SimulationService;
 import simulation.SimulationSettings;
 import buffers.BufferImplementation;
@@ -255,24 +258,42 @@ public class MasterControl extends AbstractControl {
 
 	@Override
 	public void handleStopSimulationEvent() {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void handlePauseSimulationEvent() {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void handleResumeSimulationEvent() {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	protected boolean waiting() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public QueryResult getQueryResultBySimulationName(String simulationName) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public QueryResult computeQueryResults(SimulationQuery simulationQuery) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<String> getSimulationListByUserInputs(double axialTilt,
+			double orbitalEccentricity, Date endingDate) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<String> getSimulationList() {
 		throw new UnsupportedOperationException();
 	}
 }

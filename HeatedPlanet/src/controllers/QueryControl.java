@@ -45,16 +45,6 @@ public class QueryControl extends AbstractControl implements Runnable {
 		interpolationService = InterpolationService.getInstance();
 	}
 	
-	
-	public List<String> getSimulationList(){
-		List<String> simulationNames = new ArrayList<String>();
-		List<Simulation> simulations = persistenceService.findAllSimulations();
-		for(Simulation simulation : simulations){
-			simulationNames.add(simulation.getName());
-		}
-		return simulationNames;
-	}
-	
 	/**
 	 * Gets the names of the simulations that match the user inputs
 	 * @param axialTilt the requested axial tilt
@@ -62,7 +52,8 @@ public class QueryControl extends AbstractControl implements Runnable {
 	 * @param endingDate the requested ending date
 	 * @return the matching simulation names based on the provided user inputs
 	 */
-	public List<String> getSimulationListByUserInputs(double axialTilt, double orbitalEccentricity, Date endingDate){
+	@Override
+	public List<String> getSimulationListByUserInputs(double axialTilt, double orbitalEccentricity, Date endingDate) {
 		List<String> simulationNames = new ArrayList<String>();
 		List<Simulation> simulations = persistenceService.findSimulationsByUserInputs(axialTilt, orbitalEccentricity, endingDate);
 		for(Simulation simulation : simulations){
@@ -98,8 +89,25 @@ public class QueryControl extends AbstractControl implements Runnable {
 		Simulation simulation = persistenceService.findBySimulationName(simulationName);
 		return simulation != null;
 	}
+	
+	/**
+	 * @return a list with the names of all the persisted simulations
+	 */
+	@Override
+	public List<String> getSimulationList() {
+		List<String> simulationNames = new ArrayList<String>();
+		List<Simulation> simulations = PersistenceService.getInstance().findAllSimulations();
+		for(Simulation simulation : simulations){
+			simulationNames.add(simulation.getName());
+		}
+		return simulationNames;
+	}
 
-	public QueryResult getQueryResultBySimulationName(String simulationName){
+	/**
+	 * @return a QueryResult object based on the given simulation name
+	 */
+	@Override
+	public QueryResult getQueryResultBySimulationName(String simulationName) {
 		// find simulation
 		Simulation selectedSimulation = persistenceService.findBySimulationName(simulationName);
 		
@@ -126,6 +134,7 @@ public class QueryControl extends AbstractControl implements Runnable {
 	 * @param endLong the ending longitude that the user has requested
 	 * @return the query results that need to be displayed to the user
 	 */
+	@Override
 	public QueryResult computeQueryResults(SimulationQuery simulationQuery) {
 		// search for simulation
 		Simulation selectedSimulation = persistenceService.findBySimulationName(simulationQuery.getSimulationName());
