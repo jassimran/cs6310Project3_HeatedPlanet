@@ -373,7 +373,7 @@ public class SimulationUtils {
 	 * @return Rotational period angle in degrees
 	 */
 	public static double rotationalPeriodAngle(double timeTau) {
-		return tau % ROTATIONAL_PERIOD * 360 / ROTATIONAL_PERIOD;
+		return timeTau % ROTATIONAL_PERIOD * 360 / ROTATIONAL_PERIOD;
 	}
 
 	/**
