@@ -2,12 +2,17 @@ package controllers;
 
 import static org.junit.Assert.*;
 
+import java.util.Date;
+import java.util.List;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import presentation.query.QueryResult;
+import presentation.query.SimulationQuery;
 import simulation.SimulationSettings;
 import events.EventType;
 import events.Listener;
@@ -74,6 +79,27 @@ public class AbstractControlTest {
 			
 			@Override
 			public void handlePauseSimulationEvent() {
+			}
+
+			@Override
+			public QueryResult getQueryResultBySimulationName(String simulationName) {
+				return null;
+			}
+
+			@Override
+			public QueryResult computeQueryResults(SimulationQuery simulationQuery) {
+				return null;
+			}
+
+			@Override
+			public List<String> getSimulationListByUserInputs(double axialTilt,
+					double orbitalEccentricity, Date endingDate) {
+				return null;
+			}
+
+			@Override
+			public List<String> getSimulationList() {
+				return null;
 			}
 		};
 	}

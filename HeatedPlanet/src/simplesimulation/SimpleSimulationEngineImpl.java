@@ -96,6 +96,8 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 		
 		double eccentricityAttenuation = SimulationUtils.getEccentricityAttenuation(radiusAtPerihelion, radiusTau);
 		
+		double[] coordinates = SimulationUtils.position(SimulationUtils.A, settings.getEccentricity(), SimulationUtils.eccentricAnomaly(settings.getEccentricity(), SimulationUtils.meanAnomaly(timeSinceLastPerihelion, SimulationUtils.ORBITAL_PERIOD) ,anomalyDecimalPrecision));
+		
 		// simulation constants
 		double e = 2700; // kg/m3
 		double cb = 1000; // J/kgK
@@ -104,6 +106,7 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 		double Fs = 1368; // W/m2
 		
 		double latitudeUnderSun = SimulationUtils.latitudeNoonSun(timeSinceLastPerihelion, settings.getEccentricity(), SimulationUtils.EARTH_PERIAPSIS, SimulationUtils.ORBITAL_PERIOD, settings.getAxialTilt());
+		double longitudeUnderSun = SimulationUtils.longitudeUnderSun(timeSinceLastPerihelion);
 		
 		// Calculating grid row index corresponding to latitude where sun is hitting directly
 		rowUnderTheSun = (int) (latitudeUnderSun / simulationSettings.getDegreeSeparation() + rows / 2);
@@ -142,9 +145,9 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 		// set simulation time
 		temperatureGrid.setSimulationTime(simulationTime);
 		temperatureGrid.setLatitudeUnderSun(round(latitudeUnderSun,4));
-		//TODO: Get LongitudeUnderSun
-		temperatureGrid.setLongitudeUnderSun(12.0);
-		temperatureGrid.setDistanceFromSun(round(radiusTau/1000000,4));
+		temperatureGrid.setLongitudeUnderSun(longitudeUnderSun);
+		temperatureGrid.setDistanceFromSun(round(radiusTau /1000000,4));
+		temperatureGrid.setCoordinates(coordinates);
 		
 		return temperatureGrid;
 	}

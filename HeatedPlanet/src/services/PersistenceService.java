@@ -160,4 +160,11 @@ public class PersistenceService {
 
 		return results;
 	}
+
+	public void deleteSimulation(Simulation simulation) {
+		em.getTransaction().begin();
+		em.refresh(simulation);
+		em.remove(simulation);
+		em.getTransaction().commit();
+	}
 }

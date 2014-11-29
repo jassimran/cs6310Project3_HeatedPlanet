@@ -1,14 +1,17 @@
 package controllers;
 
 import java.util.Date;
+import java.util.List;
 
-import domain.Simulation;
 import presentation.PresentationEngine;
+import presentation.query.QueryResult;
+import presentation.query.SimulationQuery;
 import services.PersistenceService;
 import services.SimulationService;
 import simulation.SimulationEngine;
 import simulation.SimulationSettings;
 import buffers.Buffer;
+import domain.Simulation;
 import events.Listener;
 
 public abstract class AbstractControl implements Listener {
@@ -240,4 +243,12 @@ public abstract class AbstractControl implements Listener {
 	public abstract void handlePauseSimulationEvent();
 	
 	public abstract void handleResumeSimulationEvent();
+	
+	public abstract List<String> getSimulationList();
+	
+	public abstract QueryResult getQueryResultBySimulationName(String simulationName);
+	
+	public abstract QueryResult computeQueryResults(SimulationQuery simulationQuery);
+	
+	public abstract List<String> getSimulationListByUserInputs(double axialTilt, double orbitalEccentricity, Date endingDate);
 }
