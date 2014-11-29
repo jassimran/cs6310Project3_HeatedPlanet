@@ -11,6 +11,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import presentation.earth.EarthPanel;
 import domain.EarthCell;
 import domain.EarthGrid;
 import domain.Simulation;
@@ -89,10 +90,10 @@ public class SimulationServiceTest {
 		int radiusOfInterest = 5;
 		Simulation simulation = PersistenceService.getInstance().findBySimulationName("BootStrap Simulation");
 		EarthGrid earthGrid = simulation.getTimeStepList().get(186);
-		EarthCell earthCell = simulationService.getEarthCell(earthGrid.getNodeList(), 5, 5);
+		EarthCell earthCell = simulationService.getEarthCell(earthGrid.getNodeList(), 5, 5, simulation.getNumberOfColumns());
 		
 		// when:
-		List<EarthCell> neighbors = simulationService.getNeighbors(earthCell, radiusOfInterest);
+		List<EarthCell> neighbors = simulationService.getNeighbors(earthCell, radiusOfInterest, simulation.getNumberOfColumns());
 		
 		// then:
 		assertEquals(120, neighbors.size());

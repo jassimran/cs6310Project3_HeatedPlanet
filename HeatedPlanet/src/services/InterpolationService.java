@@ -136,11 +136,13 @@ public class InterpolationService {
 		
 		// calculate total cells
 		int totalCells = simulation.getNumberOfRows() * simulation.getNumberOfColumns();
+		int numRows = simulation.getNumberOfRows();
+		int numCols = simulation.getNumberOfColumns();
 		
 		// calculate values for cells not present
 		while( earthCells.size() < totalCells) {
-			for(int y = 0; y < simulation.getNumberOfRows(); y++) {
-				for(int x = 0; x < simulation.getNumberOfColumns(); x++) {
+			for(int y = 0; y < numRows; y++) {
+				for(int x = 0; x < numCols; x++) {
 					EarthCell currentCell = getEarthCell(earthCells, x, y);
 					if(currentCell == null){
 						EarthCell earthCell = new EarthCell();
@@ -149,7 +151,7 @@ public class InterpolationService {
 						earthCell.setGrid(earthGrid);
 						
 						// get neighbors within area of interest
-						List<EarthCell> neighbors = simulationService.getNeighbors(earthCell, RADIUS_OF_INTEREST);
+						List<EarthCell> neighbors = simulationService.getNeighbors(earthCell, RADIUS_OF_INTEREST, numCols);
 						
 						// get average temperature
 						double temp = simulationService.calculateAverageTemperature(neighbors);
@@ -164,7 +166,7 @@ public class InterpolationService {
 	}
 	
 	private EarthCell getEarthCell(List<EarthCell> nodeList, int x, int y) {
-		for(EarthCell cell : nodeList){
+		for(EarthCell cell : nodeList){				
 			if(cell.getRow() == y && cell.getColumn() == x)
 				return cell;
 		}
