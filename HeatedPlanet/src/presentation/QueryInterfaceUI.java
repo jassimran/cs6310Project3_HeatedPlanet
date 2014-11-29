@@ -28,11 +28,19 @@ import presentation.query.*;
 import controllers.AbstractControl;
 import controllers.AbstractControlFactory;
 import controllers.QueryControl;
+
+
 import simplesimulation.SimpleSimulationEngineImpl;
 import simulation.SimulationSettings;
 import simulation.SimulationSettingsFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+
+
+
 import org.joda.time.DateTime;
+
+
 
 
 
@@ -43,10 +51,7 @@ public class QueryInterfaceUI extends javax.swing.JFrame implements
 ActionListener, ChangeListener, Listener {
 
    
-
-
-	static final String INPUT_DATE_FORMAT = "MM/dd/yyyy HH:mm:ss";
-	static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(INPUT_DATE_FORMAT);
+	
 	
 	static final int WIDTH = 750;
 	static final int HEIGHT = 220;
@@ -92,13 +97,33 @@ ActionListener, ChangeListener, Listener {
     	
     	createGui();
     	createControl();
-    	this.setVisible(true);
+    	
     	setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Query Interface");
         setName("QInterfaceFrame"); 
-        //lat = 33.7784626;
-    	//longt = -84.3988806;
-		
+        
+        try {
+        	UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        	
+
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(QueryInterfaceUI.class.getName
+
+()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(QueryInterfaceUI.class.getName
+
+()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(QueryInterfaceUI.class.getName
+
+()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(QueryInterfaceUI.class.getName
+
+()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        this.setVisible(true);
 		
 		
 		
@@ -162,25 +187,21 @@ ActionListener, ChangeListener, Listener {
        
         axisTiltLabel = new javax.swing.JLabel();
         axisTiltField = new javax.swing.JTextField(EDIT_BOX_WIDTH);
-        axisTiltField.setInputVerifier(new InputVerifier180());
         orbitalEccentricityLabel = new javax.swing.JLabel();
         orbitalEccentricityField = new javax.swing.JTextField(EDIT_BOX_WIDTH);
-        orbitalEccentricityField.setInputVerifier(new EccentricityInputVerifier());
         latitudeLabel = new javax.swing.JLabel();
         latitudeFromField = new javax.swing.JTextField(EDIT_BOX_WIDTH);
-        latitudeFromField.setInputVerifier(new LatitudeInputVerifier());
+        
         latitudeToField = new javax.swing.JTextField(EDIT_BOX_WIDTH);
-        latitudeToField.setInputVerifier(new LatitudeInputVerifier());
         longitudeLabel = new javax.swing.JLabel();
         longitudeFromField = new javax.swing.JTextField(EDIT_BOX_WIDTH);
-        longitudeFromField.setInputVerifier(new InputVerifier180());
+    
         longitudeToField = new javax.swing.JTextField(EDIT_BOX_WIDTH);
-        longitudeToField.setInputVerifier(new InputVerifier180());
-        simulationStartField = new javax.swing.JFormattedTextField(DATE_FORMAT);
-        simulationStartField.setColumns(20);
+       
+        simulationStartField = new javax.swing.JFormattedTextField(new SimpleDateFormat("mm/dd/yy"));
+        simulationStartField.setColumns(5);
         simulationStartField.setActionCommand(getName());
         simulationStartField.setEnabled(false);
-        simulationStartField.setInputVerifier(new DateInputVerifier());
         
         latitudeFromField.setEnabled(false);
         latitudeToField.setEnabled(false);
@@ -188,10 +209,9 @@ ActionListener, ChangeListener, Listener {
         longitudeToField.setEnabled(false);
         
        
-        simulationEndField = new javax.swing.JFormattedTextField(DATE_FORMAT);
-        simulationEndField.setColumns(20);
+        simulationEndField = new javax.swing.JFormattedTextField(new SimpleDateFormat("mm/dd/yy"));
+        simulationEndField.setColumns(5);
         simulationEndField.setEnabled(false);
-        simulationEndField.setInputVerifier(new DateInputVerifier());
         
         simulationEndField.setActionCommand(getName());
        
@@ -238,7 +258,7 @@ ActionListener, ChangeListener, Listener {
 
         simulationNameLabel.setText("Simulation name: ");
         
-        nameSpinner = new JComboBox();
+        nameSpinner = new JComboBox<String>();
                
        
         nameSpinner.setName("Name");
@@ -271,23 +291,19 @@ ActionListener, ChangeListener, Listener {
         Border valueBorder = BorderFactory.createTitledBorder("Matching Simulations ");
         namePFvaluePanel.setBorder(valueBorder);
         
-        //nameSpinner.setMaximumSize(new Dimension(EDIT_BOX_WIDTH, 2));
+        
         nameSpinner.setPreferredSize(new Dimension(250,25));
         nameSpinner.setLightWeightPopupEnabled(true);
-		//nameSpinner.setPopupVisible(true);
-		//nameSpinner.showPopup();
-        
+		
 
         namePFvaluePanel.add(simulationNameLabel);
         namePFvaluePanel.add(nameSpinner);
        
 
-        //nameSpinner.setMaximumSize(new Dimension(10, 1));
+        
         System.out.println("Combobox dimension: "+ nameSpinner.getSize());
       
        
-     
-        //namePFvaluePanel.setBorder(valueBorder);
         namePFPanel.add(namePFvaluePanel );
         
         
@@ -304,7 +320,7 @@ ActionListener, ChangeListener, Listener {
         PFPanel.setBorder(pfBorder);
         
         orbitalEccentricityField.setInputVerifier(new EccentricityInputVerifier());
-        axisTiltField.setInputVerifier(new InputVerifier180());
+        axisTiltField.setInputVerifier(new AxialTiltInputVerifier());
         axisTiltLabel.setText("Axial tilt");
         orbitalEccentricityLabel.setText("Orbital eccentricity");
         
@@ -353,7 +369,7 @@ ActionListener, ChangeListener, Listener {
         Border regionoptionBorder = BorderFactory.createTitledBorder("Physical bounds ");
        
         regionPanel.setBorder(regionoptionBorder);
-       // Border optborder = BorderFactory.createCompoundBorder(raisedBevel, loweredBevel);
+       
       
         regionPanel.setBorder(BorderFactory.createCompoundBorder(raisedBevel, regionPanel.getBorder()));
 
@@ -389,8 +405,8 @@ ActionListener, ChangeListener, Listener {
         longitudeFromField.setEnabled(false);
         longitudeToField.setEnabled(false);
         latitudeLabel.setText("Latitude: ");
-        latitudeFromField.setInputVerifier(new LatitudeInputVerifier());
-        latitudeToField.setInputVerifier(new LatitudeInputVerifier());
+        latitudeFromField.setInputVerifier(new LatInputVerifier());
+        latitudeToField.setInputVerifier(new LatInputVerifier());
         longitudeFromField.setInputVerifier(new LongInputVerifier());
         longitudeToField.setInputVerifier(new LongInputVerifier());
         locationPanel.add(latitudeLabel);
@@ -425,7 +441,7 @@ ActionListener, ChangeListener, Listener {
         firstPanel.add(regionPanel, BorderLayout.CENTER);
         
         //Options panel
-       // JPanel optionsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+       
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BorderLayout());
         bottomPanel.setBorder(compborder);
@@ -436,7 +452,6 @@ ActionListener, ChangeListener, Listener {
         
         Border optionsBorder = BorderFactory.createTitledBorder("Include results for");
         optionsPanel.setBorder(optionsBorder);
-       // Border optborder = BorderFactory.createCompoundBorder(raisedBevel, loweredBevel);
       
         optionsPanel.setBorder(BorderFactory.createCompoundBorder(raisedBevel, optionsPanel.getBorder()));
 
@@ -450,15 +465,15 @@ ActionListener, ChangeListener, Listener {
         
      
         
-        //optionsPanel.add(new JLabel("Include results for"));
+       
         optionsPanel.add(new JLabel(" "));
         JPanel optionlabelsPanel = new JPanel();
         optionlabelsPanel.setLayout(new BoxLayout(optionlabelsPanel, BoxLayout.PAGE_AXIS));
-        //optionlabelsPanel.setPreferredSize(new Dimension(WIDTH_EDITS, HEIGHT));
+        
         JPanel optionchkboxPanel = new JPanel();
         
         optionchkboxPanel.setLayout(new BoxLayout(optionchkboxPanel, BoxLayout.PAGE_AXIS));
-        //optionchkboxPanel.setPreferredSize(new Dimension(WIDTH_EDITS, HEIGHT));
+        
         optionlabelsPanel.add(minTempLabel);
         optionlabelsPanel.add(new JLabel("     "));
         optionlabelsPanel.add(regionMeanTempLabel);
@@ -496,12 +511,8 @@ ActionListener, ChangeListener, Listener {
         JPanel runresetPanel = new JPanel();
         runresetPanel.setLayout(new BoxLayout(runresetPanel, BoxLayout.LINE_AXIS));
         runresetPanel.setPreferredSize(new Dimension(WIDTH_EDITS+50, 150));
-        //optionsPanel.setPreferredSize(new Dimension(WIDTH_EDITS+50, HEIGHT));
         runresetPanel.setBorder(compborder);
        
-
-        //Border runPanelborder = BorderFactory.createCompoundBorder(raisedBevel, loweredBevel);
-        //runresetPanel.setBorder(runPanelborder);
 
         runQuery.setText("Run Query");
         runQuery.addActionListener(this);
@@ -531,17 +542,13 @@ ActionListener, ChangeListener, Listener {
         optionsPanel.add(optionlabelsPanel);
         optionsPanel.add(new JLabel("                 "));
         optionsPanel.add(optionchkboxPanel);
-        //optionsPanel.add(new JLabel("                 "));
-        //optionsPanel.add(runresetPanel);
-        
-        
         
         simulationEndField.addActionListener(this);
         
         bottomPanel.add(optionsPanel, BorderLayout.WEST);
         bottomPanel.add(runresetPanel, BorderLayout.CENTER);
         firstPanel.add(bottomPanel, BorderLayout.SOUTH);
-        //mainPanel.add(firstPanel, BorderLayout.WEST);
+        
         this.getContentPane().add(firstPanel);
         pack();
     }
@@ -554,6 +561,7 @@ ActionListener, ChangeListener, Listener {
     	this.getContentPane().setPreferredSize( new Dimension(1320, 620));
     	int EDIT_BOX_WIDTH = 4;
 		int LABEL_HEIGHT = 26;
+		int tempcnt=0;
 		
     	JPanel Panel = new JPanel();
     	//calculate number of rows in the output, use this determine preferred size.
@@ -561,14 +569,10 @@ ActionListener, ChangeListener, Listener {
         
     	//To make content scroll, these dimension should be set to (520, 100020)
 		Panel.setLayout(new BoxLayout(Panel, BoxLayout.PAGE_AXIS));
-		//Panel.setPreferredSize(new Dimension(520, 100020));
+		
 		
 		jtxtArea = new JTextArea();
-		jtxtArea.setLayout(new BoxLayout(jtxtArea, BoxLayout.PAGE_AXIS));
-		//jtxtArea.setPreferredSize(new Dimension(520, 2147483647));
-		//jtxtArea.setMaximumSize(new Dimension(2147483647, 2147483647));
 		
-		//jtxtArea.setAutoscrolls(true);
 	
 		 if(minTempCheckbox.isSelected())
 		 {
@@ -578,14 +582,13 @@ ActionListener, ChangeListener, Listener {
 		
 			 q1 = res.getMinTempCell();
 		
-	
 		
-		
-			 jtxtArea.add(minTempLabel);
-			 jtxtArea.add(new JLabel("Min Temperature: "+q1.getTemperature()+""));
-			 jtxtArea.add(new JLabel("Reading Time: "+q1.getSimulatedDate()+""));
-			 jtxtArea.add(new JLabel("Location(latitude/longitude): "+q1.getLatitude()+"/"+q1.getLongitude()));
-			 jtxtArea.add(new JLabel("****************"));
+			
+			 jtxtArea.setText("1.Minimum temperature for region: "+"\n" );
+			 jtxtArea.append("Min Temperature: "+q1.getTemperature()+"\n");
+			 jtxtArea.append("Reading Time: "+q1.getSimulatedDate()+"\n");
+			 jtxtArea.append("Location(latitude/longitude): "+q1.getLatitude()+"/"+q1.getLongitude()+"\n");
+			 jtxtArea.append("****************"+"\n");
 			 ht += 6;
 		
 		 }
@@ -596,11 +599,13 @@ ActionListener, ChangeListener, Listener {
 			 maxTempLabel = new javax.swing.JLabel("2. Maximum Temperature for region: ");
 		
 		
-			 jtxtArea.add(maxTempLabel);
-			 jtxtArea.add(new JLabel("Max Temperature: "+ q2.getTemperature()+""));
-			 jtxtArea.add(new JLabel("Reading Time:" + q2.getSimulatedDate()+""));
-			 jtxtArea.add(new javax.swing.JLabel("Location(latitude/longitude): "+ q2.getLatitude()+"/"+q2.getLongitude()));
-			 jtxtArea.add(new JLabel("****************"));
+			
+			 jtxtArea.append("2. Maximum Temperature for region: "+"\n" );
+			 jtxtArea.append("Max Temperature: "+ q2.getTemperature()+"\n" );
+			 jtxtArea.append("Reading Time:" + q2.getSimulatedDate()+"\n" );
+			 jtxtArea.append("Location(latitude/longitude): "+ q2.getLatitude()+"/"+q2.getLongitude()+"\n" );
+			 jtxtArea.append("****************"+"\n" );
+			 
 			 ht += 6;
 		 }
 		 if(meanTempRegionCheckbox.isSelected())
@@ -609,36 +614,44 @@ ActionListener, ChangeListener, Listener {
 		 	 regionMeanTempLabel = new javax.swing.JLabel("Mean Temperature over region: ");
 			 regionMeanTempLabel2 = new JLabel("Date, Temperature");
 		
-			 jtxtArea.add(regionMeanTempLabel);
-			 jtxtArea.add(regionMeanTempLabel2);
+			
+			 
+			 jtxtArea.append("Mean Temperature over region: "+"\n" );
+			 jtxtArea.append("Date, Temperature"+"\n" );
+			 
 		
 			 List<QueryCell> meanQcell1 = res.getMeanTempOverRegion();
 			 System.out.println("Mean temp over region query cell is empty?"+ meanQcell1.isEmpty());
 			 for(QueryCell qc1 : meanQcell1)
 			 {
-				 jtxtArea.add(new JLabel(qc1.getSimulatedDate()+"         " +qc1.getTemperature()));
+				 
+				 jtxtArea.append(qc1.getSimulatedDate()+"         " +qc1.getTemperature()+"\n");
 				 ht += 1;
 			 }
-			 jtxtArea.add(new JLabel("****************"));
+			
+			 jtxtArea.append("****************"+"\n");
 			 ht += 6;
 		}
 		if(meanTempTimeCheckbox.isSelected())
 		{
 			
-			timeMeanTempLabel = new javax.swing.JLabel("Mean Temperature during over time:");
+			timeMeanTempLabel = new javax.swing.JLabel("Mean Temperature over time:");
 			timeMeanTempLabel2 = new JLabel("Latitude/Longitude, Temperature");
 		
-			jtxtArea.add(timeMeanTempLabel);
-			jtxtArea.add(timeMeanTempLabel2);
+			
+			
+			jtxtArea.append("Mean Temperature during over time:"+"\n");
+			jtxtArea.append("Latitude/Longitude, Temperature"+"\n");
 		
 			List<QueryCell> meanQcell2 = res.getMeanTempOverTime();
 			for(QueryCell qc2 : meanQcell2)
 			{
-				jtxtArea.add(new JLabel(qc2.getLatitude()+"/"+qc2.getLongitude() + "    " + qc2.getTemperature()));
-				//jtxtArea.add(new JLabel("                                            "));
+				
+				jtxtArea.append(qc2.getLatitude()+"/"+qc2.getLongitude() + "    " + qc2.getTemperature()+"\n");
 				ht += 1;
 			}
-			jtxtArea.add(new JLabel("****************"));
+			
+			jtxtArea.append("****************"+"\n");
 			ht += 6;
 		}
 		if(tempsTimeRegionCheckbox.isSelected())
@@ -647,38 +660,52 @@ ActionListener, ChangeListener, Listener {
 			
 		
 			tempTimeRegionLabel = new javax.swing.JLabel("Grid Temperatures:");
-			jtxtArea.add(tempTimeRegionLabel);
-			jtxtArea.add(new JLabel("                                                                         "));
+					
+			jtxtArea.append("Grid Temperatures:"+"\n");
+			jtxtArea.append("                                                                         "+"\n");
 			//get data from each Grid
 		
 			List<QueryGrid> qryGrids = res.getQueryGrids();
 			int gridcount =0;
+			
 			for(QueryGrid qg : qryGrids)
 			{
 				gridcount++;
-				tempTimeRegionLabel1 = new javax.swing.JLabel("== Grid "+ gridcount+ " =="+ qg.getSimulatedDate());
-		
-				jtxtArea.add(tempTimeRegionLabel1);
-				jtxtArea.add(new JLabel("                                         "));
-				jtxtArea.add(new JLabel("Lat/Long,               Temperature"));
+				tempTimeRegionLabel1 = new javax.swing.JLabel("== Grid "+ gridcount+ " =="+ qg.getSimulatedDate()+"\n");
+				
+				jtxtArea.append("== Grid "+ gridcount+ " =="+ qg.getSimulatedDate()+"\n");
+				jtxtArea.append("                                         "+"\n");
+				jtxtArea.append("Lat/Long,               Temperature"+"\n");
 				List<QueryCell> qcells = qg.getQueryCells();
 				for (QueryCell qcs : qcells)
 				{
-					jtxtArea.add(new JLabel(qcs.getLatitude() + "/" + qcs.getLongitude() + "         " +qcs.getTemperature()+ " "));
-					//ht +=1;
+					
+					jtxtArea.append(qcs.getLatitude() + "/" + qcs.getLongitude() + "         " +qcs.getTemperature()+"\n");
+					
 				}
+				
 				ht += qryGrids.size()*qcells.size();
+			
 			}
+			
 			ht += 3;
 		
 		}
 		
-		System.out.println("Inside createOutputGui method, height : " + ht);	
-		if (ht > 2147483647)
-			jtxtArea.setPreferredSize(new Dimension(520, 2147483647));
-		else 
-			jtxtArea.setPreferredSize(new Dimension(520, ht+500));
-		 jtxtArea.setEnabled(false);
+		
+		if (ht < 2147483647){
+			Panel.setPreferredSize(new Dimension(520, ht+100));
+					
+			
+		}
+		else
+		{
+			Panel.setPreferredSize(new Dimension(520, 2147483647));
+			System.out.println("#of rows is more than max");
+			
+			
+		}
+		 jtxtArea.setEditable(false);
 		 Panel.add(jtxtArea);
 	     return Panel;
     	
@@ -715,6 +742,44 @@ ActionListener, ChangeListener, Listener {
 	    }
 	}
 	
+	public class AxialTiltInputVerifier extends InputVerifier{
+		@Override
+	    public boolean verify(JComponent input) {
+	        String text = ((JTextField) input).getText();
+	        try {
+	        	if (Double.parseDouble(text) >= -180 && Double.parseDouble(text) <= 180)
+	        		return true;
+	        	else {
+	        		JOptionPane.showMessageDialog(null, "Tilt must be between -180 and +180");
+	        		return false;
+	        	}
+	        } catch (NumberFormatException e) {
+	        	JOptionPane.showMessageDialog(null, "Tilt should be numeric value between -180 and +180");
+        		return false;
+	        }
+	    }
+	}
+	
+	public class LatInputVerifier extends InputVerifier {
+		@Override
+	    public boolean verify(JComponent input) {
+	        String latV = ((JTextField) input).getText();
+	        try {
+	        	if (Double.parseDouble(latV) >= -90 && Double.parseDouble(latV) <= 90)
+	        		return true;
+	        	else {
+	        		JOptionPane.showMessageDialog(null, "Latitude must be between -90 and +90");
+	        		return false;
+	        		}
+	        	} 
+	        catch (NumberFormatException e) {
+	        	JOptionPane.showMessageDialog(null, "Latitude should be numeric value between -90 and +90");
+        		return false;
+	        }
+        	
+	    }
+	}
+	
 	public class LongInputVerifier extends InputVerifier {
 		@Override
 	    public boolean verify(JComponent input) {
@@ -733,58 +798,9 @@ ActionListener, ChangeListener, Listener {
         	
 	    }
 	}
-    /**
-     * @param args the command line arguments
-     */
+   
 
-   // public static void main(String args[]) {
-    	public void launchNewQueryInterface() {    /* Set the Nimbus look and feel */
-
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code  (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the 
-
-default look and feel.
-         * For details see 
-
-http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-       try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : 
-
-javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(QueryInterfaceUI.class.getName
-
-()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(QueryInterfaceUI.class.getName
-
-()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(QueryInterfaceUI.class.getName
-
-()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(QueryInterfaceUI.class.getName
-
-()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new QueryInterfaceUI().setVisible(true);
-               
-                
-            }
-        });
-    }
+  
     
     //check if any of the  display results option checkboxes are selected
     public boolean optionsSelected()
@@ -796,111 +812,27 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
     	}
     	return selected;
     }
-    //Add output to JFrame
     
-    /*public void addOutputToFrame()
-    {
-    	JScrollPane outputScroller = new JScrollPane();
-    	JTextArea newoutput = new JTextArea();
-    	newoutput = createOutputGui();
-    				    
-    	//JViewport vw = outputScroller.getViewport();
-    	//outputScroller.getViewport().add(newoutput);
-        //System.out.println(outputScroller.getViewport().getExtentSize());
-
-    	this.getContentPane().setPreferredSize(new Dimension(1320, 620));
-    	this.getContentPane().add(newoutput, BorderLayout.EAST);
-    	this.pack();
-    	this.setVisible(true);
-    }*/
     //set simulation start and end time.
     
     public void setSimulationPeriod(String start, String end)
     {
+    	 SimpleDateFormat dtf = new SimpleDateFormat("dd/MMM/yyyy HH:mm:ss.SSS");
     	 try{
+    		 
     		 System.out.println("Sim start: " + simulationStartField.getText());
         	 System.out.println("Sim end: "+ simulationEndField.getText());
-	    	 simStart = DATE_FORMAT.parse(simulationStartField.getText());
-	    	 simEnd = DATE_FORMAT.parse(simulationEndField.getText());
-	    	 System.out.println("Sim start: " + simStart);
-	    	 System.out.println("Sim end: "+ simEnd);
+    	 simStart = dtf.parse(simulationStartField.getText());
+    	 simEnd = dtf.parse(simulationEndField.getText());
+    	 System.out.println("Sim start: " + simStart);
+    	 System.out.println("Sim end: "+ simEnd);
     	 }
     	 catch(Exception e)
     	 {
     		 System.out.println("Error parsing date time");
-    		 
     	 }
     }
-	
-	public class InputVerifier180 extends InputVerifier{
-		@Override
-	    public boolean verify(JComponent input) {
-	        String text = ((JTextField) input).getText();
-	        try {
-	        	if (Double.parseDouble(text) >= -180 && Double.parseDouble(text) <= 180)
-	        		return true;
-	        	else {
-	        		JOptionPane.showMessageDialog(null, "Tilt must be between -180 and +180");
-	        		return false;
-	        	}
-	        } catch (NumberFormatException e) {
-	        	JOptionPane.showMessageDialog(null, "Tilt should be numeric value between -180 and +180");
-        		return false;
-	        }
-	    }
-	}
-	
-	public class LatitudeInputVerifier extends InputVerifier{
-		@Override
-	    public boolean verify(JComponent input) {
-	        String text = ((JTextField) input).getText();
-	        try {
-	        	if (Double.parseDouble(text) >= -90 && Double.parseDouble(text) <= 90)
-	        		return true;
-	        	else {
-	        		JOptionPane.showMessageDialog(null, "Value must be between -90 and +90");
-	        		return false;
-	        	}
-	        } catch (NumberFormatException e) {
-	        	JOptionPane.showMessageDialog(null, "Value should be numeric value between -90 and +90");
-        		return false;
-	        }
-	    }
-	}
-	
-	public class DateInputVerifier extends InputVerifier {
-
-		@Override
-		public boolean verify(JComponent input) {
-	        String text = ((JTextField) input).getText();
-	    	 try{
-	    		Date testDate = DATE_FORMAT.parse(text);
-	    	 
-				Calendar calendar = Calendar.getInstance();
-				calendar.set(Calendar.HOUR_OF_DAY, 12);
-				calendar.set(Calendar.MINUTE, 00);
-				calendar.set(Calendar.SECOND, 00);
-				calendar.set(Calendar.MILLISECOND, 00);
-				calendar.set(Calendar.MONTH, Calendar.JANUARY);
-				calendar.set(Calendar.DAY_OF_MONTH, 4);
-				calendar.set(Calendar.YEAR, 2014);
-				Date minDate = calendar.getTime();
-				
-		    	 if(testDate.before(minDate)){
-	        		JOptionPane.showMessageDialog(null, "The start date must be greater than Jan 4, 2014 12:00");
-	        		return false;
-		    	 }
-	    	 return true;
-	    	 }
-	    	 catch(Exception e)
-	    	 {
-	        	JOptionPane.showMessageDialog(null, "The date must be in the format " + INPUT_DATE_FORMAT);
-        		return false;
-	    	 }
-		}
-
-	}
-	
+    
     @Override
 	public void actionPerformed(ActionEvent e) {
 		
@@ -1011,34 +943,31 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 		}
 		else if(command.equals("reset"))
 		{
-		
-			
+			//if output panel is there remove it
+			if(this.getContentPane().getComponentCount() == 2)
+			{
+			 this.getContentPane().remove(outputScroller);
+		     this.getContentPane().setPreferredSize(new Dimension(800, 620));
+			 this.pack();
+			}
 			//remove items from comboBox, clear Radio Buttons.
 			nameSpinner.removeAllItems();
 			enableOptions(false);
 			runQuery.setEnabled(false);
-			if(byNameButton.isSelected())
-			{
-				byNameButton.setSelected(false);
-			}
-			if(byPFButton.isSelected())
-			{
-				byPFButton.setSelected(false);
-			}
-			if(earthButton.isSelected())
-			{
-				earthButton.setSelected(false);
-			}
-			if(parametersButton.isSelected())
-			{
-				parametersButton.setSelected(false);
-			}
+			byNameButton.setSelected(false);
+			byPFButton.setSelected(false);
+			earthButton.setSelected(false);
+			parametersButton.setSelected(false);
+			qrybuttonGroup1.clearSelection();
+	        regionbuttonGroup.clearSelection();
 			setEnableAllUserOptions(false);
 			minTempCheckbox.setSelected(false);
 	        meanTempRegionCheckbox.setSelected(false);
 	        maxTempRegionCheckbox.setSelected(false);
 	        meanTempTimeCheckbox.setSelected(false);
 	        tempsTimeRegionCheckbox.setSelected(false);
+	       
+	       
 		}
 		else if(command.equals("filter"))
 		{
@@ -1081,11 +1010,15 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 			
 	        
 	        //get data from fields
+	        DateFormat df = new SimpleDateFormat("dd/MMM/yyyy HH:mm:ss.SSS"); 
             try
             {
             	System.out.println(simulationEndField.getText());
-    	        simStart = DATE_FORMAT.parse(simulationStartField.getText());
-    	        simEnd = DATE_FORMAT.parse(simulationEndField.getText());    	        
+    	        simStart = df.parse(simulationStartField.getText());
+    	        simEnd = df.parse(simulationEndField.getText());
+    	        simStart = new DateTime(2014, 01, 04, 12, 00).toDate();
+    	        simEnd = new DateTime(2014, 01, 15, 12, 00).toDate();
+    	        
             }
             catch(Exception pe)
             {
@@ -1135,20 +1068,11 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
 		}
     }
 	private void displayQueryResults() {
-		JScrollPane outputScroller = new JScrollPane();
+		outputScroller = new JScrollPane();
 		JPanel newoutput = createOutputGui();
 		newoutput.setEnabled(false);
 		
-		//System.out.println("number of rows: " + newoutput.getText());
-		if (ht > 2147483647)
-			outputScroller.setPreferredSize(new Dimension(520, 2147483647));
-		else 
-			outputScroller.setPreferredSize(new Dimension(520, ht));
 		outputScroller.getViewport().add(newoutput);
-		/*JPanel oPanel = new JPanel();
-		System.out.println("preferred size is : " + newoutput.getText());
-		oPanel.setPreferredSize(new Dimension(520, newoutput.getRows()));
-		oPanel.add(outputScroller);*/
 		this.getContentPane().add(outputScroller, BorderLayout.EAST);
 		this.pack();
 		this.setVisible(true);
@@ -1234,11 +1158,8 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
     private javax.swing.JButton reset;
     private javax.swing.JButton animate;
     private javax.swing.JFormattedTextField simulationEndField;
-    //private javax.swing.JTextField simulationNameField;
     private javax.swing.JLabel simulationNameLabel;
-    //private javax.swing.JLabel simulationPeriodLabel;
     private javax.swing.JFormattedTextField simulationStartField;
-    //private javax.swing.JLabel tableOptionsLabel;
     private javax.swing.JLabel tempTimeRegionLabel;
     private javax.swing.JCheckBox tempsTimeRegionCheckbox;
     private javax.swing.JLabel timeMeanTempLabel;
@@ -1248,12 +1169,13 @@ javax.swing.UIManager.getInstalledLookAndFeels()) {
     private ButtonGroup regionbuttonGroup;
     private JRadioButton earthButton;
     private JRadioButton parametersButton;
-    private JComboBox nameSpinner;
-    private JTable outputTable;
+    private JComboBox<String> nameSpinner;
     private JLabel spacer, latStart, latEnd, longStart, longEnd;
     private JLabel minTempLabel1,readingTimeLabel,locationLabel,maxTempLabel1,timeMeanTempLabel2,regionMeanTempLabel2,tempTimeRegionLabel1;
     private JPanel namePFvaluePanel;
     private int ht;
+    private JScrollPane outputScroller;
+   
 
 
 
