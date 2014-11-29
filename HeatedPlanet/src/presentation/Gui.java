@@ -813,7 +813,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		eccentricity.setEnabled(bEnable);		
 	}
 
-	public void updateClock( double laitude, double longitude, double distFromSun) {
+	public void updateClock( double latitude, double longitude, double distFromSun, double[] coordinates) {
 		try {
 			//set the time
 			simTimeCal.add(Calendar.MINUTE, stepEdit.getValue());
@@ -821,7 +821,11 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 					.getTime()));
 			
 			orbitalPos.setText("Dist from Sun = "+String.valueOf(distFromSun)+ " million km");
-			rotationalPosResult.setText("Lat: "+ String.valueOf(laitude) + " Long: "+ String.valueOf(longitude));
+			rotationalPosResult.setText("Lat: "+ String.valueOf(latitude) + " Long: "+ String.valueOf(longitude));
+			
+			if (orbitUI != null) {
+				orbitUI.updatePosition(coordinates);
+			}
 			
 		} catch (Exception e2) {
 			System.out.print("Updation failed!!!");
