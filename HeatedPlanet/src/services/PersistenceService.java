@@ -164,41 +164,10 @@ public class PersistenceService {
 		return results;
 	}
 
-	public void deleteSimulation(String simulationName){
+	public void deleteSimulation(Simulation simulation) {
 		em.getTransaction().begin();
-		
-		final String deleteSimulationSQL = "DELETE FROM Simulation s WHERE s.name = :name";
-		final String deleteGridSQL = "DELETE FROM EarthGrid g where g.simulation.id = :simulationId";
-		final String deleteCellsSQL = "DELETE FROM EarthCell c where c.grid.id = :gridId";
-		//final String deleteCellSQL = "DELETE FROM EarthCell c where c.id = :id";
-		
-		Simulation simulation = findBySimulationName(simulationName);
-		
-		for(EarthGrid grid : simulation.getTimeStepList()){
-//			//Delete the cells
-			
-			Query deleteCellsQuery = em.createQuery(deleteCellsSQL);
-			deleteCellsQuery.setParameter("gridId", grid.getId());
-			deleteCellsQuery.executeUpdate();
-//			for(EarthCell cell : grid.getNodeList()){
-//				em.remove(cell);
-//				Query deleteCellsQuery = em.createQuery(deleteCellSQL);
-//				deleteCellsQuery.setParameter("id", cell.getId());
-//				deleteCellsQuery.executeUpdate();
-//			}
-			
-			//Delete the grid
-			//em.remove(grid);
-			Query deleteGridQuery = em.createQuery(deleteGridSQL);
-			deleteGridQuery.setParameter("simulationId", simulation.getId());
-			deleteGridQuery.executeUpdate();
-		}
-				
-		//em.remove(simulation);
-		Query deleteSimulationQuery = em.createQuery(deleteSimulationSQL);
-		deleteSimulationQuery.setParameter("name", simulationName);
-		deleteSimulationQuery.executeUpdate();
-		
+		em.refresh(simulation);
+		em.remove(simulation);
 		em.getTransaction().commit();
 	}
 }
