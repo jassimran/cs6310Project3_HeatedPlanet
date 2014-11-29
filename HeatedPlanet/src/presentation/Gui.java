@@ -679,13 +679,26 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 			//enable the restart button
 			stopButton.setEnabled(true);
 			// change pause button legend
-			pauseButton.setText((control.isSimulationRunning())? ACTION_RESUME : ACTION_PAUSE);
+			pauseButton.setText(ACTION_RESUME);
+			// change pause button action
+			pauseButton.setActionCommand(ACTION_RESUME);
 			// pause simulation
 			pauseSimulation();
+		} else if (command.equals(ACTION_RESUME)) {
+			//enable the restart button
+			stopButton.setEnabled(false);
+			// change pause button legend
+			pauseButton.setText(ACTION_PAUSE);
+			// change pause button action
+			pauseButton.setActionCommand(ACTION_PAUSE);
+			// resume simulation
+			resumeSimulation();
 		} else if (command.equals(ACTION_STOP)) {
 			//enable all controls
 			this.setEnableAllUserOptions(true);
-			// disable pause button
+			pauseButton.setText(ACTION_PAUSE);
+			pauseButton.setActionCommand(ACTION_PAUSE);
+			// reset pause button
 			pauseButton.setEnabled(false);
 			//disable the stop button
 			stopButton.setEnabled(false);
@@ -787,7 +800,18 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		if(control.isSimulationRunning()) {
 			control.pauseSimulation();
 		} else {
+			throw new RuntimeException("Paused a not running simulation");
+		}
+	}
+	
+	/**
+	 * Resumes a paused simulation.
+	 */
+	private void resumeSimulation() {
+		if(!control.isSimulationRunning()) {
 			control.resumeSimulation();
+		} else {
+			throw new RuntimeException("Resume a running simulation");
 		}
 	}
 	

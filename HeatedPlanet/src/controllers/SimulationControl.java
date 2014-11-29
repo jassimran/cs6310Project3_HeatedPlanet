@@ -7,6 +7,8 @@ import java.util.List;
 import javax.swing.SwingUtilities;
 
 import presentation.earth.TemperatureGrid;
+import presentation.query.QueryResult;
+import presentation.query.SimulationQuery;
 import services.AccuracyService;
 import services.PersistenceService;
 import simulation.SimulationSettings;
@@ -325,13 +327,32 @@ public class SimulationControl extends AbstractControl implements Runnable {
 
 	@Override
 	public void handlePauseSimulationEvent() {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void handleResumeSimulationEvent() {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public QueryResult getQueryResultBySimulationName(String simulationName) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public QueryResult computeQueryResults(SimulationQuery simulationQuery) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<String> getSimulationListByUserInputs(double axialTilt,
+			double orbitalEccentricity, Date endingDate) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<String> getSimulationList() {
+		throw new UnsupportedOperationException();
 	}
 }

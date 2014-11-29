@@ -9,10 +9,12 @@ import presentation.query.QueryResult;
 import presentation.query.QueryResultFactory;
 import presentation.query.SimulationQuery;
 import services.AccuracyService;
+import services.InterpolationService;
 import services.PersistenceService;
 import services.SimulationService;
 import simulation.SimulationSettings;
 import simulation.SimulationSettingsFactory;
+import domain.EarthGrid;
 import domain.Simulation;
 import events.EventType;
 import events.Listener;
@@ -23,6 +25,7 @@ public class QueryControl extends AbstractControl implements Runnable {
 	private PersistenceService persistenceService;
 	private AccuracyService accuracyService;
 	private SimulationService simulationService;
+	private InterpolationService interpolationService;
 	
 	private List<Listener> listeners;
 	
@@ -39,16 +42,7 @@ public class QueryControl extends AbstractControl implements Runnable {
 		persistenceService = PersistenceService.getInstance();
 		accuracyService = AccuracyService.getInstance();
 		simulationService = SimulationService.getInstance();
-	}
-	
-	
-	public List<String> getSimulationList(){
-		List<String> simulationNames = new ArrayList<String>();
-		List<Simulation> simulations = persistenceService.findAllSimulations();
-		for(Simulation simulation : simulations){
-			simulationNames.add(simulation.getName());
-		}
-		return simulationNames;
+		interpolationService = InterpolationService.getInstance();
 	}
 	
 	/**
@@ -58,7 +52,8 @@ public class QueryControl extends AbstractControl implements Runnable {
 	 * @param endingDate the requested ending date
 	 * @return the matching simulation names based on the provided user inputs
 	 */
-	public List<String> getSimulationListByUserInputs(double axialTilt, double orbitalEccentricity, Date endingDate){
+	@Override
+	public List<String> getSimulationListByUserInputs(double axialTilt, double orbitalEccentricity, Date endingDate) {
 		List<String> simulationNames = new ArrayList<String>();
 		List<Simulation> simulations = persistenceService.findSimulationsByUserInputs(axialTilt, orbitalEccentricity, endingDate);
 		for(Simulation simulation : simulations){
@@ -76,6 +71,16 @@ public class QueryControl extends AbstractControl implements Runnable {
 	}
 	
 	/**
+	 * Performs geographic and temporal interpolation on the given simulation.
+	 */
+	private void interpolate(Simulation simulation) {
+		for (EarthGrid currentGrid : simulation.getTimeStepList()) {
+			interpolationService.performGeographicInterpolation(currentGrid);
+		}
+		interpolationService.performTemporalInterpolation(simulation);		
+	}
+	
+	/**
 	 * Determines if a simulation name has already been used
 	 * @param simulationName the simulation name to test
 	 * @return True, if the simulation name is not unique. Otherwise, false.
@@ -84,14 +89,39 @@ public class QueryControl extends AbstractControl implements Runnable {
 		Simulation simulation = persistenceService.findBySimulationName(simulationName);
 		return simulation != null;
 	}
+	
+	/**
+	 * @return a list with the names of all the persisted simulations
+	 */
+	@Override
+	public List<String> getSimulationList() {
+		List<String> simulationNames = new ArrayList<String>();
+		List<Simulation> simulations = PersistenceService.getInstance().findAllSimulations();
+		for(Simulation simulation : simulations){
+			simulationNames.add(simulation.getName());
+		}
+		return simulationNames;
+	}
 
-	public QueryResult getQueryResultBySimulationName(String simulationName){
+	/**
+	 * @return a QueryResult object based on the given simulation name
+	 */
+	@Override
+	public QueryResult getQueryResultBySimulationName(String simulationName) {
+		// find simulation
 		Simulation selectedSimulation = persistenceService.findBySimulationName(simulationName);
 		
-		// TODO Determine if we need to interpolate
+		// check precondition
+		if(selectedSimulation == null) {
+			throw new RuntimeException("Precondition not met: searched by a non-existent simulation");
+		}
+		
+		// interpolate
+		interpolate(selectedSimulation);
+		
+		// build query result
 		return QueryResultFactory.buildQueryResult(selectedSimulation);
 	}
-	
 	
 	/**
 	 * Computes the query results for the provided simulation based on the limitations provided
@@ -104,35 +134,25 @@ public class QueryControl extends AbstractControl implements Runnable {
 	 * @param endLong the ending longitude that the user has requested
 	 * @return the query results that need to be displayed to the user
 	 */
+	@Override
 	public QueryResult computeQueryResults(SimulationQuery simulationQuery) {
-
+		// search for simulation
 		Simulation selectedSimulation = persistenceService.findBySimulationName(simulationQuery.getSimulationName());
 		
+		// if simulation does not exist, notify
 		if(selectedSimulation == null){			
 			return null;
 		}
 		
+		// interpolate
+		interpolate(selectedSimulation);
 
-//		// TODO: Perform geographic interpolation
-//		for (EarthGrid currentGrid : selectedSimulation.getTimeStepList()) {
-//			EarthGrid geoInterpolatedSimulation = interpolationService
-//					.performGeographicInterpolation(selectedSimulation,
-//							currentGrid);
-//			// TODO: replace the grid in the list?
-//		}
-//
-//		// TODO: Perform temporal interpolation
-//		List<EarthGrid> temporalInterpolatedGrids = interpolationService
-//				.performTemporalInterpolation(selectedSimulation,
-//						selectedSimulation.getTimeStepList());
-//		selectedSimulation.setTimeStepList(temporalInterpolatedGrids);
-
+		// build query result
 		return QueryResultFactory.buildQueryResult(selectedSimulation, simulationQuery);
 
 	}
-	
 
-	public String generateSimulationName(SimulationSettings settings){
+	public String generateSimulationName(SimulationSettings settings) {
 		
 		String retVal = null;
 		

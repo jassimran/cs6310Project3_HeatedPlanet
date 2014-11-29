@@ -1,27 +1,34 @@
 package services;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import domain.EarthCell;
+import domain.EarthGrid;
+import domain.Simulation;
+import app.conf.BootStrap;
 
 public class SimulationServiceTest {
 
 	// service under test
-	SimulationService simulationService;
+	SimulationService simulationService  = SimulationService.getInstance();
 	
-	@Before
-	public void setUp() throws Exception {
-		simulationService = SimulationService.getInstance();
+	@BeforeClass
+	public static void setupBeforeClass() {
+		BootStrap.init();
 	}
-
-	@After
-	public void tearDown() throws Exception {
+	
+	@AfterClass
+	public static void tearDownAfterClass() {
+		BootStrap.destroy();
 	}
 
 	@Test
@@ -75,4 +82,20 @@ public class SimulationServiceTest {
 		// then:
 		assertEquals(2, simulationMonths);
 	}
+
+	@Test
+	public void testGetNeighbors() {
+		// given:
+		int radiusOfInterest = 5;
+		Simulation simulation = PersistenceService.getInstance().findBySimulationName("BootStrap Simulation");
+		EarthGrid earthGrid = simulation.getTimeStepList().get(186);
+		EarthCell earthCell = simulationService.getEarthCell(earthGrid.getNodeList(), 5, 5);
+		
+		// when:
+		List<EarthCell> neighbors = simulationService.getNeighbors(earthCell, radiusOfInterest);
+		
+		// then:
+		assertEquals(120, neighbors.size());
+	}
+	
 }

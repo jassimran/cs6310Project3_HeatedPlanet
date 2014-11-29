@@ -1,6 +1,5 @@
 package services;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -8,10 +7,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.ParameterExpression;
-import javax.persistence.criteria.Root;
 
 import persistence.EntityManagerFactory;
 import presentation.earth.TemperatureGrid;
@@ -39,7 +34,7 @@ public class PersistenceService {
 	private PersistenceService() {
 		// TODO Auto-generated constructor stub
 	}
-
+	
 	public static synchronized PersistenceService getInstance() {
 		if (serviceInstance == null) {
 			serviceInstance = new PersistenceService();
@@ -102,6 +97,7 @@ public class PersistenceService {
 										// persist
 
 			// create EarthCells
+			//List<EarthCell> cells = new ArrayList<EarthCell>();
 			for (int y = 0; y < temperatureGrid.getRows(); y++) {
 				for (int x = 0; x < temperatureGrid.getCols(); x++) {
 					EarthCell earthCell = new EarthCell();
@@ -117,7 +113,9 @@ public class PersistenceService {
 					}
 				}
 			}
+			em.refresh(earthGrid);
 		}
+		
 		em.refresh(simulation);
 
 		// commit transaction
