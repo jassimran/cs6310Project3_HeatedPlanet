@@ -11,13 +11,13 @@ import buffers.BufferImplementation;
 import events.EventType;
 import events.Listener;
 
-public class MasterControl extends AbstractControl implements Listener {
-	
-	private List<Listener> listeners;
+public class MasterControl extends AbstractControl {
 	
 	// used services
 	private SimulationService simulationService;
 	
+	private List<Listener> listeners;
+		
 	public MasterControl() {
 		super();
 		
@@ -25,7 +25,7 @@ public class MasterControl extends AbstractControl implements Listener {
 		
 		simulationControl = null;
 		presentationControl = null;
-		
+		// get services reference
 		simulationService = SimulationService.getInstance();
 	}
 
@@ -112,7 +112,7 @@ public class MasterControl extends AbstractControl implements Listener {
 		
 		// calculate simulation length (in terms of simulation steps to produce)
 		synchronized (abstractLock) {
-			simulationLength = simulationService.calculateSimulaitonLenght(simulationSettings.getSimulationLength(), simulationSettings.getSimulationTimeStep());
+			simulationLength = simulationService.calculateSimulationLength(simulationSettings.getSimulationLength(), simulationSettings.getSimulationTimeStep());
 		}
 		
 		// reset simulation progress

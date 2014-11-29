@@ -36,19 +36,48 @@ public class TemperatureColorPicker {
                 int r = 0;
                 float temp = (float)temperature;
                 
-                final float TEMP_MAX = (float)291.0; 	// max registered temperature 330.928 K
-                final float TEMP_MIN = (float)285.0; 	// min registered temperature 185.372 K
+                final float TEMP_BLUE_MIN = (float)276; // 0 degrees celsius
+                final float TEMP_BLUE_MAX = (float)279; 	// 38F  min registered temperature 185.372 K
+                //final float TEMP_GREEN_MIN = (float)284.5;
+                final float TEMP_RED_MIN = (float)293;
+                final float TEMP_RED_MAX = (float)299; 	// max registered temperature 330.928 K
                 
-                if(temp <= TEMP_MIN) {
-                        b = 255;
-                } else if(temp >= TEMP_MAX) {
-                        r = 255;
-                        g = 0;
-                        b = 0;
-                } else {
-                        g = Math.round ((temp - TEMP_MIN) / (TEMP_MAX - TEMP_MIN) * 255);
+                
+                if(temp <= TEMP_BLUE_MIN) { 
+                	// Pure Blue
+                    b = 255;
                 }
-                
+                else if(temp >= TEMP_RED_MAX) { 
+                	// Pure Red
+                    r = 255;
+                }  
+                else if (temp < TEMP_BLUE_MAX){ 
+                	// Shade of BLUE
+                	double proportion = (temp - TEMP_BLUE_MIN) / (TEMP_BLUE_MAX - TEMP_BLUE_MIN);
+                	b = (int) (35 + (220 * proportion));
+                }
+                else if (temp > TEMP_RED_MIN){ 
+                	//Shade of RED
+                	double proportion = (temp - TEMP_RED_MIN) / (TEMP_RED_MAX - TEMP_RED_MIN);
+                	r = (int) (35 + (220 * proportion));
+                }
+                else { 
+                	// Shade of Green
+                    double proportion = (temp - TEMP_BLUE_MAX) / (TEMP_RED_MIN - TEMP_BLUE_MAX);
+                    g = (int) (35 + (220 * proportion));
+                }
+                if(r > 255)
+                	r = 255;
+                if(r < 0)
+                	r = 0;
+                if(g > 255)
+                	g = 255;
+            	if(g < 0)
+            		g = 0;
+            	if(b > 255)
+            		b = 255;
+            	if(b < 0)
+            		b = 0;
                 return new Color(r, g, b);
         }
 

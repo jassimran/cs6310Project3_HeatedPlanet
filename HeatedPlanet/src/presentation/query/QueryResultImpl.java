@@ -1,11 +1,9 @@
 package presentation.query;
 
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import domain.EarthCell;
 import domain.EarthGrid;
 import domain.Simulation;
@@ -24,11 +22,9 @@ public class QueryResultImpl implements QueryResult {
 		initialize(simulation);
 	}
 
-	public QueryResultImpl(Simulation simulation, Date startDate, Date endDate,
-			double startLat, double endLat, double startLong, double endLong) {
+	public QueryResultImpl(Simulation simulation, SimulationQuery simulationQuery) {
 
-		simulation.setTimeStepList(filterGrids(simulation, startDate, endDate,
-				startLat, endLat, startLong, endLong));
+		simulation.setTimeStepList(filterGrids(simulation, simulationQuery));
 		initialize(simulation);
 	}
 
@@ -109,6 +105,8 @@ public class QueryResultImpl implements QueryResult {
 						newCell.setRow(row);
 						newCell.setColumn(column);
 						newCell.setTemperature(meanTemp);
+						newCell.setLatitude(cell.getLatitude());
+						newCell.setLongitude(cell.getLongitude());
 						resultCells.add(newCell);
 					}
 				}
@@ -178,6 +176,8 @@ public class QueryResultImpl implements QueryResult {
 	}
 
 	private QueryCell convertEarthCellToQueryCell(EarthCell currentCell) {
+		if(currentCell == null)
+			throw new RuntimeException("The current cell is null");
 		Simulation simulation = currentCell.getGrid().getSimulation();
 		double cellLat = calculateLatitude(simulation.getGridSpacing(),
 				simulation.getNumberOfRows(), currentCell.getRow());
@@ -196,9 +196,7 @@ public class QueryResultImpl implements QueryResult {
 		return queryCell;
 	}
 
-	private List<EarthGrid> filterGrids(Simulation simulation, Date startDate,
-			Date endDate, double startLat, double endLat, double startLong,
-			double endLong) {
+	private List<EarthGrid> filterGrids(Simulation simulation, SimulationQuery query) {
 
 		// Simulation selectedSimulation =
 		// persistenceService.findBySimulationName(simulationName);
@@ -207,13 +205,13 @@ public class QueryResultImpl implements QueryResult {
 		// Filter the time steps to only include those we are interested in
 		// examining
 		for (EarthGrid timeStep : simulation.getTimeStepList()) {
-			if ((timeStep.getSimulatedDate().equals(startDate) || timeStep
-					.getSimulatedDate().after(startDate))
-					&& (timeStep.getSimulatedDate().equals(endDate) || timeStep
-							.getSimulatedDate().before(endDate))) {
+			if ((timeStep.getSimulatedDate().equals(query.getStartDate()) || timeStep
+					.getSimulatedDate().after(query.getStartDate()))
+					&& (timeStep.getSimulatedDate().equals(query.getEndDate()) || timeStep
+							.getSimulatedDate().before(query.getEndDate()))) {
 
 				List<EarthCell> matchingCells = filterCells(simulation,
-						timeStep, startLat, endLat, startLong, endLong);
+						timeStep, query);
 
 				timeStep.setNodeList(matchingCells);
 
@@ -224,12 +222,12 @@ public class QueryResultImpl implements QueryResult {
 	}
 
 	private List<EarthCell> filterCells(Simulation simulation,
-			EarthGrid timeStep, double startLat, double endLat,
-			double startLong, double endLong) {
+			EarthGrid timeStep, SimulationQuery query) {
 
 		List<EarthCell> matchingCells = new ArrayList<EarthCell>();
 		// if all lat/long params are 0 use the whole planet
-		if (startLat == 0 && endLat == 0 && startLong == 0 && endLong == 0)
+		if (query.getStartLat() == 0 && query.getEndLat() == 0 
+				&& query.getStartLong() == 0 && query.getEndLong() == 0)
 			matchingCells = timeStep.getNodeList();
 		else {
 			for (EarthCell currentCell : timeStep.getNodeList()) {
@@ -242,22 +240,22 @@ public class QueryResultImpl implements QueryResult {
 						currentCell.getColumn());
 
 				boolean latMatch = false;
-				if (startLat > 0 && endLat < 0) {
-					if ((cellLat >= startLat && cellLat <= 180)
-							|| cellLat >= -180 && cellLat <= endLat) {
+				if (query.getStartLat() > 0 && query.getEndLat() < 0) {
+					if ((cellLat >= query.getStartLat() && cellLat <= 180)
+							|| cellLat >= -180 && cellLat <= query.getEndLat()) {
 						latMatch = true;
 					}
-				} else if (cellLat >= startLat && cellLat <= endLat) {
+				} else if (cellLat >= query.getStartLat() && cellLat <= query.getEndLat()) {
 					latMatch = true;
 				}
 
 				boolean longMatch = false;
-				if (startLong > 0 && endLong < 0) {
-					if ((cellLong >= startLong && cellLong <= 90)
-							|| cellLong >= -90 && cellLong <= endLong) {
+				if (query.getStartLong() > 0 && query.getEndLong() < 0) {
+					if ((cellLong >= query.getStartLong() && cellLong <= 90)
+							|| cellLong >= -90 && cellLong <= query.getEndLong()) {
 						longMatch = true;
 					}
-				} else if (cellLong >= startLong && cellLong <= endLong) {
+				} else if (cellLong >= query.getStartLong() && cellLong <= query.getEndLong()) {
 					longMatch = true;
 				}
 

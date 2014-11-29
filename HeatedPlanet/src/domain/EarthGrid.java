@@ -14,6 +14,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -54,7 +55,7 @@ public class EarthGrid implements Serializable {
     @JoinColumn(name = "simulation", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Simulation simulation;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "grid")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "grid", fetch = FetchType.LAZY)
     private List<EarthCell> nodeList;
 
     public EarthGrid() {

@@ -11,6 +11,9 @@ import domain.EarthGrid;
 import domain.Simulation;
 
 public class InterpolationService {
+	
+	private static final int RADIUS_OF_INTEREST = 3;
+	
 	// singleton instance
 	private static InterpolationService serviceInstance;
 	
@@ -65,6 +68,7 @@ public class InterpolationService {
 			newCell.setColumn(cell1.getColumn());
 			double temp = (cell1.getTemperature()+cell2.getTemperature())/2;
 			newCell.setTemperature(temp);
+			newCell.setGrid(newGrid);
 			earthCells.add(newCell);
 		}
 		// Set cells in new Grid
@@ -78,7 +82,7 @@ public class InterpolationService {
 	 * @param simulation the simulation to interpolated
 	 * @return the simulation in full-temporal resolution
 	 */
-	public List<EarthGrid> performTemporalInterpolation(Simulation simulation){
+	public void performTemporalInterpolation(Simulation simulation) {
 		// get grid list
 		List<EarthGrid> list = simulation.getTimeStepList();
 		
@@ -89,7 +93,7 @@ public class InterpolationService {
 		Collections.sort(list, comp);
 		
 		// calculate the number of grids in full resolution
-		int totalGrids = simulationService.calculateSimulaitonLenght(simulation.getLength(), simulation.getTimeStep());
+		int totalGrids = simulationService.calculateSimulationLength(simulation.getLength(), simulation.getTimeStep());
 		
 		// calculate current gap size
 		int gapSize = accuracyService.calculateGapSize(totalGrids, simulation.getTemporalAccuracy());
@@ -101,7 +105,8 @@ public class InterpolationService {
 				EarthGrid grid1 = list.get(i);
 				EarthGrid grid2 = list.get(i+1);
 				if(grid1.getIndex() < grid2.getIndex()-1) {
-					EarthGrid newGrid = interpolate(grid1, grid2, simulation.getTimeStep());;
+					EarthGrid newGrid = interpolate(grid1, grid2, simulation.getTimeStep());
+					newGrid.setSimulation(simulation);
 					newGrids.add(newGrid);	
 				}		
 			}
@@ -109,7 +114,7 @@ public class InterpolationService {
 			Collections.sort(list, comp);
 		}
 		
-		return list;
+		simulation.setTimeStepList(list);
 	}
 	
 	private class EarthGridComparator implements Comparator<EarthGrid>{
@@ -122,5 +127,47 @@ public class InterpolationService {
 			return index1.compareTo(index2);
 		}
 		
+	}
+
+	public void performGeographicInterpolation(EarthGrid earthGrid) {
+		// get simulation & cells list
+		Simulation simulation = earthGrid.getSimulation();
+		List<EarthCell> earthCells = earthGrid.getNodeList();
+		
+		// calculate total cells
+		int totalCells = simulation.getNumberOfRows() * simulation.getNumberOfColumns();
+		
+		// calculate values for cells not present
+		while( earthCells.size() < totalCells) {
+			for(int y = 0; y < simulation.getNumberOfRows(); y++) {
+				for(int x = 0; x < simulation.getNumberOfColumns(); x++) {
+					EarthCell currentCell = getEarthCell(earthCells, x, y);
+					if(currentCell == null){
+						EarthCell earthCell = new EarthCell();
+						earthCell.setColumn(x);
+						earthCell.setRow(y);
+						earthCell.setGrid(earthGrid);
+						
+						// get neighbors within area of interest
+						List<EarthCell> neighbors = simulationService.getNeighbors(earthCell, RADIUS_OF_INTEREST);
+						
+						// get average temperature
+						double temp = simulationService.calculateAverageTemperature(neighbors);
+						
+						earthCell.setTemperature(temp);
+						earthCell.setGrid(earthGrid);
+						earthCells.add(earthCell);
+					}
+				}
+			}
+		}
+	}
+	
+	private EarthCell getEarthCell(List<EarthCell> nodeList, int x, int y) {
+		for(EarthCell cell : nodeList){
+			if(cell.getRow() == y && cell.getColumn() == x)
+				return cell;
+		}
+		return null;
 	}
 }

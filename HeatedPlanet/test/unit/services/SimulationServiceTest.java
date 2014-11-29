@@ -1,36 +1,101 @@
 package services;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import org.junit.After;
-import org.junit.Before;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import domain.EarthCell;
+import domain.EarthGrid;
+import domain.Simulation;
+import app.conf.BootStrap;
 
 public class SimulationServiceTest {
 
 	// service under test
-	SimulationService simulationService;
+	SimulationService simulationService  = SimulationService.getInstance();
 	
-	@Before
-	public void setUp() throws Exception {
-		simulationService = SimulationService.getInstance();
+	@BeforeClass
+	public static void setupBeforeClass() {
+		BootStrap.init();
 	}
-
-	@After
-	public void tearDown() throws Exception {
+	
+	@AfterClass
+	public static void tearDownAfterClass() {
+		BootStrap.destroy();
 	}
 
 	@Test
-	public void testCalculateSimulaitonLenght() {
+	public void testCalculateSimulationLength1() {
 		// given:
 		int months = 1;
 		int timeStep = 1440; // in minutes
 		
 		// when:
-		int simulationLength = simulationService.calculateSimulaitonLenght(months, timeStep);
+		int simulationLength = simulationService.calculateSimulationLength(months, timeStep);
 		
 		// then:
 		assertEquals(31, simulationLength);
 	}
+	
+	@Test
+	public void testCalculateSimulationLength2() {
+		// given:
+		int months = 2;
+		int timeStep = 1440; // in minutes
+		
+		// when:
+		int simulationLength = simulationService.calculateSimulationLength(months, timeStep);
+		
+		// then:
+		assertEquals(31+28, simulationLength);
+	}
 
+	@Test
+	public void testCalculateSimulationMonths1() throws ParseException {
+		// given:		
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		Date endingDate = sdf.parse("01/15/2014");
+		
+		// when:
+		int simulationMonths = simulationService.calculateSimulationMonths(endingDate);
+		
+		// then:
+		assertEquals(1, simulationMonths);
+	}
+	
+	@Test
+	public void testCalculateSimulationMonths2() throws ParseException {
+		// given:
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		Date endingDate = sdf.parse("02/15/2014");
+		
+		// when:
+		int simulationMonths = simulationService.calculateSimulationMonths(endingDate);
+		
+		// then:
+		assertEquals(2, simulationMonths);
+	}
+
+	@Test
+	public void testGetNeighbors() {
+		// given:
+		int radiusOfInterest = 5;
+		Simulation simulation = PersistenceService.getInstance().findBySimulationName("BootStrap Simulation");
+		EarthGrid earthGrid = simulation.getTimeStepList().get(186);
+		EarthCell earthCell = simulationService.getEarthCell(earthGrid.getNodeList(), 5, 5);
+		
+		// when:
+		List<EarthCell> neighbors = simulationService.getNeighbors(earthCell, radiusOfInterest);
+		
+		// then:
+		assertEquals(120, neighbors.size());
+	}
+	
 }

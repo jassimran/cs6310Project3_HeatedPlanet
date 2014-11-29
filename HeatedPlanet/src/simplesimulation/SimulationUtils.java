@@ -1,6 +1,13 @@
 package simplesimulation;
 
+
 import presentation.earth.TemperatureGrid;
+
+
+/**
+ * Class that includes the Physics model to adapt eccentricity and orbit tilt
+ * (obliquity).
+ */
 
 public class SimulationUtils {
 
@@ -264,9 +271,9 @@ public class SimulationUtils {
 	}
 
 	/**
-	 * Equinoxes occur when the true anomaly of the planetâs position equals its
-	 * Argument of Periapsis. That is when w = Vt (omega = Vtau). Solving this
-	 * for T (tau) gives the time of the equinox.
+	 * Equinoxes occur when the true anomaly of the planetâs position
+	 * equals its Argument of Periapsis. That is when w = Vt (omega = Vtau).
+	 * Solving this for T (tau) gives the time of the equinox.
 	 * 
 	 * tAn (TauAn) in minutes.
 	 *
@@ -343,73 +350,21 @@ public class SimulationUtils {
 
 		return psiTau;
 	}
-	
-	public static double getEccentricityAttenuation(double radiusAtPerihelion, double radiusTau) {
-		return radiusAtPerihelion/radiusTau;
-	}
 
-	public static double test(double e, double argumentofperiapsis_degrees,
-			double earth_orbital_period_mins) {
-		double true_aomaly_equinox;
-		double num = Math.cos(Math.toRadians(argumentofperiapsis_degrees)) + e;
-		double denom = 1 + e
-				* Math.cos(Math.toRadians(argumentofperiapsis_degrees));
-		true_aomaly_equinox = Math.acos(num / denom);
-		double timeofequinox = (float) ((earth_orbital_period_mins / (2 * Math.PI)) * (true_aomaly_equinox - e
-				* Math.sin(true_aomaly_equinox)));
-
-		return timeofequinox;
-	}
-
-	public static void demo(double eccentricity, int timeSinceLastPerihelion) {
-		double e = eccentricity;
-		int dp = 5;
-		int orbitalPeriod = ORBITAL_PERIOD;
-
-		double Mtau = SimulationUtils.meanAnomaly(timeSinceLastPerihelion,
-				orbitalPeriod);
-
-		System.out.println("Mean Anomaly: " + Mtau + " radians - "
-				+ toFixed(Math.toDegrees(Mtau), 2) + " degrees.");
-
-		double Etau = SimulationUtils.eccentricAnomaly(e, Mtau, dp);
-
-		System.out.println("Eccentric Anomaly: " + Etau + " radians - "
-				+ toFixed(Math.toDegrees(Etau), 2) + " deg.");
-
-		double Vtau = SimulationUtils.trueAnomaly(e, Etau, dp);
-
-		System.out.println("True Anomaly: " + Vtau + " radians - "
-				+ toFixed(Math.toDegrees(Vtau), 2) + " deg.");
-
-		double[] position = SimulationUtils.position(A, eccentricity, Etau);
-
-		System.out
-				.println("Position [" + position[0] + "," + position[1] + "]");
-
-		// We need the time of Equinox to get the
-		double timeOfEquinox = timeOfEquinox(EARTH_ECCENTRICITY,
-				EARTH_PERIAPSIS, ORBITAL_PERIOD);
-
-		System.out.println("Time of Equinox: " + timeOfEquinox);
-		System.out.println("Time of Equinox in days: " + timeOfEquinox / 1440
-				+ " days.");
-
-		System.out.println("Latitude noon Sun:");
-
-		double radiusT;
-
-		for (int i = 0; i < ORBITAL_PERIOD; i = i + 1000) {
-			 System.out.println(latitudeNoonSun(i, EARTH_ECCENTRICITY, EARTH_PERIAPSIS, ORBITAL_PERIOD, OBLIQUITY));// + " time: " + i);
-
-			 radiusT = radiusTau(A, EARTH_ECCENTRICITY,
-					trueAnomalyForEarthConstants(i));
-
-//			System.out.println("Radius: " + (radiusT - PERIHELION)
-//					+ " : time: " + i);
-			
-//			System.out.println(i + "," + (radiusT - PERIHELION));
-		}
+	/**
+	 * Gets the attenuation coefficient based on the distance from the focus.
+	 * 
+	 * @param radiusAtPerihelion
+	 *            Distance at perihelion
+	 * @param radiusTau
+	 *            Current distance
+	 * 
+	 * @return A double number between 0 and 1 (inclusive). 1 is the closest, 0
+	 *         the farthest.
+	 */
+	public static double getEccentricityAttenuation(double radiusAtPerihelion,
+			double radiusTau) {
+		return radiusAtPerihelion / radiusTau;
 	}
 
 	public static SimpleTemperatureGridImpl dissipateExcessHeat(TemperatureGrid inputGrid,
