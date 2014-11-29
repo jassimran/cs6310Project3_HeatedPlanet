@@ -107,8 +107,8 @@ ActionListener, ChangeListener, Listener {
     	
     	createGui();
     	createControl();
-    	this.setVisible(true);
-    	setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+    	//this.setVisible(true);
+    	setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Query Interface");
         setName("QInterfaceFrame"); 
         //lat = 33.7784626;
@@ -125,6 +125,9 @@ ActionListener, ChangeListener, Listener {
   		if (instance == null) {
   			instance = new QueryInterfaceUI();
   		}
+  		
+  		instance.setVisible(true);
+  		
   		return instance;
   	}
 

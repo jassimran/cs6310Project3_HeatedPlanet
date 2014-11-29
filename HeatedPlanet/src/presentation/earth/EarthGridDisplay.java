@@ -138,6 +138,14 @@ public class EarthGridDisplay extends JPanel {
     return imgWidth;
   }
   
+  public int getAdjustedWidth() {
+	  return imgWidth;
+  }
+  
+  public int getAdjustedHeight() {
+	  return imgHeight;
+  }
+  
   private void fillCellColors(Graphics g) {
     int cellX=0, cellY=0;
     int cellWidth = pixelsPerCellX;
