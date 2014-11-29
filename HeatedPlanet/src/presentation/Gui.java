@@ -7,6 +7,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -37,6 +39,7 @@ import javax.swing.event.ChangeListener;
 import presentation.earth.EarthPanel;
 import simplesimulation.SimplePresentationEngineImpl;
 import simplesimulation.SimpleSimulationEngineImpl;
+import simplesimulation.SimulationUtils;
 import simulation.SimulationSettings;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import controllers.AbstractControl;
@@ -58,6 +61,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	static final String ACTION_GRID_EDIT = "Grid_Spacing";
 	static final String ACTION_NUM_EDIT = "Num_Edit";
 	static final String ACTION_LAUNCH_QUERY = "Launch Query Interface";
+	static final String ACTION_SHOW_ORBIT = "Show Orbit";
 
 	static final int DEFAULT_GRID_SPACING = 15;
 	static final int DEFAULT_SIM_DELAY = 200;
@@ -133,11 +137,12 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	private Calendar simTimeCal = DATE_FORMAT.getCalendar();
 	
 	private JLabel orbitalPos = null;
-	private JButton showOrbitalPos = null;
+	private JButton showOrbitButton = new JButton(ACTION_SHOW_ORBIT);
 	private JLabel rotationalPos = null;
 	private JLabel rotationalPosResult = null;
 
 	private EarthPanel EarthPanel = new EarthPanel(new Dimension(800, 420), new Dimension(800, 420), new Dimension(800, 420));
+	private OrbitUI orbitUI;
 
 	// control
 	AbstractControl control;
@@ -566,11 +571,15 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		layout.putConstraint(SpringLayout.WEST, orbitalPos, 5, SpringLayout.WEST, simTimePanel);
 		layout.putConstraint(SpringLayout.NORTH, orbitalPos, 4, SpringLayout.SOUTH, simTime);
 		simTimePanel.add(orbitalPos);
-		showOrbitalPos = new JButton("Show");
-		showOrbitalPos.setPreferredSize(new Dimension(70,20));
-		layout.putConstraint(SpringLayout.WEST, showOrbitalPos, 35, SpringLayout.EAST, orbitalPos);
-		layout.putConstraint(SpringLayout.NORTH, showOrbitalPos, 4, SpringLayout.SOUTH, simTime);
-		simTimePanel.add(showOrbitalPos);
+		
+		showOrbitButton.setActionCommand(ACTION_SHOW_ORBIT);
+		showOrbitButton.addActionListener(this);
+		showOrbitButton.setEnabled(true);
+		showOrbitButton.setPreferredSize(new Dimension(90,20));
+		
+		layout.putConstraint(SpringLayout.WEST, showOrbitButton, 35, SpringLayout.EAST, orbitalPos);
+		layout.putConstraint(SpringLayout.NORTH, showOrbitButton, 4, SpringLayout.SOUTH, simTime);
+		simTimePanel.add(showOrbitButton);
 		
 		rotationalPos = new JLabel("Position: ");
 		layout.putConstraint(SpringLayout.WEST, rotationalPos, 5, SpringLayout.WEST, simTimePanel);
@@ -659,7 +668,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		//get the command
 		String command = e.getActionCommand();
 
-		if (command.equals(ACTION_RUN)) {
+		if (ACTION_RUN.equals(command)) {
 			// check simulation name is valid
 			InputVerifier simulaitonVerifier = new SimulationNameInputVerifier();
         	if (!simulaitonVerifier.verify(simName)) {
@@ -675,51 +684,51 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 			stopButton.setEnabled(false);
 			// run simulation
 			runSimulation();
-		} else if (command.equals(ACTION_PAUSE)) {
-			//enable the restart button
-			stopButton.setEnabled(true);
-			// change pause button legend
-			pauseButton.setText(ACTION_RESUME);
-			// change pause button action
-			pauseButton.setActionCommand(ACTION_RESUME);
-			// pause simulation
-			pauseSimulation();
-		} else if (command.equals(ACTION_RESUME)) {
-			//enable the restart button
-			stopButton.setEnabled(false);
-			// change pause button legend
-			pauseButton.setText(ACTION_PAUSE);
-			// change pause button action
-			pauseButton.setActionCommand(ACTION_PAUSE);
-			// resume simulation
-			resumeSimulation();
-		} else if (command.equals(ACTION_STOP)) {
-			//enable all controls
-			this.setEnableAllUserOptions(true);
-			pauseButton.setText(ACTION_PAUSE);
-			pauseButton.setActionCommand(ACTION_PAUSE);
-			// reset pause button
-			pauseButton.setEnabled(false);
-			//disable the stop button
-			stopButton.setEnabled(false);
-			//enable the run button
-			runButton.setEnabled(true);
-			// terminate simulation
-			stopSimulation();
-			//reset the EarthPanel
-			EarthPanel.reset();
-			try {
-				//set the time
-				simTimeCal.setTime(DATE_FORMAT
-						.parse(START_TIME));
-				simTime.setText(DATE_FORMAT.format(simTimeCal
-						.getTime()));
-			} catch (ParseException e2) {
-			}				
-		} else if (command.equals(ACTION_GRID_EDIT)) {
+		} else if (ACTION_PAUSE.equals(command)) {
+            //enable the restart button
+            stopButton.setEnabled(true);
+            // change pause button legend
+            pauseButton.setText(ACTION_RESUME);
+            // change pause button action
+            pauseButton.setActionCommand(ACTION_RESUME);
+            // pause simulation
+            pauseSimulation();
+        } else if (ACTION_RESUME.equals(command)) {
+            //enable the restart button
+            stopButton.setEnabled(false);
+            // change pause button legend
+            pauseButton.setText(ACTION_PAUSE);
+            // change pause button action
+            pauseButton.setActionCommand(ACTION_PAUSE);
+            // resume simulation
+            resumeSimulation();
+        } else if (ACTION_STOP.equals(command)) {
+            //enable all controls
+            this.setEnableAllUserOptions(true);
+            pauseButton.setText(ACTION_PAUSE);
+            pauseButton.setActionCommand(ACTION_PAUSE);
+            // reset pause button
+            pauseButton.setEnabled(false);
+            //disable the stop button
+            stopButton.setEnabled(false);
+            //enable the run button
+            runButton.setEnabled(true);
+            // terminate simulation
+            stopSimulation();
+            //reset the EarthPanel
+            EarthPanel.reset();
+            try {
+                //set the time
+                simTimeCal.setTime(DATE_FORMAT
+                        .parse(START_TIME));
+                simTime.setText(DATE_FORMAT.format(simTimeCal
+                        .getTime()));
+            } catch (ParseException e2) {
+            }               
+		} else if (ACTION_GRID_EDIT.equals(command)) {
 			//update the visual grid with new value
 			EarthPanel.drawGrid(gridEdit.getValue());
-		} else if (command.equals(ACTION_LAUNCH_QUERY)){
+		} else if (ACTION_LAUNCH_QUERY.equals(command)){
 			//For launching query interface
 			//But before that, disable all controls
 			this.setEnableAllUserOptions(false);
@@ -731,18 +740,39 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 			stopButton.setEnabled(false);
 			//QueryInterfaceUI gui = new QueryInterfaceUI();
 			//gui.launchQueryInterface();
-			QueryInterfaceUI gui = QueryInterfaceUI.getInstance();
-			//gui.launchNewQueryInterface();
+
+			QueryInterfaceUI.getInstance();
+		} else if (ACTION_SHOW_ORBIT.equals(command)) {
+			// Disable show button
+			showOrbitButton.setEnabled(false);
+
 			
+			// Showing orbit pop up
+			OrbitUI tmpOrbitUI = OrbitUI.getInstance(SimulationUtils.A, simulationSettings.getEccentricity());
+			
+			if (!tmpOrbitUI.equals(orbitUI)) {
+				orbitUI = tmpOrbitUI;
+				
+				orbitUI.addWindowListener(new WindowAdapter() {
+					public void windowClosing(WindowEvent we) {
+						showOrbitButton.setEnabled(true);
+					}
+					
+					public void windowClosed(WindowEvent we) {
+						System.out.println("Closed orbit UI");
+					}
+				});
+			}
 		}
 	}
 
+	private volatile SimulationSettings simulationSettings = new SimulationSettings();
+	
 	/**
 	 * Executes a simulation based on the selected settings.
 	 */
 	private void runSimulation() {
 		// create settings object
-		SimulationSettings simulationSettings = new SimulationSettings();
 		simulationSettings.setSOption(concurrency_Sim.isSelected());
 		simulationSettings.setPOption(concurrency_Pres.isSelected());
 		simulationSettings.setROption(initiative_R.isSelected());
@@ -851,7 +881,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		eccentricity.setEnabled(bEnable);		
 	}
 
-	public void updateClock( double laitude, double longitude, double distFromSun) {
+	public void updateClock( double latitude, double longitude, double distFromSun, double[] coordinates) {
 		try {
 			//set the time
 			simTimeCal.add(Calendar.MINUTE, stepEdit.getValue());
@@ -859,7 +889,11 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 					.getTime()));
 			
 			orbitalPos.setText("Dist from Sun = "+String.valueOf(distFromSun)+ " million km");
-			rotationalPosResult.setText("Lat: "+ String.valueOf(laitude) + " Long: "+ String.valueOf(longitude));
+			rotationalPosResult.setText("Lat: "+ String.valueOf(latitude) + " Long: "+ String.valueOf(longitude));
+			
+			if (orbitUI != null) {
+				orbitUI.updatePosition(coordinates);
+			}
 			
 		} catch (Exception e2) {
 			System.out.print("Updation failed!!!");
