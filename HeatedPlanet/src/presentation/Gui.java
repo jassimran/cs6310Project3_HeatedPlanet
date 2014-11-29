@@ -7,6 +7,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -704,8 +706,25 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 			//gui.launchQueryInterface();
 			QueryInterfaceUI.getInstance();
 		} else if (ACTION_SHOW_ORBIT.equals(command)) {
+			// Disable show button
+			showOrbitButton.setEnabled(false);
+			
 			// Showing orbit pop up
-			OrbitUI.getInstance(SimulationUtils.A, simulationSettings.getEccentricity());
+			OrbitUI tmpOrbitUI = OrbitUI.getInstance(SimulationUtils.A, simulationSettings.getEccentricity());
+			
+			if (!tmpOrbitUI.equals(orbitUI)) {
+				orbitUI = tmpOrbitUI;
+				
+				orbitUI.addWindowListener(new WindowAdapter() {
+					public void windowClosing(WindowEvent we) {
+						showOrbitButton.setEnabled(true);
+					}
+					
+					public void windowClosed(WindowEvent we) {
+						System.out.println("Closed orbit UI");
+					}
+				});
+			}
 		}
 	}
 
@@ -813,7 +832,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		eccentricity.setEnabled(bEnable);		
 	}
 
-	public void updateClock( double laitude, double longitude, double distFromSun) {
+	public void updateClock( double latitude, double longitude, double distFromSun, double[] coordinates) {
 		try {
 			//set the time
 			simTimeCal.add(Calendar.MINUTE, stepEdit.getValue());
@@ -821,7 +840,11 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 					.getTime()));
 			
 			orbitalPos.setText("Dist from Sun = "+String.valueOf(distFromSun)+ " million km");
-			rotationalPosResult.setText("Lat: "+ String.valueOf(laitude) + " Long: "+ String.valueOf(longitude));
+			rotationalPosResult.setText("Lat: "+ String.valueOf(latitude) + " Long: "+ String.valueOf(longitude));
+			
+			if (orbitUI != null) {
+				orbitUI.updatePosition(coordinates);
+			}
 			
 		} catch (Exception e2) {
 			System.out.print("Updation failed!!!");
