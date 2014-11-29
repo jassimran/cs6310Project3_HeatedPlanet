@@ -14,35 +14,43 @@ import java.awt.FlowLayout;
 //import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DateFormat;
 //import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.InputVerifier;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SpinnerListModel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import presentation.query.*;
-import controllers.AbstractControl;
-import controllers.AbstractControlFactory;
-import controllers.QueryControl;
+import presentation.query.QueryCell;
+import presentation.query.QueryGrid;
+import presentation.query.QueryResult;
+import presentation.query.SimulationQuery;
 import simplesimulation.SimpleSimulationEngineImpl;
 import simulation.SimulationSettings;
 import simulation.SimulationSettingsFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-import org.joda.time.DateTime;
-
-
-
-
-
-
-
-
+import controllers.AbstractControl;
+import controllers.AbstractControlFactory;
 import events.EventType;
 import events.Listener;
 public class QueryInterfaceUI extends javax.swing.JFrame implements 
@@ -99,8 +107,8 @@ ActionListener, ChangeListener, Listener {
     	
     	createGui();
     	createControl();
-    	this.setVisible(true);
-    	setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+    	//this.setVisible(true);
+    	setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("Query Interface");
         setName("QInterfaceFrame"); 
         //lat = 33.7784626;
@@ -117,6 +125,9 @@ ActionListener, ChangeListener, Listener {
   		if (instance == null) {
   			instance = new QueryInterfaceUI();
   		}
+  		
+  		instance.setVisible(true);
+  		
   		return instance;
   	}
 
@@ -877,8 +888,7 @@ ActionListener, ChangeListener, Listener {
 			
 			this.setEnableAllUserOptions(false);
 			List<String> lst = new ArrayList<String>();
-			lst = ((QueryControl)control).getSimulationList();
-			System.out.println(lst.isEmpty());
+			lst = control.getSimulationList();
 			
 			for(String s : lst)
 			{
@@ -937,7 +947,7 @@ ActionListener, ChangeListener, Listener {
 				if(byNameButton.isSelected())
 				{
 					if(!simulationName.isEmpty())
-						res = ((QueryControl)control).getQueryResultBySimulationName(simulationName);
+						res = control.getQueryResultBySimulationName(simulationName);
 					
 						displayQueryResults();
 						runQuery.setEnabled(true);
@@ -950,7 +960,7 @@ ActionListener, ChangeListener, Listener {
 						tilt, eccentricity, simStart, 
 						simEnd, lat_start, lat_end,
 						long_start,long_end);
-					res = ((QueryControl)control).computeQueryResults(simulationQuery);
+					res = control.computeQueryResults(simulationQuery);
 				
 					if(res == null){
 						SimulationSettings settings = SimulationSettingsFactory.createSimulationSettingsWithDefaults();
@@ -1063,7 +1073,7 @@ ActionListener, ChangeListener, Listener {
 			{
 				
 				System.out.println("Axis, tilt and end date "+ tilt +" " +  eccentricity + " "+ simEnd);
-				lst = ((QueryControl)control).getSimulationListByUserInputs(tilt, eccentricity,simEnd);
+				lst = control.getSimulationListByUserInputs(tilt, eccentricity,simEnd);
 				for(String s : lst)
 				{
 					nameSpinner.addItem(s);
@@ -1223,7 +1233,7 @@ ActionListener, ChangeListener, Listener {
 		if(e == EventType.SimulationFinishedEvent){
 			SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							res = ((QueryControl)control).computeQueryResults(simulationQuery);
+							res = control.computeQueryResults(simulationQuery);
 							if(res == null)
 								throw new RuntimeException("The query result should not be null at this point.");
 

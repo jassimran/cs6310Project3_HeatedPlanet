@@ -7,14 +7,18 @@ import javax.swing.JPanel;
 /**
  * A {@link JPanel} composed of the the earth and sun display components.
  * 
- * @author Andrew Bernard
+ * Based on original code by Andrew Bernard.
+ * 
+ * Modified:
+ * Presentation layout.
  */
 public class EarthPanel extends JPanel {
 
   private static final long serialVersionUID = -1108120537851962997L;  
+  private static final int DEFAULT_GRID_SPACING = 15; //degrees
+
   private SunDisplay sunDisplay;
   private EarthGridDisplay earth;
-  private static final int DEFAULT_GRID_SPACING = 15; //degrees
   
   /**
    * Constructor - sets up the panel with the earth and sun display components using a
@@ -26,6 +30,7 @@ public class EarthPanel extends JPanel {
    */
   public EarthPanel(Dimension minSize, Dimension maxSize, Dimension prefSize) {
     super();
+    
     setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
     setMinimumSize(minSize);
     setMaximumSize(maxSize);
@@ -40,7 +45,7 @@ public class EarthPanel extends JPanel {
     add(sunDisplay);
     add(earth);
   }
-  
+
   /**
    * Draws the grid.
    * 
@@ -49,7 +54,17 @@ public class EarthPanel extends JPanel {
    */
   public void drawGrid(int degreeSeparation) {
     earth.setGranularity(degreeSeparation);
+    
+    // Need to re-center 
+    int earthAssignedY = sunDisplay.getY() + sunDisplay.getHeight();
+    int earthAvailableHeight = getHeight() - earthAssignedY;
+    
+    earth.setBounds((int)((getWidth() - earth.getAdjustedWidth()) /2 ), earthAssignedY + (int)((earthAvailableHeight - earth.getAdjustedHeight()) /2 ), earth.getAdjustedWidth(), earth.getAdjustedHeight());
+    
+    sunDisplay.setBounds((int)((getWidth() - earth.getAdjustedWidth()) /2 ), sunDisplay.getY(), sunDisplay.getWidth(), sunDisplay.getHeight());
+    
     sunDisplay.drawSunPath(earth.getWidth());
+    
     repaint();
   }
   
@@ -117,5 +132,3 @@ public class EarthPanel extends JPanel {
   }
 
 }
-
-

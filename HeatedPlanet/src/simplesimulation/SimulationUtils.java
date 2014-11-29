@@ -352,6 +352,36 @@ public class SimulationUtils {
 	}
 
 	/**
+	 * The longitude of the position of the Earth's surface where the Sun is
+	 * directly overhead at a given time. (From Project 2).
+	 * 
+	 * @param timeTau
+	 *            time in minutes
+	 * 
+	 * @return Longitude Under Sun.
+	 */
+	public static double longitudeUnderSun(double timeTau) {
+		double ot = rotationalPeriodAngle(timeTau);
+
+		return (ot < 90) ? -ot : 180 - ot;
+	}
+
+	/**
+	 * Rotational angle in degrees as a function of time t in minutes since the
+	 * simulation's start.
+	 * 
+	 * Ot = mod(t, 1440) * 360 / 1440;
+	 * 
+	 * @param timeTau
+	 *            time in minutes
+	 * 
+	 * @return Rotational period angle in degrees
+	 */
+	public static double rotationalPeriodAngle(double timeTau) {
+		return timeTau % ROTATIONAL_PERIOD * 360d / ROTATIONAL_PERIOD;
+	}
+
+	/**
 	 * Gets the attenuation coefficient based on the distance from the focus.
 	 * 
 	 * @param radiusAtPerihelion
