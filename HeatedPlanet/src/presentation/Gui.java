@@ -842,7 +842,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 			orbitalPos.setText("Dist from Sun = "+String.valueOf(distFromSun)+ " million km");
 			rotationalPosResult.setText("Lat: "+ String.valueOf(latitude) + " Long: "+ String.valueOf(longitude));
 			
-			if (orbitUI != null && orbitUI.isVisible()) {
+			if (orbitUI != null) {
 				orbitUI.updatePosition(coordinates);
 			}
 			
