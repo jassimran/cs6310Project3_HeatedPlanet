@@ -48,7 +48,7 @@ public class OrbitUI extends JFrame {
 		this.eccentricity = eccentricity;
 
 		setTitle("Earth's Orbit");
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
 		createGui();
 	}

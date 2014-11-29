@@ -98,6 +98,8 @@ public class SimpleSimulationEngineImpl implements SimulationEngine {
 		
 		double[] coordinates = SimulationUtils.position(SimulationUtils.A, settings.getEccentricity(), SimulationUtils.eccentricAnomaly(settings.getEccentricity(), SimulationUtils.meanAnomaly(timeSinceLastPerihelion, SimulationUtils.ORBITAL_PERIOD) ,anomalyDecimalPrecision));
 		
+		System.out.println("ROTATIONAL ANGLE: " + SimulationUtils.rotationalAngle(timeSinceLastPerihelion, settings.getEccentricity(), SimulationUtils.EARTH_PERIAPSIS, SimulationUtils.ORBITAL_PERIOD));
+		
 		// simulation constants
 		double e = 2700; // kg/m3
 		double cb = 1000; // J/kgK
