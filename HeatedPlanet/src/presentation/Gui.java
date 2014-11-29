@@ -57,6 +57,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	static final String ACTION_GRID_EDIT = "Grid_Spacing";
 	static final String ACTION_NUM_EDIT = "Num_Edit";
 	static final String ACTION_LAUNCH_QUERY = "Launch Query Interface";
+	static final String ACTION_SHOW_ORBIT = "Show Orbit";
 
 	static final int DEFAULT_GRID_SPACING = 15;
 	static final int DEFAULT_SIM_DELAY = 200;
@@ -132,11 +133,12 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	private Calendar simTimeCal = DATE_FORMAT.getCalendar();
 	
 	private JLabel orbitalPos = null;
-	private JButton showOrbitalPos = null;
+	private JButton showOrbitButton = new JButton(ACTION_SHOW_ORBIT);
 	private JLabel rotationalPos = null;
 	private JLabel rotationalPosResult = null;
 
 	private EarthPanel EarthPanel = new EarthPanel(new Dimension(800, 420), new Dimension(800, 420), new Dimension(800, 420));
+	private OrbitUI orbitUI;
 
 	// control
 	AbstractControl control;
@@ -543,11 +545,15 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		layout.putConstraint(SpringLayout.WEST, orbitalPos, 5, SpringLayout.WEST, simTimePanel);
 		layout.putConstraint(SpringLayout.NORTH, orbitalPos, 4, SpringLayout.SOUTH, simTime);
 		simTimePanel.add(orbitalPos);
-		showOrbitalPos = new JButton("Show");
-		showOrbitalPos.setPreferredSize(new Dimension(70,20));
-		layout.putConstraint(SpringLayout.WEST, showOrbitalPos, 35, SpringLayout.EAST, orbitalPos);
-		layout.putConstraint(SpringLayout.NORTH, showOrbitalPos, 4, SpringLayout.SOUTH, simTime);
-		simTimePanel.add(showOrbitalPos);
+		
+		showOrbitButton.setActionCommand(ACTION_SHOW_ORBIT);
+		showOrbitButton.addActionListener(this);
+		showOrbitButton.setEnabled(true);
+		showOrbitButton.setPreferredSize(new Dimension(90,20));
+		
+		layout.putConstraint(SpringLayout.WEST, showOrbitButton, 35, SpringLayout.EAST, orbitalPos);
+		layout.putConstraint(SpringLayout.NORTH, showOrbitButton, 4, SpringLayout.SOUTH, simTime);
+		simTimePanel.add(showOrbitButton);
 		
 		rotationalPos = new JLabel("Position: ");
 		layout.putConstraint(SpringLayout.WEST, rotationalPos, 5, SpringLayout.WEST, simTimePanel);
@@ -636,7 +642,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		//get the command
 		String command = e.getActionCommand();
 
-		if (command.equals(ACTION_RUN)) {
+		if (ACTION_RUN.equals(command)) {
 			// check simulation name is valid
 			InputVerifier simulaitonVerifier = new SimulationNameInputVerifier();
         	if (!simulaitonVerifier.verify(simName)) {
@@ -652,30 +658,17 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 			stopButton.setEnabled(false);
 			// run simulation
 			runSimulation();
-		} else if (command.equals(ACTION_PAUSE)) {
+		} else if (ACTION_PAUSE.equals(command)) {
 			//enable the restart button
 			stopButton.setEnabled(true);
 			// change pause button legend
-			pauseButton.setText(ACTION_RESUME);
-			// change pause button action
-			pauseButton.setActionCommand(ACTION_RESUME);
+			pauseButton.setText((control.isSimulationRunning())? ACTION_RESUME : ACTION_PAUSE);
 			// pause simulation
 			pauseSimulation();
-		} else if (command.equals(ACTION_RESUME)) {
-			//enable the restart button
-			stopButton.setEnabled(false);
-			// change pause button legend
-			pauseButton.setText(ACTION_PAUSE);
-			// change pause button action
-			pauseButton.setActionCommand(ACTION_PAUSE);
-			// resume simulation
-			resumeSimulation();
-		} else if (command.equals(ACTION_STOP)) {
+		} else if (ACTION_STOP.equals(command)) {
 			//enable all controls
 			this.setEnableAllUserOptions(true);
-			pauseButton.setText(ACTION_PAUSE);
-			pauseButton.setActionCommand(ACTION_PAUSE);
-			// reset pause button
+			// disable pause button
 			pauseButton.setEnabled(false);
 			//disable the stop button
 			stopButton.setEnabled(false);
@@ -693,10 +686,10 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 						.getTime()));
 			} catch (ParseException e2) {
 			}				
-		} else if (command.equals(ACTION_GRID_EDIT)) {
+		} else if (ACTION_GRID_EDIT.equals(command)) {
 			//update the visual grid with new value
 			EarthPanel.drawGrid(gridEdit.getValue());
-		} else if (command.equals(ACTION_LAUNCH_QUERY)){
+		} else if (ACTION_LAUNCH_QUERY.equals(command)){
 			//For launching query interface
 			//But before that, disable all controls
 			this.setEnableAllUserOptions(false);
@@ -709,7 +702,8 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 			//QueryInterfaceUI gui = new QueryInterfaceUI();
 			//gui.launchQueryInterface();
 			QueryInterfaceUI.getInstance();
-			
+		} else if (ACTION_SHOW_ORBIT.equals(command)) {
+			// Showing orbit pop up
 		}
 	}
 
@@ -776,18 +770,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		if(control.isSimulationRunning()) {
 			control.pauseSimulation();
 		} else {
-			throw new RuntimeException("Paused a not running simulation");
-		}
-	}
-	
-	/**
-	 * Resumes a paused simulation.
-	 */
-	private void resumeSimulation() {
-		if(!control.isSimulationRunning()) {
 			control.resumeSimulation();
-		} else {
-			throw new RuntimeException("Resume a running simulation");
 		}
 	}
 	

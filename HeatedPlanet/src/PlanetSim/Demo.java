@@ -73,7 +73,7 @@ public class Demo {
 		parseArgs(args);
 
 		// bootstrap application
-		BootStrap.init();
+		//BootStrap.init();
 		
 		Gui.getInstance(simthread, presthread, simcontrol, prescontrol, buffer);
 		// TODO register UI listener to close H2 web servers
