@@ -805,7 +805,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		if(control.isSimulationRunning()) {
 			control.pauseSimulation();
 		} else {
-			control.resumeSimulation();
+			throw new RuntimeException("Paused a not running simulation");
 		}
 	}
 	
