@@ -705,7 +705,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 			QueryInterfaceUI.getInstance();
 		} else if (ACTION_SHOW_ORBIT.equals(command)) {
 			// Showing orbit pop up
-			OrbitUI.getInstance(SimulationUtils.A, simulationSettings.getEccentricity());
+			orbitUI = OrbitUI.getInstance(SimulationUtils.A, simulationSettings.getEccentricity());
 		}
 	}
 
