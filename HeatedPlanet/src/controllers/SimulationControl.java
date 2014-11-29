@@ -130,6 +130,11 @@ public class SimulationControl extends AbstractControl implements Runnable {
 			}
 		}
 		
+		// if simulation was stopped, remove from persistence context
+		if(isTerminateSimulation()) {
+			persistenceService.deleteSimulation(simulation);
+		}
+		
 		// get simulation index
 		int index;
 		synchronized (abstractLock) {
@@ -322,7 +327,8 @@ public class SimulationControl extends AbstractControl implements Runnable {
 
 	@Override
 	public void handleStopSimulationEvent() {
-		simulationThread.notify();		
+		// notify listeners
+		simulationThread.notify();
 	}
 
 	@Override
