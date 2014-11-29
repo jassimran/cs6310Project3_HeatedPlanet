@@ -95,7 +95,7 @@ ActionListener, ChangeListener, Listener {
 	public void onExit(){
 	    	Gui.getInstance(true, false, false, false, 10).setEnableAllUserOptions(true);
 	    	
-	    	setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+	    	setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
 	}
 	
 	
