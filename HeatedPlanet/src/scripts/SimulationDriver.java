@@ -138,12 +138,13 @@ public class SimulationDriver implements Listener {
 
 		return simulation;
 	}
+	
 	public void printToFile(String name,int gridSpacing, int simulationTimeStep, int simulationLength, int temporalAccuracy,
 			int geoAccuracy, int precision, double tilt, double eccentricity, long totaltime, double memused )
 	{
 		
 		String fileIdentifier =name;
-		File mem_file = new File(System.getProperty("user.home") +"\\heatedplanet\\"+ fileIdentifier +".csv");
+		File mem_file = new File(System.getProperty("user.home") + System.getProperty("file.separator") + "heatedplanet" + System.getProperty("file.separator") + fileIdentifier +".csv");
 		StringBuffer sb = new StringBuffer();
 	     
 	    
