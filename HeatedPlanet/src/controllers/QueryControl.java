@@ -276,11 +276,13 @@ public class QueryControl extends AbstractControl implements Runnable {
 		// set simulation running
 		setSimulationRunning(true);
 		
-		// define concurrency
-		simulationThread = new Thread(this);
-		
 		// execute simulation
-		simulationThread.start();
+		if(settings.isSOption()) {
+			simulationThread = new Thread(this);
+			simulationThread.start();
+		} else {
+			executeSimulation();
+		}
 	}
 
 	@Override
