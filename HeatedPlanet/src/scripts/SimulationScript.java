@@ -18,6 +18,17 @@ public class SimulationScript {
 		bootStrapSimulation.setSOption(false);
 		simulations.add(bootStrapSimulation);
 		
+		//Create simulations using createSimulations function.
+		simulations.add(createSimulations(15, 1500, 12, 100, 100, 7, 23.44, 0, "R1.2"));
+		simulations.add(createSimulations(15, 1500, 12, 100, 100, 7, 23.44, .0167, "R1.2"));
+		simulations.add(createSimulations(15, 1500, 12, 100, 100, 7, 23.44, .4, "R1.3"));
+		simulations.add(createSimulations(15, 1500, 12, 100, 100, 7, 23.44, .8, "R1.4"));
+		simulations.add(createSimulations(15, 1500, 12, 100, 100, 7, 23.44, 1, "R1.5"));
+		
+		
+		
+		/*
+		
 		SimulationSettings simulation1 = SimulationSettingsFactory.createSimulationSettingsWithDefaults();
 		simulation1.setName("R1.1");
 		simulation1.setGridSpacing(15);
@@ -57,6 +68,7 @@ public class SimulationScript {
 		simulation3.setSOption(false);
 		simulations.add(simulation3);
 		
+		
 		SimulationSettings simulation4 = SimulationSettingsFactory.createSimulationSettingsWithDefaults();
 		simulation4.setName("R1.4");
 		simulation4.setGridSpacing(15);
@@ -81,7 +93,7 @@ public class SimulationScript {
 		simulation5.setAxialTilt(23.44);
 		simulation5.setEccentricity(1);
 		simulation5.setSOption(false);
-		simulations.add(simulation5);
+		simulations.add(simulation5);*/
 		
 		// create simulation driver
 		SimulationDriver simulationDriver = new SimulationDriver();
@@ -90,6 +102,26 @@ public class SimulationScript {
 		for(SimulationSettings simulation : simulations) {
 			simulationDriver.runSimulation(simulation);
 		}
+		
+	}
+	//function to create simulations
+	public static SimulationSettings createSimulations(int gridSpacing, int simulationTimeStep, int simulationLength, int temporalAccuracy,
+			int geoAccuracy, int precision, double tilt, double eccentricity, String name)
+	{
+		SimulationSettings simulation1 = SimulationSettingsFactory.createSimulationSettingsWithDefaults();
+		simulation1.setName(name);
+		simulation1.setGridSpacing(gridSpacing);
+		simulation1.setSimulationTimeStep(simulationTimeStep);
+		simulation1.setSimulationLength(simulationLength);
+		simulation1.setTemporalAccuracy(temporalAccuracy);
+		simulation1.setGeoAccuracy(geoAccuracy);
+		simulation1.setPrecision(precision);
+		simulation1.setAxialTilt(tilt);
+		simulation1.setEccentricity(eccentricity);
+		simulation1.setSOption(false);
+		
+		
+		return simulation1;
 	}
 
 }
