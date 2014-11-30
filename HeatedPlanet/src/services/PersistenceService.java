@@ -8,6 +8,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
+import com.sun.org.apache.xerces.internal.impl.dtd.models.CMAny;
+
 import persistence.EntityManagerFactory;
 import presentation.earth.TemperatureGrid;
 import domain.EarthCell;
@@ -45,7 +47,7 @@ public class PersistenceService {
 		}
 		return serviceInstance;
 	}
-
+	
 	/**
 	 * Persist the given simulation step. The simulation step is represented by
 	 * the given TemperatureGrid and belongs to the given Simulation.

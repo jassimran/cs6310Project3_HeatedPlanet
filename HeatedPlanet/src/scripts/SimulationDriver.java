@@ -18,7 +18,7 @@ public class SimulationDriver implements Listener {
 	private AbstractControl control;
 
 	private SimulationSettings simulationSettings;
-
+	
 	// metrics
 	private long simulationStart;
 
@@ -74,6 +74,8 @@ public class SimulationDriver implements Listener {
 
 			// remove simulation
 			PersistenceService.getInstance().deleteSimulation(simulation);
+			
+			System.out.println("After deleting simulation...");
 		}
 	}
 
@@ -107,6 +109,8 @@ public class SimulationDriver implements Listener {
 				args[8]));
 
 		System.out.println("End date: " + new Date());
+		
+		System.exit(0);
 	}
 
 	public static SimulationSettings createSimulations(int gridSpacing,
