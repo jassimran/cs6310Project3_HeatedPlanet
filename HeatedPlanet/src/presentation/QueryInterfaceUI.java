@@ -947,7 +947,6 @@ ActionListener, ChangeListener, Listener {
 		}
 		else if(command.equals("reset"))
 		{
-		
 			//if output panel is there remove it
 			if(this.getContentPane().getComponentCount() == 2)
 			{
