@@ -18,7 +18,7 @@ public class SimulationDriver implements Listener {
 	private AbstractControl control;
 
 	private SimulationSettings simulationSettings;
-	
+
 	// metrics
 	private long simulationStart;
 
@@ -71,12 +71,21 @@ public class SimulationDriver implements Listener {
 			System.out.println("Used memory in bytes: " + totalMemory);
 			System.out.println("File size in bytes: " + fileSize);
 			System.out.println("Execution time in millis: " + executionTime);
-			
-			printToFile(simulation.getName(), simulationSettings.getGridSpacing(), simulationSettings.getSimulationTimeStep(), simulationSettings.getSimulationLength(), simulationSettings.getTemporalAccuracy(),  simulationSettings.getGeoAccuracy(),  simulationSettings.getPrecision(),  simulationSettings.getAxialTilt(),  simulationSettings.getEccentricity(), executionTime, totalMemory);
+
+			printToFile(simulation.getName(),
+					simulationSettings.getGridSpacing(),
+					simulationSettings.getSimulationTimeStep(),
+					simulationSettings.getSimulationLength(),
+					simulationSettings.getTemporalAccuracy(),
+					simulationSettings.getGeoAccuracy(),
+					simulationSettings.getPrecision(),
+					simulationSettings.getAxialTilt(),
+					simulationSettings.getEccentricity(), executionTime,
+					totalMemory);
 
 			// remove simulation
 			PersistenceService.getInstance().deleteSimulation(simulation);
-			
+
 			System.out.println("After deleting simulation...");
 		}
 	}
@@ -96,7 +105,9 @@ public class SimulationDriver implements Listener {
 		// Printing start time:
 		System.out.println("-------------------------");
 		System.out.println("Start date: " + new Date());
-		//System.out.println("Executing Test: " + args[0] + "," + args[1] + ","		+ args[2] + "," + args[3] + "," + args[4] + "," + args[5] + ","				+ args[6] + "," + args[7] + "," + args[8]);
+		// System.out.println("Executing Test: " + args[0] + "," + args[1] + ","
+		// + args[2] + "," + args[3] + "," + args[4] + "," + args[5] + "," +
+		// args[6] + "," + args[7] + "," + args[8]);
 
 		// Creating simulation driver
 		SimulationDriver simulationDriver = new SimulationDriver();
@@ -108,10 +119,8 @@ public class SimulationDriver implements Listener {
 				Double.parseDouble(args[6]), Double.parseDouble(args[7]),
 				args[8]));
 
-		
-		
 		System.out.println("End date: " + new Date());
-		
+
 		System.exit(0);
 	}
 
@@ -138,33 +147,29 @@ public class SimulationDriver implements Listener {
 
 		return simulation;
 	}
-	
-	public void printToFile(String name,int gridSpacing, int simulationTimeStep, int simulationLength, int temporalAccuracy,
-			int geoAccuracy, int precision, double tilt, double eccentricity, long totaltime, double memused )
-	{
-		
-		String fileIdentifier =name;
-		File mem_file = new File(System.getProperty("user.home") + System.getProperty("file.separator") + "heatedplanet" + System.getProperty("file.separator") + fileIdentifier +".csv");
-		 
+
+	public void printToFile(String name, int gridSpacing,
+			int simulationTimeStep, int simulationLength, int temporalAccuracy,
+			int geoAccuracy, int precision, double tilt, double eccentricity,
+			long totaltime, double memused) {
+		String fileIdentifier = name;
+		File mem_file = new File(System.getProperty("user.home")
+				+ System.getProperty("file.separator") + "heatedplanet"
+				+ System.getProperty("file.separator") + fileIdentifier
+				+ ".csv");
+
 		if (!mem_file.exists()) {
 			try {
 				mem_file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-			catch (IOException e) {
-       		e.printStackTrace();
-			}
-       	
-			try
-			{
-				FileWriter writer = new FileWriter(mem_file.getAbsoluteFile(), true);
-				
-				
-				
-				
-				
-				writer.append("Grid Spacing"+",");
-				
-				writer.append("Grid Spacing");				
+
+			try {
+				FileWriter writer = new FileWriter(mem_file.getAbsoluteFile(),
+						true);
+
+				writer.append("Grid Spacing");
 				writer.append(',');
 				writer.append("Eccentricity");
 				writer.append(',');
@@ -184,41 +189,34 @@ public class SimulationDriver implements Listener {
 				writer.append(',');
 				writer.append("Memory used");
 				writer.append("\n");
-    	
-			
-				writer.append("\""+gridSpacing+ "\"");
+
+				writer.append("\"" + gridSpacing + "\"");
 				writer.append(',');
-				writer.append("\""+simulationTimeStep+ "\"");
+				writer.append("\"" + simulationTimeStep + "\"");
 				writer.append(',');
-				writer.append("\""+simulationLength+ "\"");
+				writer.append("\"" + simulationLength + "\"");
 				writer.append(',');
-				writer.append("\""+temporalAccuracy+ "\"");
+				writer.append("\"" + temporalAccuracy + "\"");
 				writer.append(',');
-				writer.append("\""+geoAccuracy+ "\"");
+				writer.append("\"" + geoAccuracy + "\"");
 				writer.append(',');
-				writer.append("\""+precision+ "\"");
+				writer.append("\"" + precision + "\"");
 				writer.append(',');
-				writer.append("\""+tilt+ "\"");
+				writer.append("\"" + tilt + "\"");
 				writer.append(',');
-				writer.append("\""+eccentricity+ "\"");
+				writer.append("\"" + eccentricity + "\"");
 				writer.append(',');
-				writer.append("\""+totaltime+ "\"");
+				writer.append("\"" + totaltime + "\"");
 				writer.append(',');
-				writer.append("\""+memused+ "\"");
+				writer.append("\"" + memused + "\"");
 				writer.append(',');
 				writer.append("\n");
-				
+
 				writer.flush();
 				writer.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
-			
 		}
 	}
-
-	
-	
-	
 }
