@@ -1,8 +1,5 @@
 package PlanetSim;
 
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
 import presentation.Gui;
 import app.conf.BootStrap;
 
