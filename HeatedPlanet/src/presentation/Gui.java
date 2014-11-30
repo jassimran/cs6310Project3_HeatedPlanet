@@ -552,7 +552,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		showOrbitButton.setActionCommand(ACTION_SHOW_ORBIT);
 		showOrbitButton.addActionListener(this);
 		showOrbitButton.setEnabled(true);
-		showOrbitButton.setPreferredSize(new Dimension(90,20));
+		showOrbitButton.setPreferredSize(new Dimension(100,20));
 		
 		layout.putConstraint(SpringLayout.WEST, showOrbitButton, 35, SpringLayout.EAST, orbitalPos);
 		layout.putConstraint(SpringLayout.NORTH, showOrbitButton, 4, SpringLayout.SOUTH, simTime);
