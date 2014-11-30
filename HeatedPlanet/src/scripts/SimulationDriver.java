@@ -48,11 +48,14 @@ public class SimulationDriver implements Listener {
 			// get simulation
 			Simulation simulation = PersistenceService.getInstance().findBySimulationName(simulationSettings.getName());
 			
+			// perform garbage collection
+			Runtime.getRuntime().gc();
+			
 			// print simulation metrics
 			System.out.println("Simulation name: " + simulation.getName());
-			System.out.println("Total number of simulations (s): " + simulation.getTimeStepList().size());
-			System.out.println("Used memory in bytes (s): " + (double) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024));
-			System.out.println("Time in millis (s): " + (simulationEnd - simulationStart));
+			System.out.println("Total number of simulations: " + simulation.getTimeStepList().size());
+			System.out.println("Used memory in bytes: " + (double) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024));
+			System.out.println("Time in millis: " + (simulationEnd - simulationStart));
 			
 			// remove simulation
 			PersistenceService.getInstance().deleteSimulation(simulation);
