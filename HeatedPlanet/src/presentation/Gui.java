@@ -66,7 +66,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	static final int DEFAULT_SIM_DELAY = 200;
 	static final double DEFAULT_ECCENTRICITY = .0167;
 	static final double DEFAULT_AXIAL_TILT = 23.44;
-	static final int DEFAULT_TIME_STEP = 60;
+	static final int DEFAULT_TIME_STEP = 1440;
 	static final int DEFAULT_SIM_LENGTH = 12;
 
 	/*
@@ -701,11 +701,6 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
             if (orbitUI != null && orbitUI.isShowing()) {
             	orbitUI.setVisible(false);
             	orbitUI.dispose();
-            	System.out.println("------- IS orbit ui visible");
-            	System.out.println(orbitUI.isActive());
-            	System.out.println(orbitUI.isDisplayable());
-            	System.out.println(orbitUI.isEnabled());
-            	System.out.println(orbitUI.isShowing());
             }
             //reset the EarthPanel
             EarthPanel.reset();
