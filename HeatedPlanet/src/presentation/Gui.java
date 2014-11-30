@@ -66,7 +66,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	static final int DEFAULT_SIM_DELAY = 200;
 	static final double DEFAULT_ECCENTRICITY = .0167;
 	static final double DEFAULT_AXIAL_TILT = 23.44;
-	static final int DEFAULT_TIME_STEP = 1440;
+	static final int DEFAULT_TIME_STEP = 60;
 	static final int DEFAULT_SIM_LENGTH = 12;
 
 	/*
@@ -152,8 +152,6 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	private boolean simcontrol;
 	private boolean prescontrol;
 	private int buffer;
-	
-	private boolean isStopped = true;
 	
 	private Gui(boolean simthread, boolean presthread, boolean simcontrol, boolean prescontrol, int buffer) {
 		super("EarthSim");
@@ -664,8 +662,6 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 			stopButton.setEnabled(false);
 			//enable the show orbit button
 			showOrbitButton.setEnabled(true);
-			//set stopped flag to false since it is running now
-			isStopped = false;
 			// run simulation
 			runSimulation();
 		} else if (ACTION_PAUSE.equals(command)) {
@@ -689,8 +685,6 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
         } else if (ACTION_STOP.equals(command)) {
             //enable all controls
             this.setEnableAllUserOptions(true);
-            //setting isStopped to true
-            isStopped = true;
             pauseButton.setText(ACTION_PAUSE);
             pauseButton.setActionCommand(ACTION_PAUSE);
             // reset pause button
@@ -701,6 +695,8 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
             runButton.setEnabled(true);
             // terminate simulation
             stopSimulation();
+            //disable the show orbit button
+			showOrbitButton.setEnabled(false);
             //terminate the orbit UI if any
             if (orbitUI != null && orbitUI.isShowing()) {
             	orbitUI.setVisible(false);
@@ -743,12 +739,9 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 				
 				queryInterfaceUI.addWindowListener(new WindowAdapter() {
 					public void windowClosing(WindowEvent we) {
-						System.out.println("----------- IS STOPPED: " + isStopped + " = " + isStoppedTemp());
-						enableInputMethods(true);
-					}
-					
-					public void windowClosed(WindowEvent we) {
-						System.out.println("Closed orbit UI");
+						setEnableAllUserOptions(true);
+						
+						runButton.setEnabled(true);
 					}
 				});
 			}
@@ -764,22 +757,13 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 				
 				orbitUI.addWindowListener(new WindowAdapter() {
 					public void windowClosing(WindowEvent we) {
-						System.out.println("----------- IS STOPPED: " + isStopped + " = " + isStoppedTemp());
 						showOrbitButton.setEnabled(true);
-					}
-					
-					public void windowClosed(WindowEvent we) {
-						System.out.println("Closed orbit UI");
 					}
 				});
 			}
 		}
 	}
 	
-	private boolean isStoppedTemp() {
-		return isStopped;
-	}
-
 	private volatile SimulationSettings simulationSettings = new SimulationSettings();
 	
 	/**
