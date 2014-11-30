@@ -983,28 +983,23 @@ ActionListener, ChangeListener, Listener {
 		}
 		else if(command.equals("reset"))
 		{
-		
-			
+			//if output panel is there remove it
+			if(this.getContentPane().getComponentCount() == 2)
+			{
+			 this.getContentPane().remove(outputScroller);
+		     this.getContentPane().setPreferredSize(new Dimension(800, 620));
+			 this.pack();
+			}
 			//remove items from comboBox, clear Radio Buttons.
 			nameSpinner.removeAllItems();
 			enableOptions(false);
 			runQuery.setEnabled(false);
-			if(byNameButton.isSelected())
-			{
-				byNameButton.setSelected(false);
-			}
-			if(byPFButton.isSelected())
-			{
-				byPFButton.setSelected(false);
-			}
-			if(earthButton.isSelected())
-			{
-				earthButton.setSelected(false);
-			}
-			if(parametersButton.isSelected())
-			{
-				parametersButton.setSelected(false);
-			}
+			byNameButton.setSelected(false);
+			byPFButton.setSelected(false);
+			earthButton.setSelected(false);
+			parametersButton.setSelected(false);
+			qrybuttonGroup1.clearSelection();
+	        regionbuttonGroup.clearSelection();
 			setEnableAllUserOptions(false);
 			minTempCheckbox.setSelected(false);
 	        meanTempRegionCheckbox.setSelected(false);
@@ -1107,7 +1102,7 @@ ActionListener, ChangeListener, Listener {
 		}
     }
 	private void displayQueryResults() {
-		JScrollPane outputScroller = new JScrollPane();
+		outputScroller = new JScrollPane();
 		JPanel newoutput = new JPanel(new BorderLayout());
 		newoutput = createOutputGui();
 			
@@ -1220,7 +1215,7 @@ ActionListener, ChangeListener, Listener {
     private JPanel mainPanel = new JPanel();
     private JPanel namePFvaluePanel;
     private JLabel comboxLabel;
-
+    private JScrollPane outputScroller;
 
 
 

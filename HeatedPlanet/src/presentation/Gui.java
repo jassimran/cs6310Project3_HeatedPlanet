@@ -545,25 +545,27 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		layout.putConstraint(SpringLayout.NORTH, simTime, 1, SpringLayout.NORTH, simTimePanel);
 		simTimePanel.add(simTime);		
 		
-		orbitalPos = new JLabel("Dist from sun: 147.5 million km");
+		orbitalPos = new JLabel("Dist from sun: Not available yet");
+		
 		layout.putConstraint(SpringLayout.WEST, orbitalPos, 5, SpringLayout.WEST, simTimePanel);
 		layout.putConstraint(SpringLayout.NORTH, orbitalPos, 4, SpringLayout.SOUTH, simTime);
 		simTimePanel.add(orbitalPos);
 		
 		showOrbitButton.setActionCommand(ACTION_SHOW_ORBIT);
 		showOrbitButton.addActionListener(this);
-		showOrbitButton.setEnabled(false);
-		showOrbitButton.setPreferredSize(new Dimension(90,20));
+
+		showOrbitButton.setEnabled(true);
+		showOrbitButton.setPreferredSize(new Dimension(100,20));
 		
 		layout.putConstraint(SpringLayout.WEST, showOrbitButton, 35, SpringLayout.EAST, orbitalPos);
 		layout.putConstraint(SpringLayout.NORTH, showOrbitButton, 4, SpringLayout.SOUTH, simTime);
 		simTimePanel.add(showOrbitButton);
 		
-		rotationalPos = new JLabel("Position: ");
+		rotationalPos = new JLabel("Latitude : "+ "Not available yet");
 		layout.putConstraint(SpringLayout.WEST, rotationalPos, 5, SpringLayout.WEST, simTimePanel);
 		layout.putConstraint(SpringLayout.NORTH, rotationalPos, 4, SpringLayout.SOUTH, orbitalPos);
 		simTimePanel.add(rotationalPos);
-		rotationalPosResult = new JLabel("Latitude : "+DEFAULT_AXIAL_TILT+"  Longitude: 0");	
+		rotationalPosResult = new JLabel("  Longitude: Not available yet");	
 		layout.putConstraint(SpringLayout.WEST, rotationalPosResult, 5, SpringLayout.EAST, rotationalPos);
 		layout.putConstraint(SpringLayout.NORTH, rotationalPosResult, 4, SpringLayout.SOUTH, orbitalPos);
 		simTimePanel.add(rotationalPosResult);
@@ -882,7 +884,8 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 					.getTime()));
 			
 			orbitalPos.setText("Dist from Sun = "+String.valueOf(distFromSun)+ " million km");
-			rotationalPosResult.setText("Lat: "+ String.valueOf(latitude) + " Long: "+ String.valueOf(longitude));
+			rotationalPos.setText("Latitude: "+ String.valueOf(latitude) + "  degrees");
+			rotationalPosResult.setText("  Longitude: "+ String.valueOf(longitude) + "  degrees");
 			
 			if (orbitUI != null && orbitUI.isShowing()) {
 				orbitUI.updatePosition(coordinates);
