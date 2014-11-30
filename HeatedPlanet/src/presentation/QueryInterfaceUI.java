@@ -33,6 +33,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerListModel;
 import javax.swing.SwingUtilities;
@@ -160,7 +161,7 @@ ActionListener, ChangeListener, Listener {
 		firstPanel = new JPanel();
 		firstPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, Color.blue));
 		firstPanel.setLayout(new BoxLayout(firstPanel, BoxLayout.PAGE_AXIS));
-		//firstPanel.setPreferredSize(new Dimension(WIDTH_EDITS, HEIGHT));
+		
 		QueryInterfaceLabel = new javax.swing.JLabel();
         tableOptionsLabel = new javax.swing.JLabel();
         qrybuttonGroup1 = new ButtonGroup();
@@ -233,7 +234,7 @@ ActionListener, ChangeListener, Listener {
 		
 		//Top Panel
         JPanel topPanel = new JPanel();
-        //topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.PAGE_AXIS));
+        
 		topPanel.setLayout(new BorderLayout()); 
 		topPanel.setPreferredSize(new Dimension(200, HEIGHT-100));
 		BevelBorder raisedBevel = (BevelBorder) BorderFactory.createBevelBorder(BevelBorder.RAISED);
@@ -290,23 +291,19 @@ ActionListener, ChangeListener, Listener {
         Border valueBorder = BorderFactory.createTitledBorder("Matching Simulations ");
         namePFvaluePanel.setBorder(valueBorder);
         
-        //nameSpinner.setMaximumSize(new Dimension(EDIT_BOX_WIDTH, 2));
+        
         nameSpinner.setPreferredSize(new Dimension(250,25));
         nameSpinner.setLightWeightPopupEnabled(true);
-		//nameSpinner.setPopupVisible(true);
-		//nameSpinner.showPopup();
-        
+		
 
         namePFvaluePanel.add(simulationNameLabel);
         namePFvaluePanel.add(nameSpinner);
        
 
-        //nameSpinner.setMaximumSize(new Dimension(10, 1));
+       
         System.out.println("Combobox dimension: "+ nameSpinner.getSize());
       
        
-     
-        //namePFvaluePanel.setBorder(valueBorder);
         namePFPanel.add(namePFvaluePanel );
         
         
@@ -368,7 +365,7 @@ ActionListener, ChangeListener, Listener {
         Border regionoptionBorder = BorderFactory.createTitledBorder("Physical bounds ");
        
         regionPanel.setBorder(regionoptionBorder);
-       // Border optborder = BorderFactory.createCompoundBorder(raisedBevel, loweredBevel);
+       
       
         regionPanel.setBorder(BorderFactory.createCompoundBorder(raisedBevel, regionPanel.getBorder()));
 
@@ -436,7 +433,7 @@ ActionListener, ChangeListener, Listener {
         firstPanel.add(regionPanel, BorderLayout.CENTER);
         
         //Options panel
-       // JPanel optionsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+       
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BorderLayout());
         bottomPanel.setBorder(compborder);
@@ -447,7 +444,7 @@ ActionListener, ChangeListener, Listener {
         
         Border optionsBorder = BorderFactory.createTitledBorder("Include results for");
         optionsPanel.setBorder(optionsBorder);
-       // Border optborder = BorderFactory.createCompoundBorder(raisedBevel, loweredBevel);
+       
       
         optionsPanel.setBorder(BorderFactory.createCompoundBorder(raisedBevel, optionsPanel.getBorder()));
 
@@ -461,15 +458,13 @@ ActionListener, ChangeListener, Listener {
         
      
         
-        //optionsPanel.add(new JLabel("Include results for"));
+        
         optionsPanel.add(new JLabel(" "));
         JPanel optionlabelsPanel = new JPanel();
         optionlabelsPanel.setLayout(new BoxLayout(optionlabelsPanel, BoxLayout.PAGE_AXIS));
-        //optionlabelsPanel.setPreferredSize(new Dimension(WIDTH_EDITS, HEIGHT));
         JPanel optionchkboxPanel = new JPanel();
         
         optionchkboxPanel.setLayout(new BoxLayout(optionchkboxPanel, BoxLayout.PAGE_AXIS));
-        //optionchkboxPanel.setPreferredSize(new Dimension(WIDTH_EDITS, HEIGHT));
         optionlabelsPanel.add(minTempLabel);
         optionlabelsPanel.add(new JLabel("     "));
         optionlabelsPanel.add(regionMeanTempLabel);
@@ -507,12 +502,10 @@ ActionListener, ChangeListener, Listener {
         JPanel runresetPanel = new JPanel();
         runresetPanel.setLayout(new BoxLayout(runresetPanel, BoxLayout.LINE_AXIS));
         runresetPanel.setPreferredSize(new Dimension(WIDTH_EDITS+50, 150));
-        //optionsPanel.setPreferredSize(new Dimension(WIDTH_EDITS+50, HEIGHT));
+        
         runresetPanel.setBorder(compborder);
        
 
-        //Border runPanelborder = BorderFactory.createCompoundBorder(raisedBevel, loweredBevel);
-        //runresetPanel.setBorder(runPanelborder);
 
         runQuery.setText("Run Query");
         runQuery.addActionListener(this);
@@ -535,15 +528,14 @@ ActionListener, ChangeListener, Listener {
         
        
         runresetPanel.add(new JLabel("            "));
-        runresetPanel.add(animate);
+        //runresetPanel.add(animate);
         
         runQuery.setEnabled(false);
         animate.setEnabled(false);
         optionsPanel.add(optionlabelsPanel);
         optionsPanel.add(new JLabel("                 "));
         optionsPanel.add(optionchkboxPanel);
-        //optionsPanel.add(new JLabel("                 "));
-        //optionsPanel.add(runresetPanel);
+        
         
         
         
@@ -552,7 +544,7 @@ ActionListener, ChangeListener, Listener {
         bottomPanel.add(optionsPanel, BorderLayout.WEST);
         bottomPanel.add(runresetPanel, BorderLayout.CENTER);
         firstPanel.add(bottomPanel, BorderLayout.SOUTH);
-        //mainPanel.add(firstPanel, BorderLayout.WEST);
+       
         this.getContentPane().add(firstPanel);
         pack();
     }
@@ -565,15 +557,19 @@ ActionListener, ChangeListener, Listener {
     	this.getContentPane().setPreferredSize( new Dimension(1320, 620));
     	int EDIT_BOX_WIDTH = 4;
 		int LABEL_HEIGHT = 26;
+		int tempcnt=0;
 		
     	JPanel Panel = new JPanel();
+    	//calculate number of rows in the output, use this determine preferred size.
+    	ht =0;
+        
         
     	//To make content scroll, these dimension should be set to (520, 100020)
 		Panel.setLayout(new BoxLayout(Panel, BoxLayout.PAGE_AXIS));
-		Panel.setPreferredSize(new Dimension(520, 100020));
+
+		jtxtArea = new JTextArea();
 		
-		
-		
+	
 		 if(minTempCheckbox.isSelected())
 		 {
 			 minTempLabel = new javax.swing.JLabel("1.Minimum temperature for region: " );
@@ -582,14 +578,14 @@ ActionListener, ChangeListener, Listener {
 		
 			 q1 = res.getMinTempCell();
 		
-	
 		
-		
-			 Panel.add(minTempLabel);
-			 Panel.add(new JLabel("Min Temperature: "+q1.getTemperature()+""));
-			 Panel.add(new JLabel("Reading Time: "+q1.getSimulatedDate()+""));
-			 Panel.add(new JLabel("Location(latitude/longitude): "+q1.getLatitude()+"/"+q1.getLongitude()));
-			 Panel.add(new JLabel("****************"));
+			
+			 jtxtArea.setText("1.Minimum temperature for region: "+"\n" );
+			 jtxtArea.append("Min Temperature: "+q1.getTemperature()+"\n");
+			 jtxtArea.append("Reading Time: "+q1.getSimulatedDate()+"\n");
+			 jtxtArea.append("Location(latitude/longitude): "+q1.getLatitude()+"/"+q1.getLongitude()+"\n");
+			 jtxtArea.append("****************"+"\n");
+			 ht += 6;
 		
 		 }
 		 if(maxTempRegionCheckbox.isSelected())
@@ -599,11 +595,14 @@ ActionListener, ChangeListener, Listener {
 			 maxTempLabel = new javax.swing.JLabel("2. Maximum Temperature for region: ");
 		
 		
-			 Panel.add(maxTempLabel);
-			 Panel.add(new JLabel("Max Temperature: "+ q2.getTemperature()+""));
-			 Panel.add(new JLabel("Reading Time:" + q2.getSimulatedDate()+""));
-			 Panel.add(new javax.swing.JLabel("Location(latitude/longitude): "+ q2.getLatitude()+"/"+q2.getLongitude()));
-			 Panel.add(new JLabel("****************"));
+			
+			 jtxtArea.append("2. Maximum Temperature for region: "+"\n" );
+			 jtxtArea.append("Max Temperature: "+ q2.getTemperature()+"\n" );
+			 jtxtArea.append("Reading Time:" + q2.getSimulatedDate()+"\n" );
+			 jtxtArea.append("Location(latitude/longitude): "+ q2.getLatitude()+"/"+q2.getLongitude()+"\n" );
+			 jtxtArea.append("****************"+"\n" );
+			 
+			 ht += 6;
 		 }
 		 if(meanTempRegionCheckbox.isSelected())
 		 {
@@ -611,73 +610,99 @@ ActionListener, ChangeListener, Listener {
 		 	 regionMeanTempLabel = new javax.swing.JLabel("Mean Temperature over region: ");
 			 regionMeanTempLabel2 = new JLabel("Date, Temperature");
 		
-			 Panel.add(regionMeanTempLabel);
-			 Panel.add(regionMeanTempLabel2);
+			
+			 
+			 jtxtArea.append("Mean Temperature over region: "+"\n" );
+			 jtxtArea.append("Date, Temperature"+"\n" );
+			 
 		
 			 List<QueryCell> meanQcell1 = res.getMeanTempOverRegion();
 			 System.out.println("Mean temp over region query cell is empty?"+ meanQcell1.isEmpty());
 			 for(QueryCell qc1 : meanQcell1)
 			 {
-				 Panel.add(new JLabel(qc1.getSimulatedDate()+"         " +qc1.getTemperature()));
-			
+				 
+				 jtxtArea.append(qc1.getSimulatedDate()+"         " +qc1.getTemperature()+"\n");
+				 ht += 1;
 			 }
-			 Panel.add(new JLabel("****************"));
+			
+			 jtxtArea.append("****************"+"\n");
+			 ht += 6;
 		}
 		if(meanTempTimeCheckbox.isSelected())
 		{
 			
-			timeMeanTempLabel = new javax.swing.JLabel("Mean Temperature during over time:");
+			timeMeanTempLabel = new javax.swing.JLabel("Mean Temperature over time:");
 			timeMeanTempLabel2 = new JLabel("Latitude/Longitude, Temperature");
 		
-			Panel.add(timeMeanTempLabel);
-			Panel.add(timeMeanTempLabel2);
+			
+			
+			jtxtArea.append("Mean Temperature during over time:"+"\n");
+			jtxtArea.append("Latitude/Longitude, Temperature"+"\n");
 		
 			List<QueryCell> meanQcell2 = res.getMeanTempOverTime();
 			for(QueryCell qc2 : meanQcell2)
 			{
-				Panel.add(new JLabel(qc2.getLatitude()+"/"+qc2.getLongitude() + "    " + qc2.getTemperature()));
-				Panel.add(new JLabel("                                            "));
+				
+				jtxtArea.append(qc2.getLatitude()+"/"+qc2.getLongitude() + "    " + qc2.getTemperature()+"\n");
+				ht += 1;
 			}
-			Panel.add(new JLabel("****************"));
 			
+			jtxtArea.append("****************"+"\n");
+			ht += 6;
 		}
 		if(tempsTimeRegionCheckbox.isSelected())
 		{
 				
-			JPanel gridPanel = new JPanel(new BorderLayout());
-			gridPanel.setPreferredSize(new Dimension(WIDTH_EDITS, 400));
-		
+			
 		
 			tempTimeRegionLabel = new javax.swing.JLabel("Grid Temperatures:");
-			Panel.add(tempTimeRegionLabel);
-			Panel.add(new JLabel("                                                                         "));
+					
+			jtxtArea.append("Grid Temperatures:"+"\n");
+			jtxtArea.append("                                                                         "+"\n");
 			//get data from each Grid
 		
 			List<QueryGrid> qryGrids = res.getQueryGrids();
 			int gridcount =0;
+			
 			for(QueryGrid qg : qryGrids)
 			{
 				gridcount++;
-				tempTimeRegionLabel1 = new javax.swing.JLabel("== Grid "+ gridcount+ " =="+ qg.getSimulatedDate());
-		
-				Panel.add(tempTimeRegionLabel1);
-				Panel.add(new JLabel("                                         "));
-				Panel.add(new JLabel("Lat/Long,               Temperature"));
+				tempTimeRegionLabel1 = new javax.swing.JLabel("== Grid "+ gridcount+ " =="+ qg.getSimulatedDate()+"\n");
+				
+				jtxtArea.append("== Grid "+ gridcount+ " =="+ qg.getSimulatedDate()+"\n");
+				jtxtArea.append("                                         "+"\n");
+				jtxtArea.append("Lat/Long,               Temperature"+"\n");
 				List<QueryCell> qcells = qg.getQueryCells();
 				for (QueryCell qcs : qcells)
 				{
-					Panel.add(new JLabel(qcs.getLatitude() + "/" + qcs.getLongitude() + "         " +qcs.getTemperature()+ " "));
-				
+					
+					jtxtArea.append(qcs.getLatitude() + "/" + qcs.getLongitude() + "         " +qcs.getTemperature()+"\n");
+					
 				}
+				
+				ht += qryGrids.size()*qcells.size();
+			
 			}
+			
+			ht += 3;
 		
 		}
 		
-		System.out.println("Inside createOutputGui method");	
-       
-	   
-	     pack();
-	   
+		
+		if (ht < 2147483647){
+			Panel.setPreferredSize(new Dimension(520, ht+100));
+					
+			
+		}
+		else
+		{
+			Panel.setPreferredSize(new Dimension(520, 2147483647));
+			System.out.println("#of rows is more than max");
+			
+			
+		}
+		 jtxtArea.setEditable(false);
+		 Panel.add(jtxtArea);
 	     return Panel;
     	
     }
@@ -694,52 +719,7 @@ ActionListener, ChangeListener, Listener {
         tempsTimeRegionCheckbox.setEnabled(bEnable);
         
     }
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-    	getInstance();//.launchNewQueryInterface();
-    }
-
-    	public void launchNewQueryInterface() {
-    		getInstance();
-//       try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : 
-//
-//javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(QueryInterfaceUI.class.getName
-//
-//()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(QueryInterfaceUI.class.getName
-//
-//()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(QueryInterfaceUI.class.getName
-//
-//()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(QueryInterfaceUI.class.getName
-//
-//()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        //</editor-fold>
-//
-//        /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new QueryInterfaceUI().setVisible(true);
-//               
-//                
-//            }
-//        });
-    }
+   
     
     //check if any of the  display results option checkboxes are selected
     public boolean optionsSelected()
@@ -751,23 +731,7 @@ ActionListener, ChangeListener, Listener {
     	}
     	return selected;
     }
-    //Add output to JFrame
-    
-    public void addOutputToFrame()
-    {
-    	JScrollPane outputScroller = new JScrollPane();
-    	JPanel newoutput = new JPanel(new BorderLayout());
-    	newoutput = createOutputGui();
-    				    
-    	//JViewport vw = outputScroller.getViewport();
-    	outputScroller.getViewport().add(newoutput);
-        System.out.println(outputScroller.getViewport().getExtentSize());
-
-    	this.getContentPane().setPreferredSize(new Dimension(1320, 620));
-    	this.getContentPane().add(outputScroller, BorderLayout.EAST);
-    	this.pack();
-    	this.setVisible(true);
-    }
+   
     //set simulation start and end time.
     
     public void setSimulationPeriod(String start, String end)
@@ -984,33 +948,31 @@ ActionListener, ChangeListener, Listener {
 		else if(command.equals("reset"))
 		{
 		
-			
+			//if output panel is there remove it
+			if(this.getContentPane().getComponentCount() == 2)
+			{
+			 this.getContentPane().remove(outputScroller);
+		     this.getContentPane().setPreferredSize(new Dimension(800, 620));
+			 this.pack();
+			}
 			//remove items from comboBox, clear Radio Buttons.
 			nameSpinner.removeAllItems();
 			enableOptions(false);
 			runQuery.setEnabled(false);
-			if(byNameButton.isSelected())
-			{
-				byNameButton.setSelected(false);
-			}
-			if(byPFButton.isSelected())
-			{
-				byPFButton.setSelected(false);
-			}
-			if(earthButton.isSelected())
-			{
-				earthButton.setSelected(false);
-			}
-			if(parametersButton.isSelected())
-			{
-				parametersButton.setSelected(false);
-			}
+			byNameButton.setSelected(false);
+			byPFButton.setSelected(false);
+			earthButton.setSelected(false);
+			parametersButton.setSelected(false);
+			qrybuttonGroup1.clearSelection();
+	        regionbuttonGroup.clearSelection();
 			setEnableAllUserOptions(false);
 			minTempCheckbox.setSelected(false);
 	        meanTempRegionCheckbox.setSelected(false);
 	        maxTempRegionCheckbox.setSelected(false);
 	        meanTempTimeCheckbox.setSelected(false);
 	        tempsTimeRegionCheckbox.setSelected(false);
+	       
+	       
 		}
 		else if(command.equals("filter"))
 		{
@@ -1020,10 +982,15 @@ ActionListener, ChangeListener, Listener {
 			if(byPFButton.isSelected())
 			{
 				
+				
 			nameSpinner.removeAllItems();
 			enableOptions(true);
 			runQuery.setEnabled(true);
-			
+			 //if sim start or end fields are null, throw a message
+	        if(simulationStartField.getText()==null || simulationEndField.getText() ==null)
+	        {
+	        	JOptionPane.showMessageDialog(null, "Please enter a value for simulation start and end");
+	        }
 			
 			try
 			{
@@ -1057,6 +1024,7 @@ ActionListener, ChangeListener, Listener {
             {
             	System.out.println(simulationEndField.getText());
     	        simStart = DATE_FORMAT.parse(simulationStartField.getText());
+    	       
     	        simEnd = DATE_FORMAT.parse(simulationEndField.getText());    	        
             }
             catch(Exception pe)
@@ -1074,6 +1042,7 @@ ActionListener, ChangeListener, Listener {
 				
 				System.out.println("Axis, tilt and end date "+ tilt +" " +  eccentricity + " "+ simEnd);
 				lst = control.getSimulationListByUserInputs(tilt, eccentricity,simEnd);
+				
 				for(String s : lst)
 				{
 					nameSpinner.addItem(s);
@@ -1107,7 +1076,7 @@ ActionListener, ChangeListener, Listener {
 		}
     }
 	private void displayQueryResults() {
-		JScrollPane outputScroller = new JScrollPane();
+		outputScroller = new JScrollPane();
 		JPanel newoutput = new JPanel(new BorderLayout());
 		newoutput = createOutputGui();
 			
@@ -1168,7 +1137,39 @@ ActionListener, ChangeListener, Listener {
         
   	}
    
-  
+
+
+
+
+
+    @Override
+	public void notify(EventType e) {
+		// TODO: Implement 
+		if(e == EventType.SimulationFinishedEvent){
+			SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							res = control.computeQueryResults(simulationQuery);
+							if(res == null)
+								throw new RuntimeException("The query result should not be null at this point.");
+
+							displayQueryResults();
+						}
+					});
+		}
+		
+	}
+
+	@Override
+	public void addListener(Listener l) {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public void removeListener(Listener l) {
+		throw new NotImplementedException();
+	}
+    
+    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel QueryInterfaceLabel;
@@ -1176,7 +1177,7 @@ ActionListener, ChangeListener, Listener {
 
   
    
-   
+    private JTextArea jtxtArea;
     private javax.swing.JPanel firstPanel;
     private javax.swing.JTextField latitudeFromField;
     private javax.swing.JTextField axisTiltField;
@@ -1220,41 +1221,11 @@ ActionListener, ChangeListener, Listener {
     private JPanel mainPanel = new JPanel();
     private JPanel namePFvaluePanel;
     private JLabel comboxLabel;
+    private int ht;
+    private JScrollPane outputScroller;
 
 
 
-
-
-
-
-    @Override
-	public void notify(EventType e) {
-		// TODO: Implement 
-		if(e == EventType.SimulationFinishedEvent){
-			SwingUtilities.invokeLater(new Runnable() {
-						public void run() {
-							res = control.computeQueryResults(simulationQuery);
-							if(res == null)
-								throw new RuntimeException("The query result should not be null at this point.");
-
-							displayQueryResults();
-						}
-					});
-		}
-		
-	}
-
-	@Override
-	public void addListener(Listener l) {
-		throw new NotImplementedException();
-	}
-
-	@Override
-	public void removeListener(Listener l) {
-		throw new NotImplementedException();
-	}
-    
-    
     // End of variables declaration//GEN-END:variables
     
            
