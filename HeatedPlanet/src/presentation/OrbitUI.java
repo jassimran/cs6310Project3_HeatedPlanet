@@ -100,6 +100,13 @@ public class OrbitUI extends JFrame {
 			instance = null;
 		}
 	}
+	
+	@Override
+	public void dispose() {
+		super.dispose();
+		
+		
+	}
 
 	private void createGui() {
 		Dimension dimension = new Dimension(PREFERRED_WIDTH, PREFERRED_HEIGHT);
