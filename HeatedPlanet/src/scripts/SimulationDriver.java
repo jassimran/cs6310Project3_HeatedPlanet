@@ -1,6 +1,6 @@
 package scripts;
 
-import java.io.File;
+import java.io.*;
 import java.util.Date;
 
 import services.PersistenceService;
@@ -71,6 +71,8 @@ public class SimulationDriver implements Listener {
 			System.out.println("Used memory in bytes: " + totalMemory);
 			System.out.println("File size in bytes: " + fileSize);
 			System.out.println("Execution time in millis: " + executionTime);
+			
+			printToFile(simulation.getName(), simulationSettings.getGridSpacing(), simulationSettings.getSimulationTimeStep(), simulationSettings.getSimulationLength(), simulationSettings.getTemporalAccuracy(),  simulationSettings.getGeoAccuracy(),  simulationSettings.getPrecision(),  simulationSettings.getAxialTilt(),  simulationSettings.getEccentricity(), executionTime, totalMemory);
 
 			// remove simulation
 			PersistenceService.getInstance().deleteSimulation(simulation);
@@ -92,9 +94,7 @@ public class SimulationDriver implements Listener {
 		// Printing start time:
 		System.out.println("-------------------------");
 		System.out.println("Start date: " + new Date());
-		System.out.println("Executing Test: " + args[0] + "," + args[1] + ","
-				+ args[2] + "," + args[3] + "," + args[4] + "," + args[5] + ","
-				+ args[6] + "," + args[7] + "," + args[8]);
+		//System.out.println("Executing Test: " + args[0] + "," + args[1] + ","		+ args[2] + "," + args[3] + "," + args[4] + "," + args[5] + ","				+ args[6] + "," + args[7] + "," + args[8]);
 
 		// Creating simulation driver
 		SimulationDriver simulationDriver = new SimulationDriver();
@@ -106,6 +106,8 @@ public class SimulationDriver implements Listener {
 				Double.parseDouble(args[6]), Double.parseDouble(args[7]),
 				args[8]));
 
+		
+		
 		System.out.println("End date: " + new Date());
 	}
 
@@ -131,5 +133,85 @@ public class SimulationDriver implements Listener {
 		}
 
 		return simulation;
+	}
+	public void printToFile(String name,int gridSpacing, int simulationTimeStep, int simulationLength, int temporalAccuracy,
+			int geoAccuracy, int precision, double tilt, double eccentricity, long totaltime, double memused )
+	{
+		
+		String fileIdentifier =name;
+		File mem_file = new File(System.getProperty("user.home") +"\\heatedplanet\\"+ fileIdentifier +".csv");
+		StringBuffer sb = new StringBuffer();
+	     
+	    
+		 System.out.println("memory "+ mem_file.toString());
+		 
+		if (!mem_file.exists()) {
+			try {
+				mem_file.createNewFile();
+			}
+			catch (IOException e) {
+       		e.printStackTrace();
+			}
+       	
+			try
+			{
+				FileWriter mem_fw = new FileWriter(mem_file.getAbsoluteFile());
+				
+				
+				PrintWriter writer = new PrintWriter( new BufferedWriter(mem_fw));
+				
+				
+				sb.append("Grid Spacing"+",");
+				
+				sb.append(",");
+				sb.append("Eccentricity,");
+				sb.append(",");
+				sb.append("Precision,");
+				sb.append(",");
+				sb.append("Temporal Accuracy,");
+				sb.append(",");
+				sb.append("Geographical Accuracy,");
+				sb.append(",");
+				sb.append("Simulation Name,");
+				sb.append(",");
+				sb.append("Simulation length,");
+				sb.append(",");
+				sb.append("Tilt,");
+				sb.append(",");
+				sb.append("Time taken,");
+				sb.append(",");
+				sb.append("Memory used");
+				sb.append("\n");
+    	
+			
+				sb.append(gridSpacing);
+				sb.append(",");
+				sb.append(simulationTimeStep );
+				sb.append(",");
+				sb.append(simulationLength);
+				sb.append(",");
+				sb.append(temporalAccuracy);
+				sb.append(",");
+				sb.append(geoAccuracy);
+				sb.append(",");
+				sb.append(precision);
+				sb.append(",");
+				sb.append(Double.toString(tilt));
+				sb.append(",");
+				sb.append(Double.toString(eccentricity));
+				sb.append(",");
+				sb.append(Long.toString(totaltime));
+				sb.append(",");
+				sb.append(Double.toString(memused));
+				sb.append("\n");
+				writer.println(sb.toString());
+				writer.flush();
+				writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			
+		}
 	}
 }
