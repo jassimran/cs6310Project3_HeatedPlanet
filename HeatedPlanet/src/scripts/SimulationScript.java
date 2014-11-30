@@ -12,121 +12,88 @@ public class SimulationScript {
 		List<SimulationSettings> simulations = new ArrayList<SimulationSettings>();
 		
 		// define simulations
-		
+		 
 		SimulationSettings bootStrapSimulation = SimulationSettingsFactory.createSimulationSettingsWithDefaults();
 		bootStrapSimulation.setName("BootStrap Simulation");
 		bootStrapSimulation.setSOption(false);
 		simulations.add(bootStrapSimulation);
 		
 		//Create simulations using createSimulations function.
-		
-		simulations.add(createSimulations(15,1500,12,100,100,7,23.44,0, "R1.1"));
-		simulations.add(createSimulations(15,1500,12,100,100,7,23.44,0.0167, "R1.2"));
-		simulations.add(createSimulations(15,1500,12,100,100,7,23.44,0.4, "R1.3"));
-		simulations.add(createSimulations(15,1500,12,100,100,7,23.44,0.8, "R1.4"));
-		simulations.add(createSimulations(15,1500,12,100,100,7,23.44,1, "R1.5"));
-		simulations.add(createSimulations(15,1500,12,100,100,7,-180,0.0167, "R1.6"));
-		simulations.add(createSimulations(15,1500,12,100,100,7,-60,0.0167, "R1.7"));
-		simulations.add(createSimulations(15,1500,12,100,100,7,0,0.0167, "R1.8"));
-		simulations.add(createSimulations(15,1500,12,100,100,7,23.44,0.0167, "R1.9"));
-		simulations.add(createSimulations(15,1500,12,100,100,7,60,0.0167, "R1.10"));
-		simulations.add(createSimulations(15,1500,12,100,100,7,180,0.0167, "R1.11"));
-		simulations.add(createSimulations(10,1500,12,100,100,7,23.44,0.0167, "R3.4"));
-		simulations.add(createSimulations(15,1500,12,100,100,7,23.44,0.0167, "R3.5"));
-		simulations.add(createSimulations(90,1500,12,100,100,7,23.44,0.0167, "R3.6"));
-		simulations.add(createSimulations(180,1500,12,100,100,7,23.44,0.0167, "R3.7"));
-		simulations.add(createSimulations(15,1500,12,100,100,7,23.44,0.0167, "R11.1"));
-		simulations.add(createSimulations(15,1500,12,100,100,7,23.44,0.0167, "R11.2"));
-		simulations.add(createSimulations(15,1500,12,100,100,7,23.44,0.0167, "R11.3"));
-		simulations.add(createSimulations(15,1500,12,100,100,7,23.44,0.0167, "R11.4"));
-		simulations.add(createSimulations(15,1500,12,100,100,7,23.44,0.0167, "R11.5"));
-		simulations.add(createSimulations(15,1500,12,1,100,7,23.44,0.0167, "R9.1"));
-		simulations.add(createSimulations(15,1500,12,25,100,7,23.44,0.0167, "R9.2"));
-		simulations.add(createSimulations(15,1500,12,50,100,7,23.44,0.0167, "R9.3"));
-		simulations.add(createSimulations(15,1500,12,75,100,7,23.44,0.0167, "R9.4"));
-		simulations.add(createSimulations(15,1500,12,100,100,7,23.44,0.0167, "R9.5"));
-		simulations.add(createSimulations(15,1500,12,100,1,7,23.44,0.0167, "R9.6"));
-		simulations.add(createSimulations(15,1500,12,100,25,7,23.44,0.0167, "R9.7"));
-		simulations.add(createSimulations(15,1500,12,100,50,7,23.44,0.0167, "R9.8"));
-		simulations.add(createSimulations(15,1500,12,100,75,7,23.44,0.0167, "R9.9"));
-		simulations.add(createSimulations(15,1500,12,100,100,7,23.44,0.0167, "R9.10"));
-		simulations.add(createSimulations(15,1500,12,100,100,0,23.44,0.0167, "R9.11"));
-		simulations.add(createSimulations(15,1500,12,100,100,2,23.44,0.0167, "R9.12"));
-		simulations.add(createSimulations(15,1500,12,100,100,4,23.44,0.0167, "R9.13"));
-		simulations.add(createSimulations(15,1500,12,100,100,7,23.44,0.0167, "R9.14"));
-		simulations.add(createSimulations(15,1500,12,100,100,14,23.44,0.0167, "R9.15"));
-		simulations.add(createSimulations(15,1500,24,100,100,7,23.44,0, "R12.1"));
-		simulations.add(createSimulations(15,1500,24,100,100,7,23.44,0.0167, "R12.2"));
-		simulations.add(createSimulations(15,1500,24,100,100,7,23.44,0.1, "R12.3"));
-		simulations.add(createSimulations(15,1500,24,100,100,7,23.44,0.3, "R12.4"));
-		simulations.add(createSimulations(15,1500,24,100,100,7,23.44,0.5, "R12.5"));
-		simulations.add(createSimulations(15,1500,24,100,100,7,23.44,0.8, "R12.6"));
-		simulations.add(createSimulations(15,1500,24,100,100,7,23.44,1, "R12.7"));
-		simulations.add(createSimulations(15,1500,24,100,100,7,-180,0.0167, "R12.8"));
-		simulations.add(createSimulations(15,1500,24,100,100,7,-45,0.0167, "R12.9"));
-		simulations.add(createSimulations(15,1500,24,100,100,7,0,0.0167, "R12.10"));
-		simulations.add(createSimulations(15,1500,24,100,100,7,23.44,0.0167, "R12.11"));
-		simulations.add(createSimulations(15,1500,24,100,100,7,45,0.0167, "R12.12"));
-		simulations.add(createSimulations(15,1500,24,100,100,7,90,0.0167, "R12.13"));
-		simulations.add(createSimulations(15,1500,24,100,100,7,180,0.0167, "R12.14"));
-		simulations.add(createSimulations(15,1500,24,100,100,7,-180,0, "R12.15"));
-		simulations.add(createSimulations(15,1500,24,100,100,7,-45,0.0167, "R12.16"));
-		simulations.add(createSimulations(15,1500,24,100,100,7,0,0.1, "R12.17"));
-		simulations.add(createSimulations(15,1500,24,100,100,7,23.44,0.3, "R12.18"));
-		simulations.add(createSimulations(15,1500,24,100,100,7,45,0.5, "R12.19"));
-		simulations.add(createSimulations(15,1500,24,100,100,7,90,0.8, "R12.20"));
-		simulations.add(createSimulations(15,1500,24,100,100,7,180,1, "R12.21"));
-		simulations.add(createSimulations(15,720,24,100,100,7,23.44,0.0167, "R13.4"));
-		simulations.add(createSimulations(15,1440,24,100,100,7,23.44,0.0167, "R13.5"));
-		simulations.add(createSimulations(15,43200,24,100,100,7,23.44,0.0167, "R13.6"));
-		simulations.add(createSimulations(15,259200,24,100,100,7,23.44,0.0167, "R13.7"));
-		simulations.add(createSimulations(15,720,24,100,100,7,23.44,0.0167, "R13.11"));
-		simulations.add(createSimulations(30,1440,24,100,100,7,23.44,0.0167, "R13.12"));
-		simulations.add(createSimulations(90,43200,24,100,100,7,23.44,0.0167, "R13.13"));
-		simulations.add(createSimulations(180,259200,24,100,100,7,23.44,0.0167, "R13.14"));
-		simulations.add(createSimulations(15,1500,12,100,100,0,23.44,0.0167, "R14.1"));
-		simulations.add(createSimulations(15,1500,12,100,100,2,23.44,0.0167, "R14.2"));
-		simulations.add(createSimulations(15,1500,12,100,100,4,23.44,0.0167, "R14.3"));
-		simulations.add(createSimulations(15,1500,12,100,100,7,23.44,0.0167, "R14.4"));
-		simulations.add(createSimulations(15,1500,12,100,100,14,23.44,0.0167, "R14.5"));
-		simulations.add(createSimulations(15,1500,12,1,1,7,23.44,0.0167, "R14.6"));
-		simulations.add(createSimulations(15,1500,12,25,25,7,23.44,0.0167, "R14.7"));
-		simulations.add(createSimulations(15,1500,12,50,50,7,23.44,0.0167, "R14.8"));
-		simulations.add(createSimulations(15,1500,12,75,75,7,23.44,0.0167, "R14.9"));
-		simulations.add(createSimulations(15,1500,12,100,100,7,23.44,0.0167, "R14.10"));
-		simulations.add(createSimulations(15,1500,12,1,1,0,23.44,0.0167, "R14.11"));
-		simulations.add(createSimulations(15,1500,12,25,25,2,23.44,0.0167, "R14.12"));
-		simulations.add(createSimulations(15,1500,12,50,50,4,23.44,0.0167, "R14.13"));
-		simulations.add(createSimulations(15,1500,12,75,75,7,23.44,0.0167, "R14.14"));
-		simulations.add(createSimulations(15,1500,12,100,100,14,23.44,0.0167, "R14.15"));
-		simulations.add(createSimulations(15,60,12,100,100,7,23.44,0.0167, "R5.1"));
-		simulations.add(createSimulations(15,360,12,100,100,7,23.44,0.0167, "R5.2"));
-		simulations.add(createSimulations(15,720,12,100,100,7,23.44,0.0167, "R5.3"));
-		simulations.add(createSimulations(15,1440,12,100,100,7,23.44,0.0167, "R5.4"));
-		simulations.add(createSimulations(15,2880,12,100,100,7,23.44,0.0167, "R5.5"));
-		simulations.add(createSimulations(15,43200,12,100,100,7,23.44,0.0167, "R5.6"));
-		simulations.add(createSimulations(15,259200,12,100,100,7,23.44,0.0167, "R5.7"));
-		simulations.add(createSimulations(15,1500,1,100,100,7,23.44,0.0167, "R7.1"));
-		simulations.add(createSimulations(15,1500,2,100,100,7,23.44,0.0167, "R7.2"));
-		simulations.add(createSimulations(15,1500,6,100,100,7,23.44,0.0167, "R7.3"));
-		simulations.add(createSimulations(15,1500,12,100,100,7,23.44,0.0167, "R7.4"));
-		simulations.add(createSimulations(15,1500,60,100,100,7,23.44,0.0167, "R7.5"));
-		simulations.add(createSimulations(15,1500,120,100,100,7,23.44,0.0167, "R7.6"));
-		simulations.add(createSimulations(15,1500,1200,100,100,7,23.44,0.0167, "R7.7"));
-		simulations.add(createSimulations(15,10,24,100,100,7,23.44,0.0167, "R13.1"));
-		simulations.add(createSimulations(15,60,24,100,100,7,23.44,0.0167, "R13.2"));
-		simulations.add(createSimulations(15,240,24,100,100,7,23.44,0.0167, "R13.3"));
-		simulations.add(createSimulations(1,10,24,100,100,7,23.44,0.0167, "R13.8"));
-		simulations.add(createSimulations(5,60,24,100,100,7,23.44,0.0167, "R13.9"));
-		simulations.add(createSimulations(10,240,24,100,100,7,23.44,0.0167, "R13.10"));
-		simulations.add(createSimulations(1,1500,12,100,100,7,23.44,0.0167, "R3.1"));
-		simulations.add(createSimulations(3,1500,12,100,100,7,23.44,0.0167, "R3.2"));
-		simulations.add(createSimulations(5,1500,12,100,100,7,23.44,0.0167, "R3.3"));
-
+		simulations.add(createSimulations(15, 1500, 12, 100, 100, 7, 23.44, 0, "R1.2"));
+		simulations.add(createSimulations(15, 1500, 12, 100, 100, 7, 23.44, .0167, "R1.2"));
+		simulations.add(createSimulations(15, 1500, 12, 100, 100, 7, 23.44, .4, "R1.3"));
+		simulations.add(createSimulations(15, 1500, 12, 100, 100, 7, 23.44, .8, "R1.4"));
+		simulations.add(createSimulations(15, 1500, 12, 100, 100, 7, 23.44, 1, "R1.5"));
 		
 		
 		
+		/*
 		
+		SimulationSettings simulation1 = SimulationSettingsFactory.createSimulationSettingsWithDefaults();
+		simulation1.setName("R1.1");
+		simulation1.setGridSpacing(15);
+		simulation1.setSimulationTimeStep(1500);
+		simulation1.setSimulationLength(12);
+		simulation1.setTemporalAccuracy(100);
+		simulation1.setGeoAccuracy(100);
+		simulation1.setPrecision(7);
+		simulation1.setAxialTilt(23.44);
+		simulation1.setEccentricity(0);
+		simulation1.setSOption(false);
+		simulations.add(simulation1);
+		
+		SimulationSettings simulation2 = SimulationSettingsFactory.createSimulationSettingsWithDefaults();
+		simulation2.setName("R1.2");
+		simulation2.setGridSpacing(15);
+		simulation2.setSimulationTimeStep(1500);
+		simulation2.setSimulationLength(12);
+		simulation2.setTemporalAccuracy(100);
+		simulation2.setGeoAccuracy(100);
+		simulation2.setPrecision(7);
+		simulation2.setAxialTilt(23.44);
+		simulation2.setEccentricity(0.0167);
+		simulation2.setSOption(false);
+		simulations.add(simulation2);
+		
+		SimulationSettings simulation3 = SimulationSettingsFactory.createSimulationSettingsWithDefaults();
+		simulation3.setName("R1.3");
+		simulation3.setGridSpacing(15);
+		simulation3.setSimulationTimeStep(1500);
+		simulation3.setSimulationLength(12);
+		simulation3.setTemporalAccuracy(100);
+		simulation3.setGeoAccuracy(100);
+		simulation3.setPrecision(7);
+		simulation3.setAxialTilt(23.44);
+		simulation3.setEccentricity(0.4);
+		simulation3.setSOption(false);
+		simulations.add(simulation3);
+		
+		
+		SimulationSettings simulation4 = SimulationSettingsFactory.createSimulationSettingsWithDefaults();
+		simulation4.setName("R1.4");
+		simulation4.setGridSpacing(15);
+		simulation4.setSimulationTimeStep(1500);
+		simulation4.setSimulationLength(12);
+		simulation4.setTemporalAccuracy(100);
+		simulation4.setGeoAccuracy(100);
+		simulation4.setPrecision(7);
+		simulation4.setAxialTilt(23.44);
+		simulation4.setEccentricity(0.8);
+		simulation4.setSOption(false);
+		simulations.add(simulation4);
+		
+		SimulationSettings simulation5 = SimulationSettingsFactory.createSimulationSettingsWithDefaults();
+		simulation5.setName("R1.5");
+		simulation5.setGridSpacing(15);
+		simulation5.setSimulationTimeStep(1500);
+		simulation5.setSimulationLength(12);
+		simulation5.setTemporalAccuracy(100);
+		simulation5.setGeoAccuracy(100);
+		simulation5.setPrecision(7);
+		simulation5.setAxialTilt(23.44);
+		simulation5.setEccentricity(1);
+		simulation5.setSOption(false);
+		simulations.add(simulation5);*/
 		
 		// create simulation driver
 		SimulationDriver simulationDriver = new SimulationDriver();
@@ -142,28 +109,19 @@ public class SimulationScript {
 			int geoAccuracy, int precision, double tilt, double eccentricity, String name)
 	{
 		SimulationSettings simulation1 = SimulationSettingsFactory.createSimulationSettingsWithDefaults();
-		try
-		{
-			
-			simulation1.setName(name);
-			simulation1.setGridSpacing(gridSpacing);
-			simulation1.setSimulationTimeStep(simulationTimeStep);
-			simulation1.setSimulationLength(simulationLength);
-			simulation1.setTemporalAccuracy(temporalAccuracy);
-			simulation1.setGeoAccuracy(geoAccuracy);
-			simulation1.setPrecision(precision);
-			simulation1.setAxialTilt(tilt);
-			simulation1.setEccentricity(eccentricity);
-			simulation1.setSOption(false);
-			
-		}
-		catch(Exception e)
-		{
-			System.out.println(e.toString());
-		}
+		simulation1.setName(name);
+		simulation1.setGridSpacing(gridSpacing);
+		simulation1.setSimulationTimeStep(simulationTimeStep);
+		simulation1.setSimulationLength(simulationLength);
+		simulation1.setTemporalAccuracy(temporalAccuracy);
+		simulation1.setGeoAccuracy(geoAccuracy);
+		simulation1.setPrecision(precision);
+		simulation1.setAxialTilt(tilt);
+		simulation1.setEccentricity(eccentricity);
+		simulation1.setSOption(false);
+		
 		
 		return simulation1;
-		
 	}
 
 }
