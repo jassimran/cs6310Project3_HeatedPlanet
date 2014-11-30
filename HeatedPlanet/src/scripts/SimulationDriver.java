@@ -1,5 +1,6 @@
 package scripts;
 
+import java.io.File;
 import java.util.Date;
 
 import services.PersistenceService;
@@ -42,20 +43,28 @@ public class SimulationDriver implements Listener {
 	@Override
 	public void notify(EventType e) {
 		if(e == EventType.SimulationFinishedEvent) {
-			// get simulation time stamp
-			long simulationEnd = (new Date()).getTime();
+			// measure execution time
+			long executionTime = (new Date()).getTime() - simulationStart;
+			
+			// measure file size
+			String filePath = System.getProperty("user.home") + System.getProperty("file.separator") 
+					+ "heatedplanet" + System.getProperty("file.separator") + "db.mv.db";
+			File file = new File(filePath);
+			long fileSize = (file.exists())? file.length() : 0;
 			
 			// get simulation
 			Simulation simulation = PersistenceService.getInstance().findBySimulationName(simulationSettings.getName());
 			
-			// perform garbage collection
+			// measure memory
 			Runtime.getRuntime().gc();
+			double totalMemory = (double) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024);
 			
 			// print simulation metrics
 			System.out.println("Simulation name: " + simulation.getName());
 			System.out.println("Total number of simulations: " + simulation.getTimeStepList().size());
-			System.out.println("Used memory in bytes: " + (double) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024));
-			System.out.println("Time in millis: " + (simulationEnd - simulationStart));
+			System.out.println("Used memory in bytes: " + totalMemory);
+			System.out.println("File size in bytes: " + fileSize);
+			System.out.println("Execution time in millis: " + executionTime);
 			
 			// remove simulation
 			PersistenceService.getInstance().deleteSimulation(simulation);
