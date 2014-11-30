@@ -99,12 +99,12 @@ public class SimulationDriver implements Listener {
 		// Creating simulation driver
 		SimulationDriver simulationDriver = new SimulationDriver();
 
-		// simulationDriver.runSimulation(createSimulations(
-		// Integer.parseInt(args[0]), Integer.parseInt(args[1]),
-		// Integer.parseInt(args[2]), Integer.parseInt(args[3]),
-		// Integer.parseInt(args[4]), Integer.parseInt(args[5]),
-		// Double.parseDouble(args[6]), Double.parseDouble(args[7]),
-		// args[8]));
+		simulationDriver.runSimulation(createSimulations(
+				Integer.parseInt(args[0]), Integer.parseInt(args[1]),
+				Integer.parseInt(args[2]), Integer.parseInt(args[3]),
+				Integer.parseInt(args[4]), Integer.parseInt(args[5]),
+				Double.parseDouble(args[6]), Double.parseDouble(args[7]),
+				args[8]));
 
 		System.out.println("End date: " + new Date());
 	}
