@@ -145,10 +145,6 @@ public class SimulationDriver implements Listener {
 		
 		String fileIdentifier =name;
 		File mem_file = new File(System.getProperty("user.home") + System.getProperty("file.separator") + "heatedplanet" + System.getProperty("file.separator") + fileIdentifier +".csv");
-		StringBuffer sb = new StringBuffer();
-	     
-	    
-		 System.out.println("memory "+ mem_file.toString());
 		 
 		if (!mem_file.exists()) {
 			try {
@@ -160,56 +156,58 @@ public class SimulationDriver implements Listener {
        	
 			try
 			{
-				FileWriter mem_fw = new FileWriter(mem_file.getAbsoluteFile());
+				FileWriter writer = new FileWriter(mem_file.getAbsoluteFile(), true);
 				
 				
-				PrintWriter writer = new PrintWriter( new BufferedWriter(mem_fw));
 				
 				
-				sb.append("Grid Spacing"+",");
 				
-				sb.append(",");
-				sb.append("Eccentricity,");
-				sb.append(",");
-				sb.append("Precision,");
-				sb.append(",");
-				sb.append("Temporal Accuracy,");
-				sb.append(",");
-				sb.append("Geographical Accuracy,");
-				sb.append(",");
-				sb.append("Simulation Name,");
-				sb.append(",");
-				sb.append("Simulation length,");
-				sb.append(",");
-				sb.append("Tilt,");
-				sb.append(",");
-				sb.append("Time taken,");
-				sb.append(",");
-				sb.append("Memory used");
-				sb.append("\n");
+				writer.append("Grid Spacing"+",");
+				
+				writer.append("Grid Spacing");				
+				writer.append(',');
+				writer.append("Eccentricity");
+				writer.append(',');
+				writer.append("Precision");
+				writer.append(',');
+				writer.append("Temporal Accuracy");
+				writer.append(',');
+				writer.append("Geographical Accuracy");
+				writer.append(',');
+				writer.append("Simulation Name");
+				writer.append(',');
+				writer.append("Simulation length");
+				writer.append(',');
+				writer.append("Tilt");
+				writer.append(',');
+				writer.append("Time taken");
+				writer.append(',');
+				writer.append("Memory used");
+				writer.append("\n");
     	
 			
-				sb.append(gridSpacing);
-				sb.append(",");
-				sb.append(simulationTimeStep );
-				sb.append(",");
-				sb.append(simulationLength);
-				sb.append(",");
-				sb.append(temporalAccuracy);
-				sb.append(",");
-				sb.append(geoAccuracy);
-				sb.append(",");
-				sb.append(precision);
-				sb.append(",");
-				sb.append(Double.toString(tilt));
-				sb.append(",");
-				sb.append(Double.toString(eccentricity));
-				sb.append(",");
-				sb.append(Long.toString(totaltime));
-				sb.append(",");
-				sb.append(Double.toString(memused));
-				sb.append("\n");
-				writer.println(sb.toString());
+				writer.append("\""+gridSpacing+ "\"");
+				writer.append(',');
+				writer.append("\""+simulationTimeStep+ "\"");
+				writer.append(',');
+				writer.append("\""+simulationLength+ "\"");
+				writer.append(',');
+				writer.append("\""+temporalAccuracy+ "\"");
+				writer.append(',');
+				writer.append("\""+geoAccuracy+ "\"");
+				writer.append(',');
+				writer.append("\""+precision+ "\"");
+				writer.append(',');
+				writer.append("\""+tilt+ "\"");
+				writer.append(',');
+				writer.append("\""+eccentricity+ "\"");
+				writer.append(',');
+				writer.append("\""+totaltime+ "\"");
+				writer.append(',');
+				writer.append("\""+memused+ "\"");
+				writer.append(',');
+				writer.append("\n");
+				
 				writer.flush();
 				writer.close();
 			} catch (IOException e) {
@@ -219,4 +217,8 @@ public class SimulationDriver implements Listener {
 			
 		}
 	}
+
+	
+	
+	
 }
