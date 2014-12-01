@@ -835,6 +835,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener,
 		simName.setEnabled(bEnable);
 		axisTilt.setEnabled(bEnable);
 		eccentricity.setEnabled(bEnable);
+		initQueryButton.setEnabled(bEnable);
 	}
 
 	public void updateClock(double latitude, double longitude,
