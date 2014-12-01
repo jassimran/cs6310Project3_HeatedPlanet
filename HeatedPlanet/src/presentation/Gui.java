@@ -133,7 +133,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener,
 
 	private Gui(boolean simthread, boolean presthread, boolean simcontrol,
 			boolean prescontrol, int buffer) {
-		super("EarthSim");
+		super("PlanetSim");
 		this.simthread = simthread;
 		this.presthread = presthread;
 		this.simcontrol = simcontrol;
@@ -649,33 +649,10 @@ public class Gui extends JFrame implements ActionListener, ChangeListener,
 			// resume simulation
 			resumeSimulation();
 		} else if (ACTION_STOP.equals(command)) {
-			// enable all controls
-			this.setEnableAllUserOptions(true);
-			pauseButton.setText(ACTION_PAUSE);
-			pauseButton.setActionCommand(ACTION_PAUSE);
-			// reset pause button
-			pauseButton.setEnabled(false);
-			// disable the stop button
-			stopButton.setEnabled(false);
-			// enable the run button
-			runButton.setEnabled(true);
 			// terminate simulation
 			stopSimulation();
-			// disable the show orbit button
-			showOrbitButton.setEnabled(false);
-			// terminate the orbit UI if any
-			if (orbitUI != null && orbitUI.isShowing()) {
-				orbitUI.setVisible(false);
-				orbitUI.dispose();
-			}
-			// reset the EarthPanel
-			EarthPanel.reset();
-			try {
-				// set the time
-				simTimeCal.setTime(DATE_FORMAT.parse(START_TIME));
-				simTime.setText(DATE_FORMAT.format(simTimeCal.getTime()));
-			} catch (ParseException e2) {
-			}
+			
+			executeAfterStop();
 		} else if (ACTION_GRID_EDIT.equals(command)) {
 			// update the visual grid with new value
 			EarthPanel.drawGrid(gridEdit.getValue());
@@ -722,6 +699,34 @@ public class Gui extends JFrame implements ActionListener, ChangeListener,
 					}
 				});
 			}
+		}
+	}
+	
+	private void executeAfterStop() {
+		// enable all controls
+		this.setEnableAllUserOptions(true);
+		pauseButton.setText(ACTION_PAUSE);
+		pauseButton.setActionCommand(ACTION_PAUSE);
+		// reset pause button
+		pauseButton.setEnabled(false);
+		// disable the stop button
+		stopButton.setEnabled(false);
+		// enable the run button
+		runButton.setEnabled(true);
+		// disable the show orbit button
+		showOrbitButton.setEnabled(false);
+		// terminate the orbit UI if any
+		if (orbitUI != null && orbitUI.isShowing()) {
+			orbitUI.setVisible(false);
+			orbitUI.dispose();
+		}
+		// reset the EarthPanel
+		EarthPanel.reset();
+		try {
+			// set the time
+			simTimeCal.setTime(DATE_FORMAT.parse(START_TIME));
+			simTime.setText(DATE_FORMAT.format(simTimeCal.getTime()));
+		} catch (ParseException e2) {
 		}
 	}
 
@@ -867,8 +872,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener,
 			// notify user
 			JOptionPane.showMessageDialog(this, "Simulation complete!");
 
-			// TODO handle GUI post simulation logic (e.g. reset for new
-			// simulation)
+			executeAfterStop();
 		}
 	}
 
