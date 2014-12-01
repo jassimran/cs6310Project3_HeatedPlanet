@@ -15,7 +15,7 @@ public class SimulationSettingsFactory {
 		simulationSettings.setPresentationDisplayRate(1000); //1000 milliseconds
 		simulationSettings.setSimulationLength(12); // 12 months
 		simulationSettings.setTemporalAccuracy(100); // 100 percent
-		simulationSettings.setGeoAccuracy(50); // 100 percent
+		simulationSettings.setGeoAccuracy(100); // 100 percent
 		simulationSettings.setPrecision(7); // the number of digits storable in a float
 		simulationSettings.setName("Default Simulation");
 		simulationSettings.setEccentricity(0.0167);  // The eccentricity of the Earth

@@ -142,6 +142,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 
 	private EarthPanel EarthPanel = new EarthPanel(new Dimension(800, 420), new Dimension(800, 420), new Dimension(800, 420));
 	private OrbitUI orbitUI;
+	private QueryInterfaceUI queryInterfaceUI;
 
 	// control
 	AbstractControl control;
@@ -552,6 +553,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		
 		showOrbitButton.setActionCommand(ACTION_SHOW_ORBIT);
 		showOrbitButton.addActionListener(this);
+
 		showOrbitButton.setEnabled(true);
 		showOrbitButton.setPreferredSize(new Dimension(100,20));
 		
@@ -660,6 +662,8 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 			pauseButton.setEnabled(true);
 			//disable the restart button
 			stopButton.setEnabled(false);
+			//enable the show orbit button
+			showOrbitButton.setEnabled(true);
 			// run simulation
 			runSimulation();
 		} else if (ACTION_PAUSE.equals(command)) {
@@ -693,6 +697,13 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
             runButton.setEnabled(true);
             // terminate simulation
             stopSimulation();
+            //disable the show orbit button
+			showOrbitButton.setEnabled(false);
+            //terminate the orbit UI if any
+            if (orbitUI != null && orbitUI.isShowing()) {
+            	orbitUI.setVisible(false);
+            	orbitUI.dispose();
+            }
             //reset the EarthPanel
             EarthPanel.reset();
             try {
@@ -718,7 +729,19 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 			stopButton.setEnabled(false);
 			//QueryInterfaceUI gui = new QueryInterfaceUI();
 			//gui.launchQueryInterface();
-			QueryInterfaceUI.getInstance();
+			QueryInterfaceUI tmpQueryInterfaceUI = QueryInterfaceUI.getInstance();
+			
+			if (!tmpQueryInterfaceUI.equals(queryInterfaceUI)) {
+				queryInterfaceUI = tmpQueryInterfaceUI;
+				
+				queryInterfaceUI.addWindowListener(new WindowAdapter() {
+					public void windowClosing(WindowEvent we) {
+						setEnableAllUserOptions(true);
+						
+						runButton.setEnabled(true);
+					}
+				});
+			}
 		} else if (ACTION_SHOW_ORBIT.equals(command)) {
 			// Disable show button
 			showOrbitButton.setEnabled(false);
@@ -733,15 +756,11 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 					public void windowClosing(WindowEvent we) {
 						showOrbitButton.setEnabled(true);
 					}
-					
-					public void windowClosed(WindowEvent we) {
-						System.out.println("Closed orbit UI");
-					}
 				});
 			}
 		}
 	}
-
+	
 	private volatile SimulationSettings simulationSettings = new SimulationSettings();
 	
 	/**
@@ -868,7 +887,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 			rotationalPos.setText("Latitude: "+ String.valueOf(latitude) + "  degrees");
 			rotationalPosResult.setText("  Longitude: "+ String.valueOf(longitude) + "  degrees");
 			
-			if (orbitUI != null) {
+			if (orbitUI != null && orbitUI.isShowing()) {
 				orbitUI.updatePosition(coordinates);
 			}
 			
