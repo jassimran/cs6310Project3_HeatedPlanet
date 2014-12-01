@@ -312,7 +312,8 @@ ActionListener, ChangeListener, Listener {
         
         JPanel options2Panel = new JPanel();
         options2Panel.setLayout(new BoxLayout(options2Panel, BoxLayout.PAGE_AXIS));
-        options2Panel.setPreferredSize(new Dimension(WIDTH_EDITS, HEIGHT-100));
+        System.out.println("WIDTH_EDITS: " + WIDTH_EDITS);
+        options2Panel.setPreferredSize(new Dimension(WIDTH_EDITS + 50, HEIGHT-100));
         JPanel PFPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         
         Border pfBorder = BorderFactory.createTitledBorder("Physical factors ");
@@ -343,7 +344,7 @@ ActionListener, ChangeListener, Listener {
         periodPanel.add(new JLabel("Start time:"));
         periodPanel.add(simulationStartField);
         periodPanel.add(new JLabel("  "));
-        periodPanel.add(new JLabel("End time:"));
+        periodPanel.add(new JLabel("End time:  "));
         periodPanel.add(simulationEndField);
         periodPanel.add(new JLabel("                               "));
         
