@@ -190,7 +190,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 
 	private void createGui() {
 		this.getContentPane().setPreferredSize(
-				new Dimension(800, 700));
+				new Dimension(800, 1000));
 
 		//set the time
 		try {
@@ -306,7 +306,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	
 	private JPanel createPanel() {
 		JPanel panel = new JPanel();
-		panel.setPreferredSize(new Dimension(800, 275));
+		panel.setPreferredSize(new Dimension(800, 400));
 		panel.setLayout(new BorderLayout());
 
 		int WIDTH_LABELS = (WIDTH * 4 / 7 * 1
@@ -316,6 +316,12 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 
 		JLabel tmpLabel = null;
 		JLabel tmpUnits = null;
+		
+		WIDTH_LABELS = 125;
+		WIDTH_EDITS = 320;
+
+		System.out.println("WIDTH_LABELS: " + WIDTH_LABELS);
+		System.out.println("WIDTH_EDITS: " + WIDTH_EDITS);
 
 		Border simBorder = BorderFactory.createTitledBorder("Configuration ");
 		JPanel configOpts = new JPanel(new BorderLayout());
@@ -324,6 +330,9 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		optionLabels.setPreferredSize(new Dimension(WIDTH_LABELS, HEIGHT));
 		optionEdits.setPreferredSize(new Dimension(WIDTH_EDITS,HEIGHT));
 		configOpts.setBorder(simBorder);
+		
+		configOpts.setPreferredSize(new Dimension(450, 800));
+		
 		int EDIT_BOX_WIDTH = 4;
 		int LABEL_HEIGHT = 26;
 
@@ -514,7 +523,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 
 		// Run Panel
 		JPanel runAndTimePanel = new JPanel(new BorderLayout());
-		Border runBorder = BorderFactory.createTitledBorder("Run ");
+		Border runBorder = BorderFactory.createTitledBorder("Run");
 		JPanel runOpts = new JPanel();
 
 		runButton.setActionCommand(ACTION_RUN);
@@ -532,7 +541,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		stopButton.setEnabled(false);
 		runOpts.add(stopButton);
 
-		//runOpts.setPreferredSize(new Dimension(290, 30));
+		runOpts.setPreferredSize(new Dimension(290, 400));
 		runOpts.setBorder(runBorder);
 				
 		// Time Panel
@@ -594,7 +603,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		option2Edits.setLayout(new BoxLayout(option2Edits, BoxLayout.Y_AXIS));
 		option2Labels.setPreferredSize(new Dimension( WIDTH_LABELS, HEIGHT));
 		option2Edits.setPreferredSize(new Dimension(100,HEIGHT));
-		PFPanel.setPreferredSize(new Dimension(320, 78));	
+		PFPanel.setPreferredSize(new Dimension(320, 100));	
 		
 		PFPanel.setBorder(simBorder);
 	    
