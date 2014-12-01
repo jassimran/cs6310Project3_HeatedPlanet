@@ -1,5 +1,8 @@
 package PlanetSim;
 
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import presentation.Gui;
 import app.conf.BootStrap;
 
@@ -74,6 +77,18 @@ public class Demo {
 
 		// bootstrap application
 		BootStrap.init();
+		
+		try {
+			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
 		
 		Gui.getInstance(simthread, presthread, simcontrol, prescontrol, buffer);
 		// TODO register UI listener to close H2 web servers
