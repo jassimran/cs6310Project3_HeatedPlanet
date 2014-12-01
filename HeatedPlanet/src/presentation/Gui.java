@@ -200,7 +200,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 				}
 				
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 800, 780);
+		setBounds(100, 100, 806, 760);
 		
 		createNewPanel();
 		
@@ -350,7 +350,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		
 		JPanel configOpts = new JPanel();
 		configOpts.setBorder(BorderFactory.createTitledBorder("Configuration "));
-		configOpts.setBounds(6, 6, 450, 314);
+		configOpts.setBounds(6, 6, 450, 300);
 		contentPane.add(configOpts);
 		configOpts.setLayout(null);
 		
@@ -522,12 +522,12 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		// Label and Textfield for Precision
 		
 		precisionLabel = new JLabel("Precision:");
-		precisionLabel.setBounds(15, 211, 125, 16);
+		precisionLabel.setBounds(15, 211, 140, 16);
 		precisionLabel.setToolTipText("Set Precision");
 		configOpts.add(precisionLabel);
 		
 		precision = new JTextField(String.valueOf(DEFAULT_PRECISION),8);
-		precision.setBounds(150, 205, 134, 28);
+		precision.setBounds(160, 205, 134, 28);
 		precision.setHorizontalAlignment(SwingConstants.RIGHT);
 		precision.setInputVerifier(new PrecisionInputVerifier());
 		configOpts.add(precision);
@@ -535,12 +535,12 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		// Label and Textfield for Save Simulation As
 		
 		simNameLabel = new JLabel("Save Simulation As:");
-		simNameLabel.setBounds(15, 241, 125, 16);
+		simNameLabel.setBounds(15, 241, 140, 16);
 		simNameLabel.setToolTipText("Set a unique simulation name");
 		configOpts.add(simNameLabel);
 		
 		simName = new JTextField(28);
-		simName.setBounds(150, 235, 134, 28);
+		simName.setBounds(160, 235, 134, 28);
 		simName.setHorizontalAlignment(SwingConstants.RIGHT);
 		simName.setInputVerifier(new SimulationNameInputVerifier());
 		configOpts.add(simName);
@@ -548,29 +548,29 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		// --- Physical Factors Panel --- //
 		
 		JPanel physicalFactorsPanel = new JPanel();
-		physicalFactorsPanel.setBounds(456, 6, 338, 94);
+		physicalFactorsPanel.setBounds(456, 6, 342, 90);
 		physicalFactorsPanel.setBorder(BorderFactory.createTitledBorder("Physical factors"));
 		contentPane.add(physicalFactorsPanel);
 		physicalFactorsPanel.setLayout(null);
 		
 		eccentricityLabel = new JLabel("Orbital Eccentricity:");
-		eccentricityLabel.setBounds(10, 30, 130, 16);
+		eccentricityLabel.setBounds(10, 26, 160, 16);
 		physicalFactorsPanel.add(eccentricityLabel);
 		
 		axisTiltLabel = new JLabel("Axial Tilt:");
-		axisTiltLabel.setBounds(10, 64, 130, 16);
+		axisTiltLabel.setBounds(10, 60, 160, 16);
 		axisTiltLabel.setToolTipText("In degrees");
 		physicalFactorsPanel.add(axisTiltLabel);
 		
 		eccentricity = new JTextField(String.valueOf(DEFAULT_ECCENTRICITY),6);
-		eccentricity.setBounds(140, 24, 60, 28);
+		eccentricity.setBounds(180, 20, 60, 28);
 		eccentricity.setHorizontalAlignment(SwingConstants.RIGHT);
 		eccentricity.setToolTipText("Between 0 and 1");	
 		eccentricity.setInputVerifier(new EccentricityInputVerifier());
 		physicalFactorsPanel.add(eccentricity);
 		
 		axisTilt = new JTextField(String.valueOf(DEFAULT_AXIAL_TILT),6);
-		axisTilt.setBounds(140, 54, 60, 28);
+		axisTilt.setBounds(180, 50, 60, 28);
 		axisTilt.setHorizontalAlignment(SwingConstants.RIGHT);
 		axisTilt.setToolTipText("In degrees");
 		axisTilt.setInputVerifier(new AxialTiltInputVerifier());
@@ -580,7 +580,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		
 		JPanel runPanel = new JPanel();
 		runPanel.setBorder(BorderFactory.createTitledBorder("Run"));
-		runPanel.setBounds(456, 100, 338, 54);
+		runPanel.setBounds(456, 96, 342, 54);
 		contentPane.add(runPanel);
 		runPanel.setLayout(null);
 		
@@ -609,29 +609,29 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		
 		JPanel timePositionPanel = new JPanel();
 		timePositionPanel.setBorder(BorderFactory.createTitledBorder("Time & Position"));
-		timePositionPanel.setBounds(456, 154, 338, 105);
+		timePositionPanel.setBounds(456, 150, 342, 100);
 		contentPane.add(timePositionPanel);
 		timePositionPanel.setLayout(null);
 		
 		simTime = new JLabel(START_TIME);
 		simTime.setHorizontalAlignment(SwingConstants.CENTER);
-		simTime.setBounds(10, 20, 249, 16);
+		simTime.setBounds(10, 16, 330, 16);
 		timePositionPanel.add(simTime);
 		
 		orbitalPos = new JLabel("Dist from sun: Not available yet");
-		orbitalPos.setBounds(10, 36, 249, 16);
+		orbitalPos.setBounds(10, 32, 330, 16);
 		timePositionPanel.add(orbitalPos);
 		
 		rotationalPos = new JLabel("Latitude : Not available yet");
-		rotationalPos.setBounds(10, 52, 61, 16);
+		rotationalPos.setBounds(10, 48, 155, 16);
 		timePositionPanel.add(rotationalPos);
 		
 		rotationalPosResult = new JLabel("Longitude: Not available yet");
-		rotationalPosResult.setBounds(125, 52, 61, 16);
+		rotationalPosResult.setBounds(165, 48, 155, 16);
 		timePositionPanel.add(rotationalPosResult);
 		
 		showOrbitButton = new JButton("Show Orbit");
-		showOrbitButton.setBounds(26, 72, 117, 20);
+		showOrbitButton.setBounds(112, 68, 118, 20);
 		showOrbitButton.setActionCommand(ACTION_SHOW_ORBIT);
 		showOrbitButton.addActionListener(this);
 		showOrbitButton.setEnabled(false);
@@ -640,13 +640,13 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		// --- Query Panel --- //
 		
 		JPanel queryUIPanel = new JPanel();
-		queryUIPanel.setBounds(456, 259, 338, 60);
+		queryUIPanel.setBounds(456, 250, 342, 56);
 		queryUIPanel.setBorder(BorderFactory.createTitledBorder("Query Interface"));
 		contentPane.add(queryUIPanel);
 		queryUIPanel.setLayout(null);
 		
 		initQueryButton = new JButton("Launch Query Interface");
-		initQueryButton.setBounds(10, 25, 200, 23);
+		initQueryButton.setBounds(71, 21, 200, 23);
 		initQueryButton.setActionCommand(ACTION_LAUNCH_QUERY);
 		initQueryButton.addActionListener(this);
 		initQueryButton.setEnabled(true); 
@@ -656,7 +656,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		
 		EarthPanel.setBounds(0,0,800,420);
 		JPanel earthPanel = new JPanel();
-		earthPanel.setBounds(6, 314, 800, 420);
+		earthPanel.setBounds(6, 306, 800, 420);
 		earthPanel.setBackground(Color.gray);
 		earthPanel.setLayout(null);
 		earthPanel.add(EarthPanel);
