@@ -200,7 +200,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 				}
 				
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 800, 750);
+		setBounds(100, 100, 800, 780);
 		
 		createNewPanel();
 		
@@ -548,7 +548,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		// --- Physical Factors Panel --- //
 		
 		JPanel physicalFactorsPanel = new JPanel();
-		physicalFactorsPanel.setBounds(456, 6, 269, 94);
+		physicalFactorsPanel.setBounds(456, 6, 338, 94);
 		physicalFactorsPanel.setBorder(BorderFactory.createTitledBorder("Physical factors"));
 		contentPane.add(physicalFactorsPanel);
 		physicalFactorsPanel.setLayout(null);
@@ -580,26 +580,26 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		
 		JPanel runPanel = new JPanel();
 		runPanel.setBorder(BorderFactory.createTitledBorder("Run"));
-		runPanel.setBounds(456, 100, 269, 54);
+		runPanel.setBounds(456, 100, 338, 54);
 		contentPane.add(runPanel);
 		runPanel.setLayout(null);
 		
 		runButton = new JButton("Run");
-		runButton.setBounds(10, 20, 70, 20);
+		runButton.setBounds(10, 20, 100, 20);
 		runButton.setActionCommand(ACTION_RUN);
 		runButton.addActionListener(this);
 		runButton.setEnabled(true); 
 		runPanel.add(runButton);
 		
 		pauseButton = new JButton("Pause");
-		pauseButton.setBounds(90, 20, 70, 20);
+		pauseButton.setBounds(120, 20, 100, 20);
 		pauseButton.setActionCommand(ACTION_PAUSE);
 		pauseButton.addActionListener(this);
 		pauseButton.setEnabled(false);
 		runPanel.add(pauseButton);
 		
 		stopButton = new JButton("Stop");
-		stopButton.setBounds(170, 20, 70, 20);
+		stopButton.setBounds(230, 20, 100, 20);
 		stopButton.setActionCommand(ACTION_STOP);
 		stopButton.addActionListener(this);
 		stopButton.setEnabled(false);
@@ -609,7 +609,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		
 		JPanel timePositionPanel = new JPanel();
 		timePositionPanel.setBorder(BorderFactory.createTitledBorder("Time & Position"));
-		timePositionPanel.setBounds(456, 154, 269, 105);
+		timePositionPanel.setBounds(456, 154, 338, 105);
 		contentPane.add(timePositionPanel);
 		timePositionPanel.setLayout(null);
 		
@@ -640,7 +640,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		// --- Query Panel --- //
 		
 		JPanel queryUIPanel = new JPanel();
-		queryUIPanel.setBounds(456, 259, 269, 60);
+		queryUIPanel.setBounds(456, 259, 338, 60);
 		queryUIPanel.setBorder(BorderFactory.createTitledBorder("Query Interface"));
 		contentPane.add(queryUIPanel);
 		queryUIPanel.setLayout(null);
@@ -654,10 +654,10 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		
 		// --- Earth Panel --- //
 		
-		EarthPanel.setBounds(0,0,800,400);
+		EarthPanel.setBounds(0,0,800,420);
 		JPanel earthPanel = new JPanel();
-		earthPanel.setBounds(6, 314, 800, 400);
-//		earthPanel.setBackground(Color.gray);
+		earthPanel.setBounds(6, 314, 800, 420);
+		earthPanel.setBackground(Color.gray);
 		earthPanel.setLayout(null);
 		earthPanel.add(EarthPanel);
 		contentPane.add(earthPanel);
