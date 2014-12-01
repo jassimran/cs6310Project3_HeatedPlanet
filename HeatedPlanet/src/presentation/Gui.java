@@ -49,7 +49,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener,
 	static final String ACTION_GRID_EDIT = "Grid_Spacing";
 	static final String ACTION_NUM_EDIT = "Num_Edit";
 	static final String ACTION_LAUNCH_QUERY = "Launch Query Interface";
-	static final String ACTION_SHOW_ORBIT = "Show Orbit";
+	static final String ACTION_SHOW_ORBIT = "Show";
 
 	static final int DEFAULT_GRID_SPACING = 15;
 	static final int DEFAULT_SIM_DELAY = 200;
@@ -178,7 +178,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener,
 		}
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 806, 760);
+		setBounds(100, 100, 806, 750);
 
 		createPanel();
 
@@ -277,7 +277,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener,
 		JPanel configOpts = new JPanel();
 		configOpts
 				.setBorder(BorderFactory.createTitledBorder("Configuration "));
-		configOpts.setBounds(6, 6, 450, 300);
+		configOpts.setBounds(6, 6, 450, 290);
 		contentPane.add(configOpts);
 		configOpts.setLayout(null);
 
@@ -546,7 +546,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener,
 		JPanel timePositionPanel = new JPanel();
 		timePositionPanel.setBorder(BorderFactory
 				.createTitledBorder("Time & Position"));
-		timePositionPanel.setBounds(456, 150, 342, 100);
+		timePositionPanel.setBounds(456, 150, 342, 90);
 		contentPane.add(timePositionPanel);
 		timePositionPanel.setLayout(null);
 
@@ -555,20 +555,20 @@ public class Gui extends JFrame implements ActionListener, ChangeListener,
 		simTime.setBounds(10, 16, 330, 16);
 		timePositionPanel.add(simTime);
 
-		orbitalPos = new JLabel("Dist from sun: Not available yet");
+		orbitalPos = new JLabel("Dist from sun: N/A");
 		orbitalPos.setBounds(10, 32, 330, 16);
 		timePositionPanel.add(orbitalPos);
 
-		rotationalPos = new JLabel("Latitude : Not available yet");
-		rotationalPos.setBounds(10, 48, 155, 16);
+		rotationalPos = new JLabel("Latitude : N/A");
+		rotationalPos.setBounds(10, 48, 200, 16);
 		timePositionPanel.add(rotationalPos);
 
-		rotationalPosResult = new JLabel("Longitude: Not available yet");
-		rotationalPosResult.setBounds(165, 48, 155, 16);
+		rotationalPosResult = new JLabel("Longitude: N/A");
+		rotationalPosResult.setBounds(10, 64, 200, 16);
 		timePositionPanel.add(rotationalPosResult);
 
-		showOrbitButton = new JButton("Show Orbit");
-		showOrbitButton.setBounds(112, 68, 118, 20);
+		showOrbitButton = new JButton("Show");
+		showOrbitButton.setBounds(250, 60, 80, 20);
 		showOrbitButton.setActionCommand(ACTION_SHOW_ORBIT);
 		showOrbitButton.addActionListener(this);
 		showOrbitButton.setEnabled(false);
@@ -577,7 +577,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener,
 		// --- Query Panel --- //
 
 		JPanel queryUIPanel = new JPanel();
-		queryUIPanel.setBounds(456, 250, 342, 56);
+		queryUIPanel.setBounds(456, 240, 342, 56);
 		queryUIPanel.setBorder(BorderFactory
 				.createTitledBorder("Query Interface"));
 		contentPane.add(queryUIPanel);
@@ -594,7 +594,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener,
 
 		EarthPanel.setBounds(0, 0, 800, 420);
 		JPanel earthPanel = new JPanel();
-		earthPanel.setBounds(6, 306, 800, 420);
+		earthPanel.setBounds(6, 296, 800, 420);
 		earthPanel.setBackground(Color.gray);
 		earthPanel.setLayout(null);
 		earthPanel.add(EarthPanel);
@@ -849,7 +849,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener,
 					+ " million km");
 			rotationalPos.setText("Latitude: " + String.valueOf(latitude)
 					+ "  degrees");
-			rotationalPosResult.setText("  Longitude: "
+			rotationalPosResult.setText("Longitude: "
 					+ String.valueOf(longitude) + "  degrees");
 
 			if (orbitUI != null && orbitUI.isShowing()) {
