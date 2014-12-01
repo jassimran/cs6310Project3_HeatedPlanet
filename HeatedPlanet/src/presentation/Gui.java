@@ -771,13 +771,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		simulationSettings.setNumCellsY(EarthPanel.getNumCellsY());
 		simulationSettings.setDegreeSeparation(EarthPanel.getDegreeSeparation());
 		simulationSettings.setBufferSize((Integer) spinner.getValue());
-		
-		//TODO: fetch value from interface
-		simulationSettings.setTemporalAccuracy(25);
-		
-		//TODO: fetch value from interface
-		simulationSettings.setGeoAccuracy(25);
-		
+				
 		// set presentation display rate
 		simulationSettings.setPresentationDisplayRate(displayEdit.getValue() * 1000); // milliseconds
 		simulationSettings.setSimulationTimeStep(stepEdit.getValue());
