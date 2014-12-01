@@ -76,7 +76,7 @@ public class Demo {
 		parseArgs(args);
 
 		// bootstrap application
-		//BootStrap.init();
+		BootStrap.init();
 		
 		try {
 			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
