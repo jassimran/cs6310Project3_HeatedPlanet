@@ -295,7 +295,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
         	if (simulationName.length() <1) { // verify not empty
         		showMessage("Please enter simulation name!");
         		return false;
-        	}
+        	} 
         	if(control.simulationExists(simulationName)) { // verify unique
         		showMessage("Simulation name already exists!");
         		return false;
