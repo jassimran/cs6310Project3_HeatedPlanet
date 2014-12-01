@@ -49,7 +49,6 @@ import presentation.query.SimulationQuery;
 import simplesimulation.SimpleSimulationEngineImpl;
 import simulation.SimulationSettings;
 import simulation.SimulationSettingsFactory;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import controllers.AbstractControl;
 import controllers.AbstractControlFactory;
 import events.EventType;
@@ -1160,12 +1159,12 @@ ActionListener, ChangeListener, Listener {
 
 	@Override
 	public void addListener(Listener l) {
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void removeListener(Listener l) {
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException();
 	}
     
     

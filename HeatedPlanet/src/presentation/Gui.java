@@ -4,14 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.math.RoundingMode;
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -40,10 +37,8 @@ import simplesimulation.SimplePresentationEngineImpl;
 import simplesimulation.SimpleSimulationEngineImpl;
 import simplesimulation.SimulationUtils;
 import simulation.SimulationSettings;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import controllers.AbstractControl;
 import controllers.AbstractControlFactory;
-import presentation.QueryInterfaceUI;
 import events.EventType;
 import events.Listener;
 
@@ -911,12 +906,12 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 
 	@Override
 	public void addListener(Listener l) {
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void removeListener(Listener l) {
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException();
 	}
 
 	/**

@@ -9,21 +9,21 @@ HOW TO RUN
 ----------
 
    Compile the code with the following commands:
+   
+   javac -cp "lib/*" @sources.txt
 
     
     
-   Run the program from the project folder as
+   Run the program from the project root folder using:
+   
+     java -cp ".:lib/*" PlanetSim.Demo [-p #] [-g #] [-t #]
+     
+     Where:
+      
+   	-p # - The precision of the data to be stored, in decimal digits after the decimal point.
+	-g # - The geographic accuracy (sampling rate) of the temperature data to be stored. Value should be between 1 and 100.
+	-t # - The temporal accuracy of the temperature data to be stored. Value should be between 1 and 100.
 
-      java -cp <path to the executable> PlanetSim.Demo <options> 
-
-   For best results , compile project using Eclipse or the instructions above, then from the project3 directory try:
-
-     java PlanetSim.Demo [-p #] [-g #] [-t #] 
-    	-p #: The precision of the data to be stored, in decimal digits after the decimal point.
-	-g #: The geographic precision (sampling rate) of the temperature data to be stored. Value should be between 1 and 100.
-	-t #: The temporal precision of the temperature data to be stored. Value should be between 1 and 100.
-
-Note: in windows it is necessary to change ./bin to .\bin
 
 USING THE USER INTERFACE
 =========================
