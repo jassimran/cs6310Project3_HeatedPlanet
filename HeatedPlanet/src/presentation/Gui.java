@@ -1,9 +1,7 @@
 package presentation;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -14,8 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -23,12 +19,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JSlider;
-import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.SpringLayout;
-import javax.swing.border.Border;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -37,13 +30,14 @@ import simplesimulation.SimplePresentationEngineImpl;
 import simplesimulation.SimpleSimulationEngineImpl;
 import simplesimulation.SimulationUtils;
 import simulation.SimulationSettings;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import controllers.AbstractControl;
 import controllers.AbstractControlFactory;
 import events.EventType;
 import events.Listener;
 
-
-public class Gui extends JFrame implements ActionListener, ChangeListener, Listener {
+public class Gui extends JFrame implements ActionListener, ChangeListener,
+		Listener {
 
 	static final int WIDTH = 800;
 	static final int HEIGHT = 320;
@@ -55,7 +49,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	static final String ACTION_GRID_EDIT = "Grid_Spacing";
 	static final String ACTION_NUM_EDIT = "Num_Edit";
 	static final String ACTION_LAUNCH_QUERY = "Launch Query Interface";
-	static final String ACTION_SHOW_ORBIT = "Show Orbit";
+	static final String ACTION_SHOW_ORBIT = "ShowOrbit";
 
 	static final int DEFAULT_GRID_SPACING = 15;
 	static final int DEFAULT_SIM_DELAY = 200;
@@ -70,7 +64,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	public static int DEFAULT_TEMP_ACCURACY = 100;
 	public static int DEFAULT_GEO_ACCURACY = 100;
 	public static int DEFAULT_PRECISION = 7;
-	
+
 	static final String START_TIME = "12:00 PM, Jan 4, 2014";
 	static final DateFormat DATE_FORMAT = new SimpleDateFormat(
 			"hh:mm a, MMM dd, yyyy");
@@ -79,7 +73,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	private JButton runButton = new JButton(ACTION_RUN);
 	private JButton pauseButton = new JButton(ACTION_PAUSE);
 	private JButton stopButton = new JButton(ACTION_STOP);
-	
+
 	private JButton initQueryButton = new JButton(ACTION_LAUNCH_QUERY);
 
 	private ControlledEventTextField gridEdit = null;
@@ -90,65 +84,55 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 
 	private EventTextField displayEdit = null;
 	private JSlider displaySlider = null;
-	
-	private JRadioButton concurrency_Sim = null;
-	private JRadioButton concurrency_Pres = null;
 
-	private JRadioButton initiative_R = null;
-	private JRadioButton initiative_T = null;
-	private JRadioButton initiative_Neither = null;
-	
 	private JSlider simLengthSlider = null;
 	private JLabel simLengthLabel = null;
 	private EventTextField simLengthEdit = null;
-	private JLabel monthsLabel = null;
 
-    private JSlider tempAccuracySlider = null;
-    private JLabel tempAccuracyLabel = null;
+	private JSlider tempAccuracySlider = null;
+	private JLabel tempAccuracyLabel = null;
 	private EventTextField tempAccuracyEdit = null;
-    
-    private JSlider geoAccuracySlider = null;
-    private JLabel geoAccuracyLabel = null;
-    private EventTextField geoAccuracyEdit = null;
-    
-    private JLabel percentLabel = null;
-    
-    private JLabel simNameLabel = null;
+
+	private JSlider geoAccuracySlider = null;
+	private JLabel geoAccuracyLabel = null;
+	private EventTextField geoAccuracyEdit = null;
+
+	private JLabel simNameLabel = null;
 	private JTextField simName = null;
-	
-    private JLabel eccentricityLabel =null;
-    private JTextField eccentricity = null;
-    
-    private JLabel axisTiltLabel = null;
-    private JTextField axisTilt = null;
-    
-    private JLabel precisionLabel =null;
-    private JTextField precision = null;
-    
-	JSpinner spinner = new JSpinner();
-	
+
+	private JLabel eccentricityLabel = null;
+	private JTextField eccentricity = null;
+
+	private JLabel axisTiltLabel = null;
+	private JTextField axisTilt = null;
+
+	private JLabel precisionLabel = null;
+	private JTextField precision = null;
+
 	private JLabel simTime = null;
 	private Calendar simTimeCal = DATE_FORMAT.getCalendar();
-	
+
 	private JLabel orbitalPos = null;
-	private JButton showOrbitButton = new JButton(ACTION_SHOW_ORBIT);
+	private JButton showOrbitButton = null;
 	private JLabel rotationalPos = null;
 	private JLabel rotationalPosResult = null;
 
-	private EarthPanel EarthPanel = new EarthPanel(new Dimension(800, 420), new Dimension(800, 420), new Dimension(800, 420));
+	private EarthPanel EarthPanel = new EarthPanel(new Dimension(800, 420),
+			new Dimension(800, 420), new Dimension(800, 420));
 	private OrbitUI orbitUI;
 	private QueryInterfaceUI queryInterfaceUI;
 
 	// control
 	AbstractControl control;
-	
+
 	private boolean simthread;
 	private boolean presthread;
 	private boolean simcontrol;
 	private boolean prescontrol;
 	private int buffer;
-	
-	private Gui(boolean simthread, boolean presthread, boolean simcontrol, boolean prescontrol, int buffer) {
+
+	private Gui(boolean simthread, boolean presthread, boolean simcontrol,
+			boolean prescontrol, int buffer) {
 		super("EarthSim");
 		this.simthread = simthread;
 		this.presthread = presthread;
@@ -164,15 +148,18 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 
 	private static Gui instance = null;
 	private JLabel lblDegrees;
-	private JLabel lblMins;
-	private JLabel lblSecs;
-	private JLabel lblpercent;
-	private JLabel lblmonths;
+	private JLabel lblMinutes;
+	private JLabel lblSeconds;
+	private JLabel labelTAPercent;
+	private JLabel labelGAPercent;
+	private JLabel lblMonths;
 
-	//Singleton
-	public static Gui getInstance(boolean simthread, boolean presthread, boolean simcontrol, boolean prescontrol, int buffer) {
+	// Singleton
+	public static Gui getInstance(boolean simthread, boolean presthread,
+			boolean simcontrol, boolean prescontrol, int buffer) {
 		if (instance == null) {
-			instance = new Gui(simthread, presthread, simcontrol, prescontrol, buffer);
+			instance = new Gui(simthread, presthread, simcontrol, prescontrol,
+					buffer);
 		}
 		return instance;
 	}
@@ -184,452 +171,436 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 	}
 
 	private void createGui() {
-		this.getContentPane().setPreferredSize(
-				new Dimension(800, 700));
-
-		//set the time
+		// set the time
 		try {
-			simTimeCal.setTime(DATE_FORMAT
-					.parse(START_TIME));
+			simTimeCal.setTime(DATE_FORMAT.parse(START_TIME));
 		} catch (ParseException e) {
 		}
 
-		JPanel Panel;
-		Panel = new JPanel();
-		Panel.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1,
-				Color.blue));
-		Panel.setLayout(new java.awt.BorderLayout());
-		Panel.add(createPanel(), BorderLayout.CENTER);
-		
-		concurrency_Sim.setSelected(simthread);
-		concurrency_Sim.setEnabled(false);
-		concurrency_Pres.setSelected(presthread);
-		concurrency_Pres.setEnabled(false);
-		
-		initiative_T.setSelected(simcontrol);
-		initiative_R.setSelected(prescontrol);
-		initiative_T.setEnabled(false);
-		initiative_R.setEnabled(false);
-		initiative_Neither.setEnabled(false);
-		
-		spinner.setValue(buffer);
-		spinner.setEnabled(false);
-		
-		this.getContentPane().add(Panel, BorderLayout.NORTH);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 806, 750);
 
-		JPanel simulationPanel;
-		simulationPanel = new JPanel();
-		simulationPanel.setBackground(Color.gray);
-		simulationPanel.add(EarthPanel);
-		this.getContentPane().add(simulationPanel, BorderLayout.CENTER);
+		createPanel();
 
-		//draw the grid
+		// draw the grid
 		EarthPanel.drawGrid(DEFAULT_GRID_SPACING);
+	}
 
-		this.pack();
-	}
-	
-	public class EccentricityInputVerifier extends InputVerifier{
+	public class EccentricityInputVerifier extends InputVerifier {
 		@Override
-	    public boolean verify(JComponent input) {
-	        String text = ((JTextField) input).getText();
-	        try {
-	        	if (Double.parseDouble(text) >= 0 && Double.parseDouble(text) <= 1)
-	        		return true;
-	        	else {
-	        		JOptionPane.showMessageDialog(null, "Eccentricity must be between 0 and 1");
-	        		return false;
-	        	}
-	        } catch (NumberFormatException e) {
-	        	JOptionPane.showMessageDialog(null, "Eccentricity must be numeric value between 0 and 1");
-        		return false;
-	        }
-	    }
+		public boolean verify(JComponent input) {
+			String text = ((JTextField) input).getText();
+			try {
+				if (Double.parseDouble(text) >= 0
+						&& Double.parseDouble(text) <= 1)
+					return true;
+				else {
+					JOptionPane.showMessageDialog(null,
+							"Eccentricity must be between 0 and 1");
+					return false;
+				}
+			} catch (NumberFormatException e) {
+				JOptionPane.showMessageDialog(null,
+						"Eccentricity must be numeric value between 0 and 1");
+				return false;
+			}
+		}
 	}
-	
-	public class AxialTiltInputVerifier extends InputVerifier{
+
+	public class AxialTiltInputVerifier extends InputVerifier {
 		@Override
-	    public boolean verify(JComponent input) {
-	        String text = ((JTextField) input).getText();
-	        try {
-	        	if (Double.parseDouble(text) >= -180 && Double.parseDouble(text) <= 180)
-	        		return true;
-	        	else {
-	        		JOptionPane.showMessageDialog(null, "Tilt must be between -180 and +180");
-	        		return false;
-	        	}
-	        } catch (NumberFormatException e) {
-	        	JOptionPane.showMessageDialog(null, "Tilt should be numeric value between -180 and +180");
-        		return false;
-	        }
-	    }
+		public boolean verify(JComponent input) {
+			String text = ((JTextField) input).getText();
+			try {
+				if (Double.parseDouble(text) >= -180
+						&& Double.parseDouble(text) <= 180)
+					return true;
+				else {
+					JOptionPane.showMessageDialog(null,
+							"Tilt must be between -180 and +180");
+					return false;
+				}
+			} catch (NumberFormatException e) {
+				JOptionPane.showMessageDialog(null,
+						"Tilt should be numeric value between -180 and +180");
+				return false;
+			}
+		}
 	}
-	
-	public class PrecisionInputVerifier extends InputVerifier{
+
+	public class PrecisionInputVerifier extends InputVerifier {
 		@Override
-	    public boolean verify(JComponent input) {
-	        String text = ((JTextField) input).getText();
-	        try {
-	        	if (Integer.parseInt(text) >= 0 && Integer.parseInt(text) <= 16)
-	        		return true;
-	        	else {
-	        		JOptionPane.showMessageDialog(null, "Precision must be between 0 and 16");
-	        		return false;
-	        	}
-	        } catch (NumberFormatException e) {
-	        	JOptionPane.showMessageDialog(null, "Precision should be Integer value between 0 and 16");
-        		return false;
-	        }
-	    }
+		public boolean verify(JComponent input) {
+			String text = ((JTextField) input).getText();
+			try {
+				if (Integer.parseInt(text) >= 0 && Integer.parseInt(text) <= 16)
+					return true;
+				else {
+					JOptionPane.showMessageDialog(null,
+							"Precision must be between 0 and 16");
+					return false;
+				}
+			} catch (NumberFormatException e) {
+				JOptionPane.showMessageDialog(null,
+						"Precision should be Integer value between 0 and 16");
+				return false;
+			}
+		}
 	}
-	
+
 	public class SimulationNameInputVerifier extends InputVerifier {
 		@Override
-	    public boolean verify(JComponent input) {
-	        String simulationName = ((JTextField) input).getText();
-        	if (simulationName.length() <1) { // verify not empty
-        		showMessage("Please enter simulation name!");
-        		return false;
-        	}
-        	if(control.simulationExists(simulationName)) { // verify unique
-        		showMessage("Simulation name already exists!");
-        		return false;
-        	}
-        	return true;
-	    }
+		public boolean verify(JComponent input) {
+			String simulationName = ((JTextField) input).getText();
+			if (simulationName.length() < 1) { // verify not empty
+				showMessage("Please enter simulation name!");
+				return false;
+			}
+			if (control.simulationExists(simulationName)) { // verify unique
+				showMessage("Simulation name already exists!");
+				return false;
+			}
+			return true;
+		}
 	}
-	
+
+	private final int EDIT_BOX_WIDTH = 4;
+
 	private JPanel createPanel() {
-		JPanel panel = new JPanel();
-		panel.setPreferredSize(new Dimension(800, 275));
-		panel.setLayout(new BorderLayout());
+		JPanel contentPane = new JPanel();
+		contentPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
 
-		int WIDTH_LABELS = (WIDTH * 4 / 7 * 1
-				/ 4) - 2;
-		int WIDTH_EDITS = (WIDTH * 4 / 7 * 3
-				/ 4) -24;
+		// --- Configuration Panel --- //
 
-		JLabel tmpLabel = null;
-		JLabel tmpUnits = null;
+		JPanel configOpts = new JPanel();
+		configOpts
+				.setBorder(BorderFactory.createTitledBorder("Configuration "));
+		configOpts.setBounds(6, 6, 450, 290);
+		contentPane.add(configOpts);
+		configOpts.setLayout(null);
 
-		Border simBorder = BorderFactory.createTitledBorder("Configuration ");
-		JPanel configOpts = new JPanel(new BorderLayout());
-		JPanel optionLabels = new JPanel(new FlowLayout(FlowLayout.LEFT)); 
-		JPanel optionEdits = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		optionLabels.setPreferredSize(new Dimension(WIDTH_LABELS, HEIGHT));
-		optionEdits.setPreferredSize(new Dimension(WIDTH_EDITS,HEIGHT));
-		configOpts.setBorder(simBorder);
-		int EDIT_BOX_WIDTH = 4;
-		int LABEL_HEIGHT = 26;
+		// Label and Slider for Grid Spacing
 
-		//Label and Slider for Grid Spacing
-		tmpLabel = new JLabel("Grid Spacing:");
-		lblDegrees = new JLabel("degrees");
-		tmpLabel.setPreferredSize(new Dimension(WIDTH_LABELS, LABEL_HEIGHT));
-		gridEdit = new ControlledEventTextField(EDIT_BOX_WIDTH,DEFAULT_GRID_SPACING);
+		JLabel gridSpacingLabel = new JLabel("Grid Spacing:");
+		gridSpacingLabel.setBounds(15, 31, 125, 16);
+		gridSpacingLabel.setToolTipText("Set Grid Spacing");
+		configOpts.add(gridSpacingLabel);
+
+		gridEdit = new ControlledEventTextField(EDIT_BOX_WIDTH,
+				DEFAULT_GRID_SPACING);
+		gridEdit.setBounds(330, 25, 50, 28);
 		gridEdit.setActionCommand(ACTION_GRID_EDIT);
 		gridEdit.setEditable(false);
+		gridEdit.setHorizontalAlignment(SwingConstants.RIGHT);
 		gridEdit.addActionListener(this);
-		gridSlider = new JSlider(JSlider.HORIZONTAL, 1, 180,DEFAULT_GRID_SPACING);
+		configOpts.add(gridEdit);
+
+		gridSlider = new JSlider(JSlider.HORIZONTAL, 1, 180,
+				DEFAULT_GRID_SPACING);
+		gridSlider.setBounds(150, 25, 180, 29);
 		gridSlider.setMajorTickSpacing(30);
 		gridSlider.setMinorTickSpacing(15);
 		gridSlider.setPaintTicks(true);
 		gridSlider.setPaintTrack(true);
-		gridSlider.addChangeListener(gridEdit);  
-		optionLabels.add(tmpLabel);
-		optionEdits.add(gridSlider);
-		optionEdits.add(gridEdit);
-		optionEdits.add(lblDegrees);
+		gridSlider.addChangeListener(gridEdit);
+		configOpts.add(gridSlider);
 
-		//Label and Slider for Time Step
-		tmpLabel = new JLabel("Sim Time Step:");
-		lblMins = new JLabel("minutes");
-		tmpLabel.setPreferredSize(new Dimension(WIDTH_LABELS,LABEL_HEIGHT));
+		lblDegrees = new JLabel("degrees");
+		lblDegrees.setBounds(385, 31, 61, 16);
+		configOpts.add(lblDegrees);
+
+		// Label and Slider for Time Step
+
+		JLabel timestepLabel = new JLabel("Sim Time Step:");
+		timestepLabel.setBounds(15, 61, 125, 16);
+		timestepLabel.setToolTipText("Set Simulation Time Step");
+		configOpts.add(timestepLabel);
+
 		stepEdit = new EventTextField(EDIT_BOX_WIDTH, DEFAULT_TIME_STEP);
+		stepEdit.setBounds(330, 55, 50, 28);
 		stepEdit.setEditable(false);
-		stepSlider = new JSlider(JSlider.HORIZONTAL, 1, 525600, DEFAULT_TIME_STEP);
+		stepEdit.setHorizontalAlignment(SwingConstants.RIGHT);
+		configOpts.add(stepEdit);
+
+		stepSlider = new JSlider(JSlider.HORIZONTAL, 1, 525600,
+				DEFAULT_TIME_STEP);
+		stepSlider.setBounds(150, 55, 180, 29);
 		stepSlider.setMajorTickSpacing(72000);
 		stepSlider.setMinorTickSpacing(14400);
 		stepSlider.setPaintTicks(true);
 		stepSlider.setPaintTrack(true);
 		stepSlider.addChangeListener(stepEdit);
-		optionLabels.add(tmpLabel);
-		optionEdits.add(stepSlider);
-		optionEdits.add(stepEdit);
-		optionEdits.add(lblMins);
+		configOpts.add(stepSlider);
 
-		//Label and Slider for Display rate
-		tmpLabel = new JLabel("Pres Display Rate:");
-		lblSecs = new JLabel("seconds");
-		tmpLabel.setPreferredSize(new Dimension(WIDTH_LABELS,LABEL_HEIGHT));
-		tmpLabel.setToolTipText("Set presentation display rate");
-		displayEdit = new EventTextField(EDIT_BOX_WIDTH, 1); 
+		lblMinutes = new JLabel("minutes");
+		lblMinutes.setBounds(385, 61, 61, 16);
+		configOpts.add(lblMinutes);
+
+		// Label and Slider for Presentation Display Rate
+
+		JLabel displayRateLabel = new JLabel("Pres Display Rate:");
+		displayRateLabel.setBounds(15, 91, 125, 16);
+		displayRateLabel.setToolTipText("Set Presentation Display Rate");
+		configOpts.add(displayRateLabel);
+
+		displayEdit = new EventTextField(EDIT_BOX_WIDTH, 1);
+		displayEdit.setBounds(330, 85, 50, 28);
 		displayEdit.setEditable(false);
+		displayEdit.setHorizontalAlignment(SwingConstants.RIGHT);
+		configOpts.add(displayEdit);
+
 		displaySlider = new JSlider(JSlider.HORIZONTAL, 1, 60, 1);
+		displaySlider.setBounds(150, 85, 180, 29);
 		displaySlider.setMajorTickSpacing(10);
 		displaySlider.setMinorTickSpacing(5);
 		displaySlider.setPaintTicks(true);
 		displaySlider.setPaintTrack(true);
 		displaySlider.addChangeListener(displayEdit);
-		optionLabels.add(tmpLabel);
-		optionEdits.add(displaySlider);
-		optionEdits.add(displayEdit);
-		optionEdits.add(lblSecs);
+		configOpts.add(displaySlider);
 
-		//Label and Slider for Concurrrenacy
-		//tmpLabel = new JLabel("Concurrency:");
-		//tmpUnits = new JLabel("         ");
-		//tmpLabel.setPreferredSize(new Dimension(WIDTH_LABELS,	LABEL_HEIGHT));
-		concurrency_Sim = new JRadioButton("[-s]");
-		concurrency_Pres = new JRadioButton("[-p]");
+		lblSeconds = new JLabel("seconds");
+		lblSeconds.setBounds(385, 91, 61, 16);
+		configOpts.add(lblSeconds);
 
-		//optionLabels.add(tmpLabel);
-		
-		//JLabel label_8 = new JLabel("         ");
-		//optionEdits.add(label_8);
-	//	optionEdits.add(concurrency_Sim);
-	//	optionEdits.add(concurrency_Pres);
-	//	optionEdits.add(tmpUnits);
+		// Label and Slider for Simulation Length
 
-		//tmpLabel = new JLabel("Buffer:");
-		//tmpUnits = new JLabel("");
-		//tmpLabel.setPreferredSize(new Dimension(WIDTH_LABELS,	LABEL_HEIGHT));
-		initiative_T = new JRadioButton("[-t]");
-		initiative_R = new JRadioButton("[-r]");
-		initiative_Neither = new JRadioButton("Neither");
-		initiative_Neither.setSelected(true);
+		simLengthLabel = new JLabel("Simulation Length:");
+		simLengthLabel.setBounds(15, 121, 125, 16);
+		simLengthLabel.setToolTipText("Set Simulation Length");
+		configOpts.add(simLengthLabel);
 
-		ButtonGroup group = new ButtonGroup();
-		group.add(initiative_T);
-		group.add(initiative_R);
-		group.add(initiative_Neither);
-		
-	//	JLabel label = new JLabel("Initiative:");
-	//	label.setPreferredSize(new Dimension(114, 26));
-	//	optionLabels.add(label);
-	//	optionLabels.add(tmpLabel);
-		
-		//optionEdits.add(initiative_T);
-		//optionEdits.add(initiative_R);
-		//optionEdits.add(initiative_Neither);
-		
-		//Simulation Length Label and Slider
-		simLengthSlider = new JSlider(JSlider.HORIZONTAL, 1, 1200, DEFAULT_SIM_LENGTH);
-        simLengthLabel = new JLabel();
-        simLengthLabel.setPreferredSize(new Dimension(WIDTH_LABELS,	LABEL_HEIGHT));
-        simLengthLabel.setText("Simulation Length:");
-        simLengthLabel.setToolTipText("Set simulation duration");
-        lblmonths = new JLabel("months");
-        simLengthSlider.setMajorTickSpacing(200);
-        simLengthSlider.setMaximum(1200);        
-        simLengthSlider.setMinimum(1);
-        simLengthSlider.setMinorTickSpacing(100);
-        //simLengthSlider.setPaintLabels(true);
-        simLengthSlider.setPaintTicks(true);
-        simLengthEdit = new EventTextField(EDIT_BOX_WIDTH, DEFAULT_SIM_LENGTH); 
+		simLengthEdit = new EventTextField(EDIT_BOX_WIDTH, DEFAULT_SIM_LENGTH);
+		simLengthEdit.setBounds(330, 115, 50, 28);
 		simLengthEdit.setEditable(false);
+		simLengthEdit.setHorizontalAlignment(SwingConstants.RIGHT);
+		configOpts.add(simLengthEdit);
+
+		simLengthSlider = new JSlider(JSlider.HORIZONTAL, 1, 1200,
+				DEFAULT_SIM_LENGTH);
+		simLengthSlider.setBounds(150, 115, 180, 29);
+		simLengthSlider.setMajorTickSpacing(200);
+		simLengthSlider.setMaximum(1200);
+		simLengthSlider.setMinimum(1);
+		simLengthSlider.setMinorTickSpacing(100);
+		// simLengthSlider.setPaintLabels(true);
+		simLengthSlider.setPaintTicks(true);
 		simLengthSlider.addChangeListener(simLengthEdit);
-		optionLabels.add(simLengthLabel);
-		optionEdits.add(simLengthSlider);
-		optionEdits.add(simLengthEdit);
-		optionEdits.add(lblmonths);
-		
-		lblpercent = new JLabel("percent");
-		    
-		//Added temporal Accuracy Label and Slider
-		tempAccuracyLabel = new JLabel();
-		tempAccuracyLabel.setPreferredSize(new Dimension(WIDTH_LABELS,LABEL_HEIGHT));
-		tempAccuracyLabel.setText("Temp Accuracy:");
+		configOpts.add(simLengthSlider);
+
+		lblMonths = new JLabel("months");
+		lblMonths.setBounds(385, 121, 61, 16);
+		configOpts.add(lblMonths);
+
+		// Label and Slider for Temporal Accuracy
+
+		tempAccuracyLabel = new JLabel("Temp Accuracy:");
+		tempAccuracyLabel.setBounds(15, 151, 125, 16);
 		tempAccuracyLabel.setToolTipText("Set Temporal Accuracy");
-		tempAccuracySlider = new JSlider(JSlider.HORIZONTAL, 1, 100, DEFAULT_TEMP_ACCURACY);
+		configOpts.add(tempAccuracyLabel);
+
+		tempAccuracyEdit = new EventTextField(EDIT_BOX_WIDTH,
+				DEFAULT_TEMP_ACCURACY);
+		tempAccuracyEdit.setBounds(330, 145, 50, 28);
+		tempAccuracyEdit.setEditable(false);
+		tempAccuracyEdit.setHorizontalAlignment(SwingConstants.RIGHT);
+		configOpts.add(tempAccuracyEdit);
+
+		tempAccuracySlider = new JSlider(JSlider.HORIZONTAL, 1, 100,
+				DEFAULT_TEMP_ACCURACY);
+		tempAccuracySlider.setBounds(150, 145, 180, 29);
 		tempAccuracySlider.setMajorTickSpacing(10);
 		tempAccuracySlider.setMaximum(100);
 		tempAccuracySlider.setMinimum(1);
 		tempAccuracySlider.setMinorTickSpacing(5);
-	    //axisTiltSlider.setPaintLabels(true);
+		// axisTiltSlider.setPaintLabels(true);
 		tempAccuracySlider.setPaintTicks(true);
 		tempAccuracySlider.setPaintTrack(true);
-		tempAccuracyEdit = new EventTextField(EDIT_BOX_WIDTH, DEFAULT_TEMP_ACCURACY); 
-		tempAccuracyEdit.setEditable(false);
 		tempAccuracySlider.addChangeListener(tempAccuracyEdit);
-		optionLabels.add(tempAccuracyLabel);
-		optionEdits.add(tempAccuracySlider);
-		optionEdits.add(tempAccuracyEdit);
-		optionEdits.add(lblpercent);
-		    
-		lblpercent = new JLabel("percent");
-		
-		//Added Geographic Accuracy Label and Slider
-		geoAccuracyLabel = new JLabel();
-		geoAccuracyLabel.setPreferredSize(new Dimension(WIDTH_LABELS,LABEL_HEIGHT));
-		geoAccuracyLabel.setText("Geo Accuracy: ");
-		geoAccuracyLabel.setToolTipText("Set geographic Accuracy");
-		geoAccuracySlider = new JSlider(JSlider.HORIZONTAL, 1, 100, DEFAULT_GEO_ACCURACY);
+		configOpts.add(tempAccuracySlider);
+
+		labelTAPercent = new JLabel("percent");
+		labelTAPercent.setBounds(385, 151, 61, 16);
+		configOpts.add(labelTAPercent);
+
+		// Label and Slider for Geographic Accuracy
+
+		geoAccuracyLabel = new JLabel("Geo Accuracy:");
+		geoAccuracyLabel.setBounds(15, 181, 125, 16);
+		geoAccuracyLabel.setToolTipText("Set Geographic Accuracy");
+		configOpts.add(geoAccuracyLabel);
+
+		geoAccuracyEdit = new EventTextField(EDIT_BOX_WIDTH,
+				DEFAULT_GEO_ACCURACY);
+		geoAccuracyEdit.setBounds(330, 175, 50, 28);
+		geoAccuracyEdit.setEditable(false);
+		geoAccuracyEdit.setHorizontalAlignment(SwingConstants.RIGHT);
+		configOpts.add(geoAccuracyEdit);
+
+		geoAccuracySlider = new JSlider(JSlider.HORIZONTAL, 1, 100,
+				DEFAULT_GEO_ACCURACY);
+		geoAccuracySlider.setBounds(150, 175, 180, 29);
 		geoAccuracySlider.setMajorTickSpacing(10);
 		geoAccuracySlider.setMaximum(100);
 		geoAccuracySlider.setMinimum(1);
 		geoAccuracySlider.setMinorTickSpacing(5);
 		geoAccuracySlider.setPaintTicks(true);
 		geoAccuracySlider.setPaintTrack(true);
-		geoAccuracyEdit = new EventTextField(EDIT_BOX_WIDTH, DEFAULT_GEO_ACCURACY); 
-		geoAccuracyEdit.setEditable(false);
 		geoAccuracySlider.addChangeListener(geoAccuracyEdit);
-		optionLabels.add(geoAccuracyLabel);
-		optionEdits.add(geoAccuracySlider);
-		optionEdits.add(geoAccuracyEdit);
-		optionEdits.add(lblpercent);
-		    
+		configOpts.add(geoAccuracySlider);
 
-		//Added precision Label and Text box
-	    precisionLabel = new JLabel();
-	    precisionLabel.setPreferredSize(new Dimension(WIDTH_LABELS,LABEL_HEIGHT));
-	    precisionLabel.setText("Precision: ");
-	    precision = new JTextField(String.valueOf(DEFAULT_PRECISION),8);
-	    optionLabels.add(precisionLabel);
-	    optionEdits.add(precision);	 
-	    precision.setInputVerifier(new PrecisionInputVerifier());
-	    precisionLabel.setToolTipText("Set Data precision");
-	    
-	    
-	    //Added simulation Label and Text box
-		simNameLabel = new JLabel();
-		simNameLabel.setPreferredSize(new Dimension(WIDTH_LABELS,LABEL_HEIGHT));
-		simNameLabel.setText("Save simulation as:");
-		simName = new JTextField(28);	
-		optionLabels.add(simNameLabel);
-		//optionEdits.add(new JLabel(" "));
-		optionEdits.add(simName);
+		labelGAPercent = new JLabel("percent");
+		labelGAPercent.setBounds(385, 181, 61, 16);
+		configOpts.add(labelGAPercent);
+
+		// Label and Textfield for Precision
+
+		precisionLabel = new JLabel("Precision:");
+		precisionLabel.setBounds(15, 211, 140, 16);
+		precisionLabel.setToolTipText("Set Precision");
+		configOpts.add(precisionLabel);
+
+		precision = new JTextField(String.valueOf(DEFAULT_PRECISION), 8);
+		precision.setBounds(160, 205, 134, 28);
+		precision.setHorizontalAlignment(SwingConstants.RIGHT);
+		precision.setInputVerifier(new PrecisionInputVerifier());
+		configOpts.add(precision);
+
+		// Label and Textfield for Save Simulation As
+
+		simNameLabel = new JLabel("Save Simulation As:");
+		simNameLabel.setBounds(15, 241, 140, 16);
+		simNameLabel.setToolTipText("Set a unique simulation name");
+		configOpts.add(simNameLabel);
+
+		simName = new JTextField(28);
+		simName.setBounds(160, 235, 134, 28);
+		simName.setHorizontalAlignment(SwingConstants.RIGHT);
 		simName.setInputVerifier(new SimulationNameInputVerifier());
-		simName.setToolTipText("Enter unique name");
-		
-		configOpts.add(optionLabels, BorderLayout.WEST);
-		configOpts.add(optionEdits, BorderLayout.EAST);
-		
-		panel.add(configOpts, BorderLayout.WEST);
+		configOpts.add(simName);
 
-		// Run Panel
-		JPanel runAndTimePanel = new JPanel(new BorderLayout());
-		Border runBorder = BorderFactory.createTitledBorder("Run ");
-		JPanel runOpts = new JPanel();
+		// --- Physical Factors Panel --- //
 
+		JPanel physicalFactorsPanel = new JPanel();
+		physicalFactorsPanel.setBounds(456, 6, 342, 90);
+		physicalFactorsPanel.setBorder(BorderFactory
+				.createTitledBorder("Physical factors"));
+		contentPane.add(physicalFactorsPanel);
+		physicalFactorsPanel.setLayout(null);
+
+		eccentricityLabel = new JLabel("Orbital Eccentricity:");
+		eccentricityLabel.setBounds(10, 26, 160, 16);
+		physicalFactorsPanel.add(eccentricityLabel);
+
+		axisTiltLabel = new JLabel("Axial Tilt:");
+		axisTiltLabel.setBounds(10, 60, 160, 16);
+		axisTiltLabel.setToolTipText("In degrees");
+		physicalFactorsPanel.add(axisTiltLabel);
+
+		eccentricity = new JTextField(String.valueOf(DEFAULT_ECCENTRICITY), 6);
+		eccentricity.setBounds(180, 20, 60, 28);
+		eccentricity.setHorizontalAlignment(SwingConstants.RIGHT);
+		eccentricity.setToolTipText("Between 0 and 1");
+		eccentricity.setInputVerifier(new EccentricityInputVerifier());
+		physicalFactorsPanel.add(eccentricity);
+
+		axisTilt = new JTextField(String.valueOf(DEFAULT_AXIAL_TILT), 6);
+		axisTilt.setBounds(180, 50, 60, 28);
+		axisTilt.setHorizontalAlignment(SwingConstants.RIGHT);
+		axisTilt.setToolTipText("In degrees");
+		axisTilt.setInputVerifier(new AxialTiltInputVerifier());
+		physicalFactorsPanel.add(axisTilt);
+
+		// --- Run Panel --- //
+
+		JPanel runPanel = new JPanel();
+		runPanel.setBorder(BorderFactory.createTitledBorder("Run"));
+		runPanel.setBounds(456, 96, 342, 54);
+		contentPane.add(runPanel);
+		runPanel.setLayout(null);
+
+		runButton = new JButton("Run");
+		runButton.setBounds(10, 20, 100, 20);
 		runButton.setActionCommand(ACTION_RUN);
 		runButton.addActionListener(this);
-		runButton.setEnabled(true); 
-		runOpts.add(runButton);
+		runButton.setEnabled(true);
+		runPanel.add(runButton);
 
+		pauseButton = new JButton("Pause");
+		pauseButton.setBounds(120, 20, 100, 20);
 		pauseButton.setActionCommand(ACTION_PAUSE);
 		pauseButton.addActionListener(this);
 		pauseButton.setEnabled(false);
-		runOpts.add(pauseButton);
+		runPanel.add(pauseButton);
 
+		stopButton = new JButton("Stop");
+		stopButton.setBounds(230, 20, 100, 20);
 		stopButton.setActionCommand(ACTION_STOP);
 		stopButton.addActionListener(this);
 		stopButton.setEnabled(false);
-		runOpts.add(stopButton);
+		runPanel.add(stopButton);
 
-		//runOpts.setPreferredSize(new Dimension(290, 30));
-		runOpts.setBorder(runBorder);
-				
-		// Time Panel
-		SpringLayout layout = (new SpringLayout());
-		JPanel simTimePanel = new JPanel(layout);
-		simTimePanel.setPreferredSize(new Dimension(360, 84));
-		simTimePanel.setBorder(BorderFactory.createTitledBorder("Time & Position"));
+		// --- Time & Position --- //
+
+		JPanel timePositionPanel = new JPanel();
+		timePositionPanel.setBorder(BorderFactory
+				.createTitledBorder("Time & Position"));
+		timePositionPanel.setBounds(456, 150, 342, 90);
+		contentPane.add(timePositionPanel);
+		timePositionPanel.setLayout(null);
+
 		simTime = new JLabel(START_TIME);
-		layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, simTime, 0, SpringLayout.HORIZONTAL_CENTER, simTimePanel);
-		layout.putConstraint(SpringLayout.NORTH, simTime, 1, SpringLayout.NORTH, simTimePanel);
-		simTimePanel.add(simTime);		
-		
-		orbitalPos = new JLabel("Dist from sun: Not available yet");
-		
-		layout.putConstraint(SpringLayout.WEST, orbitalPos, 5, SpringLayout.WEST, simTimePanel);
-		layout.putConstraint(SpringLayout.NORTH, orbitalPos, 4, SpringLayout.SOUTH, simTime);
-		simTimePanel.add(orbitalPos);
-		
+		simTime.setHorizontalAlignment(SwingConstants.CENTER);
+		simTime.setBounds(10, 16, 330, 16);
+		timePositionPanel.add(simTime);
+
+		orbitalPos = new JLabel("Dist from sun: N/A");
+		orbitalPos.setBounds(10, 32, 330, 16);
+		timePositionPanel.add(orbitalPos);
+
+		rotationalPos = new JLabel("Latitude : N/A");
+		rotationalPos.setBounds(10, 48, 200, 16);
+		timePositionPanel.add(rotationalPos);
+
+		rotationalPosResult = new JLabel("Longitude: N/A");
+		rotationalPosResult.setBounds(10, 64, 200, 16);
+		timePositionPanel.add(rotationalPosResult);
+
+		showOrbitButton = new JButton("Show Orbit");
+		showOrbitButton.setBounds(210, 60, 120, 20);
 		showOrbitButton.setActionCommand(ACTION_SHOW_ORBIT);
 		showOrbitButton.addActionListener(this);
+		showOrbitButton.setEnabled(false);
+		timePositionPanel.add(showOrbitButton);
 
-		showOrbitButton.setEnabled(true);
-		showOrbitButton.setPreferredSize(new Dimension(100,20));
-		
-		layout.putConstraint(SpringLayout.WEST, showOrbitButton, 35, SpringLayout.EAST, orbitalPos);
-		layout.putConstraint(SpringLayout.NORTH, showOrbitButton, 4, SpringLayout.SOUTH, simTime);
-		simTimePanel.add(showOrbitButton);
-		
-		rotationalPos = new JLabel("Latitude : "+ "Not available yet");
-		layout.putConstraint(SpringLayout.WEST, rotationalPos, 5, SpringLayout.WEST, simTimePanel);
-		layout.putConstraint(SpringLayout.NORTH, rotationalPos, 4, SpringLayout.SOUTH, orbitalPos);
-		simTimePanel.add(rotationalPos);
-		rotationalPosResult = new JLabel("  Longitude: Not available yet");	
-		layout.putConstraint(SpringLayout.WEST, rotationalPosResult, 5, SpringLayout.EAST, rotationalPos);
-		layout.putConstraint(SpringLayout.NORTH, rotationalPosResult, 4, SpringLayout.SOUTH, orbitalPos);
-		simTimePanel.add(rotationalPosResult);
-		
-		runOpts.add(simTimePanel, BorderLayout.SOUTH);
-		runAndTimePanel.add(runOpts, BorderLayout.CENTER);
-		//Query Panel
-		JPanel initQueryPanel = new JPanel(new BorderLayout());
-		Border initQueryBorder = BorderFactory.createTitledBorder("Launch ");		
-		JPanel queryOpts = new JPanel();
+		// --- Query Panel --- //
 
+		JPanel queryUIPanel = new JPanel();
+		queryUIPanel.setBounds(456, 240, 342, 56);
+		queryUIPanel.setBorder(BorderFactory
+				.createTitledBorder("Query Interface"));
+		contentPane.add(queryUIPanel);
+		queryUIPanel.setLayout(null);
+
+		initQueryButton = new JButton("Launch Query Interface");
+		initQueryButton.setBounds(71, 21, 200, 23);
 		initQueryButton.setActionCommand(ACTION_LAUNCH_QUERY);
 		initQueryButton.addActionListener(this);
-		initQueryButton.setEnabled(true); 
-		queryOpts.add(initQueryButton); 
-		
-		//queryOpts.setPreferredSize(new Dimension(30,30));
-		queryOpts.setBorder(initQueryBorder);
-		initQueryPanel.add(queryOpts, BorderLayout.CENTER);
-		runAndTimePanel.add(initQueryPanel, BorderLayout.SOUTH);
-		
-		Border PFBorder = BorderFactory.createTitledBorder("Physical factors ");
-		JPanel PFPanel = new JPanel(new BorderLayout());
-		JPanel option2Labels = new JPanel(new FlowLayout(FlowLayout.LEFT)); 
-		JPanel option2Edits = new JPanel();
-		option2Edits.setLayout(new BoxLayout(option2Edits, BoxLayout.Y_AXIS));
-		option2Labels.setPreferredSize(new Dimension( WIDTH_LABELS, HEIGHT));
-		option2Edits.setPreferredSize(new Dimension(100,HEIGHT));
-		PFPanel.setPreferredSize(new Dimension(320, 78));	
-		
-		PFPanel.setBorder(simBorder);
-	    
-		//Added eccentricity Label and Text box
-	    eccentricityLabel =new JLabel();
-	    eccentricityLabel.setPreferredSize(new Dimension(WIDTH_LABELS,LABEL_HEIGHT));
-	    eccentricityLabel.setText("Orbital eccentricity:");
-	    eccentricity = new JTextField(String.valueOf(DEFAULT_ECCENTRICITY),6);
-	    option2Labels.add(eccentricityLabel);
-	    eccentricity.setToolTipText("Between 0 and 1");
-	    
-	    option2Edits.add(eccentricity);
-	    lblDegrees = new JLabel("   ");
-	    option2Edits.add(lblDegrees);
-	    
-	    eccentricity.setInputVerifier(new EccentricityInputVerifier());
-	 
-	    
-	   //Added axial tilt Textbox and Label
-        axisTiltLabel = new JLabel();
-        axisTiltLabel.setPreferredSize(new Dimension(WIDTH_LABELS, LABEL_HEIGHT));
-        axisTiltLabel.setText("Axial Tilt:");
-        axisTilt = new JTextField(String.valueOf(DEFAULT_AXIAL_TILT),6);
-      
-	    option2Labels.add(axisTiltLabel);
-	    option2Edits.add(axisTilt);
-	    axisTilt.setInputVerifier(new AxialTiltInputVerifier());
-	    axisTilt.setToolTipText("In degrees");
-	    axisTiltLabel.setToolTipText("In degrees");
-        
-        
-        PFPanel.add(option2Labels,BorderLayout.WEST);
-		PFPanel.add(option2Edits, BorderLayout.EAST);
-		PFPanel.setBorder(PFBorder);
-	
-		runAndTimePanel.add(PFPanel, BorderLayout.NORTH );
-		panel.add(runAndTimePanel, BorderLayout.CENTER);
-		runAndTimePanel.add(initQueryPanel, BorderLayout.SOUTH);
+		initQueryButton.setEnabled(true);
+		queryUIPanel.add(initQueryButton);
 
-		return panel;
+		// --- Earth Panel --- //
+
+		EarthPanel.setBounds(0, 0, 800, 420);
+		JPanel earthPanel = new JPanel();
+		earthPanel.setBounds(6, 296, 800, 420);
+		earthPanel.setBackground(Color.gray);
+		earthPanel.setLayout(null);
+		earthPanel.add(EarthPanel);
+		contentPane.add(earthPanel);
+
+		return contentPane;
 	}
 
 	public void stateChanged(ChangeEvent e) {
@@ -638,75 +609,98 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
-		    
-		//get the command
+		// get the command
 		String command = e.getActionCommand();
 
 		if (ACTION_RUN.equals(command)) {
 			// check simulation name is valid
 			InputVerifier simulaitonVerifier = new SimulationNameInputVerifier();
-        	if (!simulaitonVerifier.verify(simName)) {
-        		return;
-        	}
-    		//disable all controls
+			if (!simulaitonVerifier.verify(simName)) {
+				return;
+			}
+			// disable all controls
 			this.setEnableAllUserOptions(false);
-			//disable the run button
+			// disable the run button
 			runButton.setEnabled(false);
-			//enable the stop button
+			// enable the stop button
 			pauseButton.setEnabled(true);
-			//disable the restart button
+			// disable the restart button
 			stopButton.setEnabled(false);
-			//enable the show orbit button
+			// enable the show orbit button
 			showOrbitButton.setEnabled(true);
 			// run simulation
 			runSimulation();
 		} else if (ACTION_PAUSE.equals(command)) {
-            //enable the restart button
-            stopButton.setEnabled(true);
-            // change pause button legend
-            pauseButton.setText(ACTION_RESUME);
-            // change pause button action
-            pauseButton.setActionCommand(ACTION_RESUME);
-            // pause simulation
-            pauseSimulation();
-        } else if (ACTION_RESUME.equals(command)) {
-            //enable the restart button
-            stopButton.setEnabled(false);
-            // change pause button legend
-            pauseButton.setText(ACTION_PAUSE);
-            // change pause button action
-            pauseButton.setActionCommand(ACTION_PAUSE);
-            // resume simulation
-            resumeSimulation();
-        } else if (ACTION_STOP.equals(command)) {
-            // terminate simulation
-            stopSimulation();
-            resetControlsAfterFinish();               
-		} else if (ACTION_GRID_EDIT.equals(command)) {
-			//update the visual grid with new value
-			EarthPanel.drawGrid(gridEdit.getValue());
-		} else if (ACTION_LAUNCH_QUERY.equals(command)){
-			//For launching query interface
-			//But before that, disable all controls
-			this.setEnableAllUserOptions(false);
-			//disable the run button
-			runButton.setEnabled(false);
-			//disable the stop button
-			pauseButton.setEnabled(false);
-			//disable the restart button
+			// enable the restart button
+			stopButton.setEnabled(true);
+			// change pause button legend
+			pauseButton.setText(ACTION_RESUME);
+			// change pause button action
+			pauseButton.setActionCommand(ACTION_RESUME);
+			// pause simulation
+			pauseSimulation();
+		} else if (ACTION_RESUME.equals(command)) {
+			// enable the restart button
 			stopButton.setEnabled(false);
-			//QueryInterfaceUI gui = new QueryInterfaceUI();
-			//gui.launchQueryInterface();
-			QueryInterfaceUI tmpQueryInterfaceUI = QueryInterfaceUI.getInstance();
-			
+			// change pause button legend
+			pauseButton.setText(ACTION_PAUSE);
+			// change pause button action
+			pauseButton.setActionCommand(ACTION_PAUSE);
+			// resume simulation
+			resumeSimulation();
+		} else if (ACTION_STOP.equals(command)) {
+			// enable all controls
+			this.setEnableAllUserOptions(true);
+			pauseButton.setText(ACTION_PAUSE);
+			pauseButton.setActionCommand(ACTION_PAUSE);
+			// reset pause button
+			pauseButton.setEnabled(false);
+			// disable the stop button
+			stopButton.setEnabled(false);
+			// enable the run button
+			runButton.setEnabled(true);
+			// terminate simulation
+			stopSimulation();
+			// disable the show orbit button
+			showOrbitButton.setEnabled(false);
+			// terminate the orbit UI if any
+			if (orbitUI != null && orbitUI.isShowing()) {
+				orbitUI.setVisible(false);
+				orbitUI.dispose();
+			}
+			// reset the EarthPanel
+			EarthPanel.reset();
+			try {
+				// set the time
+				simTimeCal.setTime(DATE_FORMAT.parse(START_TIME));
+				simTime.setText(DATE_FORMAT.format(simTimeCal.getTime()));
+			} catch (ParseException e2) {
+			}
+		} else if (ACTION_GRID_EDIT.equals(command)) {
+			// update the visual grid with new value
+			EarthPanel.drawGrid(gridEdit.getValue());
+		} else if (ACTION_LAUNCH_QUERY.equals(command)) {
+			// For launching query interface
+			// But before that, disable all controls
+			this.setEnableAllUserOptions(false);
+			// disable the run button
+			runButton.setEnabled(false);
+			// disable the stop button
+			pauseButton.setEnabled(false);
+			// disable the restart button
+			stopButton.setEnabled(false);
+			// QueryInterfaceUI gui = new QueryInterfaceUI();
+			// gui.launchQueryInterface();
+			QueryInterfaceUI tmpQueryInterfaceUI = QueryInterfaceUI
+					.getInstance();
+
 			if (!tmpQueryInterfaceUI.equals(queryInterfaceUI)) {
 				queryInterfaceUI = tmpQueryInterfaceUI;
-				
+
 				queryInterfaceUI.addWindowListener(new WindowAdapter() {
 					public void windowClosing(WindowEvent we) {
 						setEnableAllUserOptions(true);
-						
+
 						runButton.setEnabled(true);
 					}
 				});
@@ -714,13 +708,14 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		} else if (ACTION_SHOW_ORBIT.equals(command)) {
 			// Disable show button
 			showOrbitButton.setEnabled(false);
-			
+
 			// Showing orbit pop up
-			OrbitUI tmpOrbitUI = OrbitUI.getInstance(SimulationUtils.A, simulationSettings.getEccentricity());
-			
+			OrbitUI tmpOrbitUI = OrbitUI.getInstance(SimulationUtils.A,
+					simulationSettings.getEccentricity());
+
 			if (!tmpOrbitUI.equals(orbitUI)) {
 				orbitUI = tmpOrbitUI;
-				
+
 				orbitUI.addWindowListener(new WindowAdapter() {
 					public void windowClosing(WindowEvent we) {
 						showOrbitButton.setEnabled(true);
@@ -730,122 +725,98 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		}
 	}
 
-	/**
-	 * 
-	 */
-	protected void resetControlsAfterFinish() {
-		//enable all controls
-		this.setEnableAllUserOptions(true);
-		pauseButton.setText(ACTION_PAUSE);
-		pauseButton.setActionCommand(ACTION_PAUSE);
-		// reset pause button
-		pauseButton.setEnabled(false);
-		//disable the stop button
-		stopButton.setEnabled(false);
-		//enable the run button
-		runButton.setEnabled(true);
-		//disable the show orbit button
-		showOrbitButton.setEnabled(false);
-		//terminate the orbit UI if any
-		if (orbitUI != null && orbitUI.isShowing()) {
-			orbitUI.setVisible(false);
-			orbitUI.dispose();
-		}
-		//reset the EarthPanel
-		EarthPanel.reset();
-		try {
-		    //set the time
-		    simTimeCal.setTime(DATE_FORMAT
-		            .parse(START_TIME));
-		    simTime.setText(DATE_FORMAT.format(simTimeCal
-		            .getTime()));
-		} catch (ParseException e2) {
-		}
-	}
-	
 	private volatile SimulationSettings simulationSettings = new SimulationSettings();
-	
+
 	/**
 	 * Executes a simulation based on the selected settings.
 	 */
 	private void runSimulation() {
 		// create settings object
-		simulationSettings.setSOption(concurrency_Sim.isSelected());
-		simulationSettings.setPOption(concurrency_Pres.isSelected());
-		simulationSettings.setROption(initiative_R.isSelected());
-		simulationSettings.setTOption(initiative_T.isSelected());
+		simulationSettings.setSOption(simthread);
+		simulationSettings.setPOption(presthread);
+		simulationSettings.setROption(prescontrol);
+		simulationSettings.setTOption(simcontrol);
 		simulationSettings.setNumCellsX(EarthPanel.getNumCellsX());
 		simulationSettings.setNumCellsY(EarthPanel.getNumCellsY());
-		simulationSettings.setDegreeSeparation(EarthPanel.getDegreeSeparation());
-		simulationSettings.setBufferSize((Integer) spinner.getValue());
-				
+		simulationSettings
+				.setDegreeSeparation(EarthPanel.getDegreeSeparation());
+		simulationSettings.setBufferSize(buffer);
+
 		// set presentation display rate
-		simulationSettings.setPresentationDisplayRate(displayEdit.getValue() * 1000); // milliseconds
+		simulationSettings
+				.setPresentationDisplayRate(displayEdit.getValue() * 1000); // milliseconds
 		simulationSettings.setSimulationTimeStep(stepEdit.getValue());
 		simulationSettings.setGridSpacing(gridEdit.getValue());
-		
+
 		// set temperature precision
-		simulationSettings.setPrecision(Integer.parseInt(precision.getText()));		
+		simulationSettings.setPrecision(Integer.parseInt(precision.getText()));
 		simulationSettings.setAxialTilt(Double.parseDouble(axisTilt.getText()));
-		simulationSettings.setEccentricity(Double.parseDouble(eccentricity.getText().toString()));
+		simulationSettings.setEccentricity(Double.parseDouble(eccentricity
+				.getText().toString()));
 		simulationSettings.setName(simName.getText());
-		simulationSettings.setSimulationLength(simLengthEdit.getValue()); // default 12
+		simulationSettings.setSimulationLength(simLengthEdit.getValue()); // default
+																			// 12
 		simulationSettings.setTemporalAccuracy(tempAccuracyEdit.getValue());
 		simulationSettings.setGeoAccuracy(geoAccuracyEdit.getValue());
-		
+
 		// wire simulation engines
-		AbstractControl.setSimulationEngine(new SimpleSimulationEngineImpl(simulationSettings));
-		AbstractControl.setPresentationEngine(new SimplePresentationEngineImpl(EarthPanel));
-		
+		AbstractControl.setSimulationEngine(new SimpleSimulationEngineImpl(
+				simulationSettings));
+		AbstractControl.setPresentationEngine(new SimplePresentationEngineImpl(
+				EarthPanel));
+
 		// run simulation
 		control.runSimulation(simulationSettings);
 	}
 
 	private void createControl() {
 		// create control based on r|t
-		if(prescontrol) {
-			control = AbstractControlFactory.getInstance().createControl(AbstractControlFactory.BA);
+		if (prescontrol) {
+			control = AbstractControlFactory.getInstance().createControl(
+					AbstractControlFactory.BA);
 		} else if (simcontrol) {
-			control = AbstractControlFactory.getInstance().createControl(AbstractControlFactory.AB);
-		} else { 
-			control = AbstractControlFactory.getInstance().createControl(AbstractControlFactory.MAB);
-		}		
+			control = AbstractControlFactory.getInstance().createControl(
+					AbstractControlFactory.AB);
+		} else {
+			control = AbstractControlFactory.getInstance().createControl(
+					AbstractControlFactory.MAB);
+		}
 		// register UI as listener for control events
 		control.addListener(this);
 	}
-	
+
 	/**
 	 * Pauses a running simulation.
 	 */
 	private void pauseSimulation() {
-		if(control.isSimulationRunning()) {
+		if (control.isSimulationRunning()) {
 			control.pauseSimulation();
 		} else {
 			throw new RuntimeException("Paused a not running simulation");
 		}
 	}
-	
+
 	/**
 	 * Resumes a paused simulation.
 	 */
 	private void resumeSimulation() {
-		if(!control.isSimulationRunning()) {
+		if (!control.isSimulationRunning()) {
 			control.resumeSimulation();
 		} else {
 			throw new RuntimeException("Resume a running simulation");
 		}
 	}
-	
+
 	/**
 	 * Stops a running simulation.
 	 */
 	private void stopSimulation() {
-		if(!control.isTerminateSimulation()) {
+		if (!control.isTerminateSimulation()) {
 			control.stopSimulation();
 		}
 	}
 
-	//enable/disable all controls
+	// enable/disable all controls
 	private void setEnableAllUserOptions(boolean bEnable) {
 		gridEdit.setEnabled(bEnable);
 		gridSlider.setEnabled(bEnable);
@@ -853,12 +824,6 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		stepSlider.setEnabled(bEnable);
 		displayEdit.setEnabled(bEnable);
 		displaySlider.setEnabled(bEnable);
-		concurrency_Sim.setEnabled(bEnable);
-		concurrency_Pres.setEnabled(bEnable);
-		initiative_T.setEnabled(bEnable);
-		initiative_R.setEnabled(bEnable);
-		initiative_Neither.setEnabled(bEnable);		
-		spinner.setEnabled(bEnable);
 		simLengthEdit.setEnabled(bEnable);
 		tempAccuracyEdit.setEnabled(bEnable);
 		tempAccuracySlider.setEnabled(bEnable);
@@ -868,64 +833,69 @@ public class Gui extends JFrame implements ActionListener, ChangeListener, Liste
 		simLengthSlider.setEnabled(bEnable);
 		precision.setEnabled(bEnable);
 		simName.setEnabled(bEnable);
-		axisTilt.setEnabled(bEnable); 
-		eccentricity.setEnabled(bEnable);		
+		axisTilt.setEnabled(bEnable);
+		eccentricity.setEnabled(bEnable);
+		initQueryButton.setEnabled(bEnable);
 	}
 
-	public void updateClock( double latitude, double longitude, double distFromSun, double[] coordinates) {
+	public void updateClock(double latitude, double longitude,
+			double distFromSun, double[] coordinates) {
 		try {
-			//set the time
+			// set the time
 			simTimeCal.add(Calendar.MINUTE, stepEdit.getValue());
-			simTime.setText(DATE_FORMAT.format(simTimeCal
-					.getTime()));
-			
-			orbitalPos.setText("Dist from Sun = "+String.valueOf(distFromSun)+ " million km");
-			rotationalPos.setText("Latitude: "+ String.valueOf(latitude) + "  degrees");
-			rotationalPosResult.setText("  Longitude: "+ String.valueOf(longitude) + "  degrees");
-			
+			simTime.setText(DATE_FORMAT.format(simTimeCal.getTime()));
+
+			orbitalPos.setText("Dist from Sun = " + String.valueOf(distFromSun)
+					+ " million km");
+			rotationalPos.setText("Latitude: " + String.valueOf(latitude)
+					+ "  degrees");
+			rotationalPosResult.setText("Longitude: "
+					+ String.valueOf(longitude) + "  degrees");
+
 			if (orbitUI != null && orbitUI.isShowing()) {
 				orbitUI.updatePosition(coordinates);
 			}
-			
+
 		} catch (Exception e2) {
 			System.out.print("Updation failed!!!");
-		}			
+		}
 	}
-	
-
-
 
 	@Override
 	public void notify(EventType e) {
-		if(e == EventType.SimulationFinishedEvent) {
+		if (e == EventType.SimulationFinishedEvent) {
 			// notify user
-			JOptionPane.showMessageDialog(this, "Simulation complete!");			
-			// handle GUI post simulation logic (e.g. reset for new simulation)
-			resetControlsAfterFinish();
+			JOptionPane.showMessageDialog(this, "Simulation complete!");
+
+			// TODO handle GUI post simulation logic (e.g. reset for new
+			// simulation)
 		}
 	}
 
 	@Override
 	public void addListener(Listener l) {
-		throw new UnsupportedOperationException();
+		throw new NotImplementedException();
 	}
 
 	@Override
 	public void removeListener(Listener l) {
-		throw new UnsupportedOperationException();
+		throw new NotImplementedException();
 	}
 
 	/**
 	 * Shows the given message in dialog.
-	 * @param message the message to show
+	 * 
+	 * @param message
+	 *            the message to show
 	 */
 	protected void showMessage(String message) {
 		JOptionPane.showMessageDialog(this, message);
 	}
 
 }
-/*Event Text Field class
- * to keep sliders and text field in synch
+
+/*
+ * Event Text Field class to keep sliders and text field in synch
  */
 class EventTextField extends JTextField implements ChangeListener {
 
@@ -946,53 +916,55 @@ class EventTextField extends JTextField implements ChangeListener {
 			JSlider slider = (JSlider) eventSource;
 			this.setText(Integer.valueOf(slider.getValue()).toString());
 		}
-		//fire the event
+		// fire the event
 		this.fireActionPerformed();
 	}
 }
-/*Controlled Event Text Field to 
- * restrict the slider value of grid spacing to 
+
+/*
+ * Controlled Event Text Field to restrict the slider value of grid spacing to
  * values that evenly divides 180 degrees
  */
-class ControlledEventTextField extends EventTextField 
-{
+class ControlledEventTextField extends EventTextField {
 	private static final long serialVersionUID = 1346347586797802332L;
 
 	public ControlledEventTextField(int cols, int initVal) {
 		super(cols, initVal);
 	}
+
 	public void stateChanged(ChangeEvent e) {
 		Object eventSource = e.getSource();
 		if (eventSource.getClass().getName().equals("javax.swing.JSlider")) {
 			JSlider slider = (JSlider) eventSource;
-			try{
-			//get the value of the slider
-			float val = (Float.valueOf(slider.getValue())).floatValue();
+			try {
+				// get the value of the slider
+				float val = (Float.valueOf(slider.getValue())).floatValue();
 
-			//need to restrict to allowed numbers
-			int[] allowedNumbers = { 1, 2, 3, 4, 5, 6, 9, 10, 12, 15, 18, 20,
-					30, 36, 45, 60, 90, 180 };
-			int finalNum = 0;
-			//get the largest integer less than or equal to gs that evenly divides 180 degrees
-			for (int i = 0; i < allowedNumbers.length; i++) {
-				if (val >= allowedNumbers[i]) {
-					finalNum = allowedNumbers[i];
+				// need to restrict to allowed numbers
+				int[] allowedNumbers = { 1, 2, 3, 4, 5, 6, 9, 10, 12, 15, 18,
+						20, 30, 36, 45, 60, 90, 180 };
+				int finalNum = 0;
+				// get the largest integer less than or equal to gs that evenly
+				// divides 180 degrees
+				for (int i = 0; i < allowedNumbers.length; i++) {
+					if (val >= allowedNumbers[i]) {
+						finalNum = allowedNumbers[i];
+					}
+				}
+
+				// if the number is between 0 & 180
+				if (val > 0 && val <= 180) {
+					// set the value of text
+					this.setText(new String(Integer.valueOf(finalNum)
+							.toString()));
 				}
 			}
+			// catch number format exception
+			catch (NumberFormatException z) {
+			}
 
-			//if the number is between 0 & 180
-			if (val > 0 && val <= 180) {
-				//set the value of text
-				this.setText(new String(Integer.valueOf(finalNum).toString()));
-			}
-			}
-			//catch number format exception
-			catch (NumberFormatException z){}
-			
 		}
-		//fire the event
+		// fire the event
 		this.fireActionPerformed();
 	}
-
 }
-
