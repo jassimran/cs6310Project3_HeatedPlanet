@@ -49,7 +49,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener,
 	static final String ACTION_GRID_EDIT = "Grid_Spacing";
 	static final String ACTION_NUM_EDIT = "Num_Edit";
 	static final String ACTION_LAUNCH_QUERY = "Launch Query Interface";
-	static final String ACTION_SHOW_ORBIT = "Show";
+	static final String ACTION_SHOW_ORBIT = "ShowOrbit";
 
 	static final int DEFAULT_GRID_SPACING = 15;
 	static final int DEFAULT_SIM_DELAY = 200;
@@ -113,7 +113,7 @@ public class Gui extends JFrame implements ActionListener, ChangeListener,
 	private Calendar simTimeCal = DATE_FORMAT.getCalendar();
 
 	private JLabel orbitalPos = null;
-	private JButton showOrbitButton = new JButton(ACTION_SHOW_ORBIT);
+	private JButton showOrbitButton = null;
 	private JLabel rotationalPos = null;
 	private JLabel rotationalPosResult = null;
 
@@ -567,8 +567,8 @@ public class Gui extends JFrame implements ActionListener, ChangeListener,
 		rotationalPosResult.setBounds(10, 64, 200, 16);
 		timePositionPanel.add(rotationalPosResult);
 
-		showOrbitButton = new JButton("Show");
-		showOrbitButton.setBounds(250, 60, 80, 20);
+		showOrbitButton = new JButton("Show Orbit");
+		showOrbitButton.setBounds(210, 60, 120, 20);
 		showOrbitButton.setActionCommand(ACTION_SHOW_ORBIT);
 		showOrbitButton.addActionListener(this);
 		showOrbitButton.setEnabled(false);
